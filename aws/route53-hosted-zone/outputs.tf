@@ -8,6 +8,6 @@ output "dns_zone_id" {
 }
 
 #Outputs the 4 default nameservers for the newly created zone
-output "dns_zone_ns" {
+output "dns_zone_name_servers" {
     value = "${aws_route53_zone.dnszone.name_servers}"
 }
