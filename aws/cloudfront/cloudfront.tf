@@ -1,5 +1,5 @@
 resource "aws_cloudfront_distribution" "cloudfront_distribution" {
-  aliases             = "${var.alias}"
+  aliases             = "${var.aliases}"
   comment             = "${var.comment}"
   default_root_object = "${var.default_root_object}"
   enabled             = "${var.enable}"
@@ -9,7 +9,7 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
   retain_on_delete    = "${var.retain_on_delete}"
   wait_for_deployment = "${var.wait_for_deployment}"
   web_acl_id          = "${var.webacl}"
-  
+    
   dynamic "origin" {
     for_each = [for i in "${var.dynamic_s3_origin_config}" : {
       name     = i.domain_name

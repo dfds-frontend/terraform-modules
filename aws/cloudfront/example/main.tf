@@ -1,4 +1,4 @@
-variable alias {
+variable aliases {
   description = "Aliases, or CNAMES, for the distribution"
   type        = list
   default     = []
@@ -128,7 +128,7 @@ terraform {
 module dfds_cloudfront_resource_usemodule {
   //source                         = "git::https://github.com/jmgreg31/terraform_aws_cloudfront.git?ref=v1.0.0"
   source                         = "./../"
-  alias                          = "${var.alias}"
+  aliases                        = "${var.aliases}"
   comment                        = "${var.comment}"
   dynamic_custom_error_response  = "${var.dynamic_custom_error_response}"
   dynamic_default_cache_behavior = "${var.dynamic_default_cache_behavior}"
