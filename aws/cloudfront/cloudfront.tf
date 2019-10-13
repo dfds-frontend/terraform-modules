@@ -31,6 +31,7 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
   dynamic "origin" {
     for_each = [for i in "${var.dynamic_custom_origin_config}" : {
       name                     = i.domain_name
+      path                     = i.origin_path
       id                       = i.origin_id
       http_port                = i.http_port
       https_port               = i.https_port
@@ -41,6 +42,7 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
     }]
     content {
       domain_name = origin.value.name
+      origin_path = origin.value.path
       origin_id   = origin.value.id
       custom_origin_config {
         http_port                = origin.value.http_port
@@ -53,6 +55,7 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
     }
   }
 
+/* Origin groups are not needed currently, hence discared in the resource (it is "optional" in AWS)...
   dynamic "origin_group" {
     for_each = [for i in "${var.dynamic_origin_group}" : {
       id           = i.origin_id
@@ -83,6 +86,7 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
       }
     }
   }
+  */
 
   dynamic "default_cache_behavior" {
     for_each = [for i in "${var.dynamic_default_cache_behavior}" : {
@@ -224,8 +228,9 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
   }
 
   viewer_certificate {
-    iam_certificate_id       = "${var.ssl_certificate}"
-    minimum_protocol_version = "${var.minimum_protocol_version}"
-    ssl_support_method       = "${var.ssl_support_method}"
+    cloudfront_default_certificate = true
+//    iam_certificate_id       = "${var.ssl_certificate}"
+//    minimum_protocol_version = "${var.minimum_protocol_version}"
+//    ssl_support_method       = "${var.ssl_support_method}"
   }
 }
