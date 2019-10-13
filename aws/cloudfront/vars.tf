@@ -45,10 +45,16 @@ variable dynamic_ordered_cache_behavior {
   default = []
 }
 
+/* Origin groups are not needed currently, hence discared in the resource (it is "optional" in AWS)...
 variable dynamic_origin_group {
   description = "Origin Group to be used in dynamic block"
   type = any
 }
+
+variable origin_group_member {
+  type = any
+}
+*/
 
 variable dynamic_lambda_function_association_default {
   description = "A config block that triggers a lambda function with specific actions. Defined below, maximum 4.  For Default Cache Behavior block"
@@ -127,7 +133,7 @@ variable price {
 }
 
 variable region {
-  description = "Target AWS region, only one is valid, as cloudfront only supports being setup currently in us-east-1"
+  description = "Target AWS region (used in provider section, not in resource def.) only one is valid, as cloudfront only supports being setup in us-east-1"
   type        = string
   default     = "us-east-1"
 }
@@ -178,52 +184,3 @@ variable webacl {
   type        = string
   default     = ""
 }
-
-// variable origin_group_member {
-//   type = any
-// }
-
-
-/* Original vars below... just to verify we cover all with the dynamics
-
-variable "logging_enable" {
-  default = false
-}
-
-variable "logging_include_cookies" {
-  description = "Specifies whether you want CloudFront to include cookies in access logs (default: false)"
-  default = false
-}
-
-
-variable "logging_bucket" {
-  description = "S3 bucket for CloudFront access logs"
-  default = ""
-}
-
-variable "logging_prefix" {
-  description = "Name of the folder inside the S3 bucket that will be created for the access logs"
-  default = ""
-}
-
-variable "default_origin_domain_name" {  
-}
-
-variable "default_origin_id" {
-  
-}
-
-variable "request_lambda_edge_function_arn" {
-  default = ""
-}
-
-variable "request_lambda_edge_function_include_body" {
-  default = false
-}
-
-variable "origin_access_identity" {
-  default = ""
-  description = "The path that identifies the origin access identity to be used for accessing s3 bucket origins."
-}
-
-*/

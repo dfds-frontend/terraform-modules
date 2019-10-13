@@ -29,11 +29,12 @@ variable dynamic_ordered_cache_behavior {
   description = "Ordered Cache Behaviors to be used in dynamic block"
   type = any
 }
-
+/* Origin groups are not needed currently, hence discared in the module (it is "optional" in AWS)...
 variable dynamic_origin_group {
   description = "Origin Group to be used in dynamic block"
   type = any
 }
+*/
 
 variable dynamic_s3_origin_config {
   description = "Configuration for the s3 origin config to be used in dynamic block"
@@ -116,13 +117,14 @@ variable webacl {
   default     = ""
 }
 
+
 terraform {
   backend "s3" {
-    bucket  = "terraform-state-bucket"
+/*    bucket  = "terraform-state-bucket"
     key     = "cloudfront/terraform.tfstate"
     region  = "us-east-1"
     encrypt = true
-  }
+*/  }
 }
 
 module dfds_cloudfront_resource_usemodule {
@@ -139,7 +141,7 @@ module dfds_cloudfront_resource_usemodule {
   dynamic_ordered_cache_behavior = "${var.dynamic_ordered_cache_behavior}"
   dynamic_custom_origin_config   = "${var.dynamic_custom_origin_config}"
   dynamic_s3_origin_config       = "${var.dynamic_s3_origin_config}"
-  dynamic_origin_group           = "${var.dynamic_origin_group}"
+  // dynamic_origin_group           = "${var.dynamic_origin_group}" //Origin groups are not needed currently, hence discared in the example...
   price                          = "${var.price}"
   region                         = "${var.region}"
   restriction_type               = "${var.restriction_type}"
