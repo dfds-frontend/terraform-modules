@@ -1,3 +1,4 @@
+//variables here are defined for the sole purpose of ensuring terraform.tfvars and parent modules using this module invocation can pass values into the variables defined by the module invocation in this file 
 variable aliases {
   description = "Aliases, or CNAMES, for the distribution"
   type        = list
@@ -5,7 +6,7 @@ variable aliases {
 }
 
 variable comment {
-  description = "Any comment about the CloudFront Distribution"
+  description = "A short unique description of the cloudfront distribution. Comments used to enable the user to distinquish between cloudfront distributions. It's also used to construct a proper prefix for any lambda@edge functions needed."
   type        = string
   default     = ""
 }
@@ -29,12 +30,6 @@ variable dynamic_ordered_cache_behavior {
   description = "Ordered Cache Behaviors to be used in dynamic block"
   type = any
 }
-/* Origin groups are not needed currently, hence discared in the module (it is "optional" in AWS)...
-variable dynamic_origin_group {
-  description = "Origin Group to be used in dynamic block"
-  type = any
-}
-*/
 
 variable dynamic_s3_origin_config {
   description = "Configuration for the s3 origin config to be used in dynamic block"
@@ -120,15 +115,11 @@ variable webacl {
 
 terraform {
   backend "s3" {
-/*    bucket  = "terraform-state-bucket"
-    key     = "cloudfront/terraform.tfstate"
-    region  = "us-east-1"
-    encrypt = true
-*/  }
+  }
 }
 
 module dfds_cloudfront_resource_usemodule {
-  //source                         = "git::https://github.com/jmgreg31/terraform_aws_cloudfront.git?ref=v1.0.0"
+  //source                         = "git::https://github.com/dfds-frontend/terraform-modules.git//aws/cloudfront" // To be used with tagging as well, this line is to serve as example for how this should be referenced in real world scenarios. The example here always refers to current local copy, hence the source definition below.
   source                         = "./../"
   aliases                        = "${var.aliases}"
   comment                        = "${var.comment}"
@@ -140,8 +131,7 @@ module dfds_cloudfront_resource_usemodule {
   minimum_protocol_version       = "${var.minimum_protocol_version}"
   dynamic_ordered_cache_behavior = "${var.dynamic_ordered_cache_behavior}"
   dynamic_custom_origin_config   = "${var.dynamic_custom_origin_config}"
-  dynamic_s3_origin_config       = "${var.dynamic_s3_origin_config}"
-  // dynamic_origin_group           = "${var.dynamic_origin_group}" //Origin groups are not needed currently, hence discared in the example...
+  dynamic_s3_origin_config       = "${var.dynamic_s3_origin_config}"  
   price                          = "${var.price}"
   region                         = "${var.region}"
   restriction_type               = "${var.restriction_type}"
