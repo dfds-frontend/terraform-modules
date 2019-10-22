@@ -45,16 +45,19 @@ variable dynamic_ordered_cache_behavior {
   default = []
 }
 
-/* Origin groups are not needed currently, hence discared in the resource (it is "optional" in AWS)...
+/* "Origin groups property" are not needed currently (it is "optional" in AWS)
+so currently no ...*/
 variable dynamic_origin_group {
   description = "Origin Group to be used in dynamic block"
   type = any
+  default = []
 }
-
+/* "Origin groups property" are not needed currently (it is "optional" in AWS)...*/
 variable origin_group_member {
   type = any
+  default = []
 }
-*/
+
 
 variable dynamic_lambda_function_association_default {
   description = "A config block that triggers a lambda function with specific actions. Defined below, maximum 4.  For Default Cache Behavior block"
@@ -162,7 +165,7 @@ variable ssl_certificate {
 }
 
 variable ssl_support_method {
-  description = "Specifies how you want CloudFront to serve HTTPS requests. One of vip or sni-only."
+  description = "Specifies how you want CloudFront to serve HTTPS requests. One of: vip or sni-only."
   type        = string
   default     = "sni-only"
 }

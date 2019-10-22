@@ -55,7 +55,8 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
     }
   }
 
-/* Origin groups are not needed currently, hence discared in the resource (it is "optional" in AWS)...
+// with default value set to [] (empty array, the iterator in the resource definition ignores the usage of these when creating and/or modifying)
+/* Origin groups are not needed currently, hence discared in the resource (it is "optional" in AWS)... */
   dynamic "origin_group" {
     for_each = [for i in "${var.dynamic_origin_group}" : {
       id           = i.origin_id
@@ -69,15 +70,15 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
       failover_criteria {
         status_codes = origin_group.value.status_codes
       }
-      // dynamic "member" {
-      //   for_each = [for j in "${var.origin_group_member}": {
-      //     id = j.origin_id
-      //   }]
+      dynamic "member" {
+        for_each = [for j in "${var.origin_group_member}": {
+          id = j.origin_id
+        }]
 
-      //     content {
-      //       origin_id = member.value.id
-      //     }
-      // }
+          content {
+            origin_id = member.value.id
+          }
+      }
       member {
         origin_id = origin_group.value.member1
       }
@@ -86,7 +87,6 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
       }
     }
   }
-  */
 
   dynamic "default_cache_behavior" {
     for_each = [for i in "${var.dynamic_default_cache_behavior}" : {
