@@ -1,5 +1,6 @@
-#  Local .terraform directories
+#  Local .terraform and terragrunt "run time" directories
 **/.terraform/*
+**/.terragrunt*
 
 # .tfstate files
 *.tfstate
@@ -8,4 +9,4 @@
 # .tfvars files, un-ignore, is targeted at tfvars files under example folders
 *.tfvars
 !**/example/*.tfvars
-!**/example/**/*.tfvars 
+!**/example/**/*.tfvars
