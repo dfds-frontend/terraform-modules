@@ -30,7 +30,9 @@ resource "aws_acm_certificate_validation" "cert_dns_validation" {
   validation_record_fqdns = "${aws_route53_record.cert_dns_validation.*.fqdn}"
 }
 
-
+# Validate the certificate using the Manaul process using Email validation
+# This will trigger sending a validation email to the admin. The admin needs to approve it manually
+# For more info: https://docs.aws.amazon.com/acm/latest/userguide/gs-acm-validate-email.html
 resource "aws_acm_certificate_validation" "cert_email_validation" {
   count   = "${var.validation_method == "EMAIL" ? 1 : 0}"
   certificate_arn = "${aws_acm_certificate.cert.arn}"
