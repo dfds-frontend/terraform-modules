@@ -12,5 +12,10 @@ variable "dns_zone_id" {
 
 variable "validation_method" {
   type = "string"
-  description = "Allows values: DNS, EMAIL and NONE"
+  description = "Allowed values DNS and EMAIL"
+}
+
+variable "wait_for_validation" {
+  type = "bool"
+  default = true
 }
