@@ -1,7 +1,3 @@
-# locals {
-#   domain_names = "${concat([var.domain_name], var.subject_alternative_names)}"
-# }
-
 locals {
   // Get distinct list of domains and SANs
   distinct_domain_names = distinct(concat([var.domain_name], data.template_file.breakup_san.*.rendered))
@@ -18,9 +14,7 @@ data "template_file" "breakup_san" {
 
 # Create the certificate request
 resource "aws_acm_certificate" "cert" {
-  # domain_name = "${local.domain_names[0]}"
   domain_name               = var.domain_name
-  # subject_alternative_names = "${slice(local.domain_names, 1, length(local.domain_names))}"
   subject_alternative_names = var.subject_alternative_names
   validation_method = "DNS"
   lifecycle {
@@ -29,15 +23,6 @@ resource "aws_acm_certificate" "cert" {
   }
 }
 
-# Create validation DNS record(s) in the specified DNS zone (alternative names specified)
-# resource "aws_route53_record" "validation" {
-#   count = "${var.validation_method == "DNS" ? length(local.domain_names) : 0}"
-#   name = "${lookup(aws_acm_certificate.cert.domain_validation_options[count.index], "resource_record_name")}"
-#   type = "${lookup(aws_acm_certificate.cert.domain_validation_options[count.index], "resource_record_type")}"
-#   zone_id ="${var.dns_zone_id}"
-#   records = ["${lookup(aws_acm_certificate.cert.domain_validation_options[count.index], "resource_record_value")}"]
-#   ttl = 60
-# }
 resource "aws_route53_record" "validation" {
   count = var.validation_method == "DNS" ? length(local.distinct_domain_names) : 0
 
@@ -49,8 +34,6 @@ resource "aws_route53_record" "validation" {
   records = [
     local.validation_domains[count.index]["resource_record_value"]
   ]
-
-  # allow_overwrite = var.validation_allow_overwrite_records
 }
 
 
