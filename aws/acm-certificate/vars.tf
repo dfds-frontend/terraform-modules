@@ -16,6 +16,5 @@ variable "validation_method" {
 }
 
 variable "wait_for_validation" {
-  type = "bool"
   default = true
 }
