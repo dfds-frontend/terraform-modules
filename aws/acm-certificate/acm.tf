@@ -36,8 +36,6 @@ resource "aws_route53_record" "validation" {
   ]
 }
 
-
-
 # Validate the certificate using the DNS validation records created
 # This resource represents a successful validation of an ACM certificate in concert with other resources.
 # WARNING: This resource implements a part of the validation workflow. It does not represent a real-world entity in AWS, therefore changing or deleting this resource on its own has no immediate effect.
