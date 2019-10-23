@@ -12,5 +12,6 @@ variable "dns_zone_id" {
 
 variable "validation_method" {
   type = "string"
+  default = null
   description = "Allows values: DNS, EMAIL and NONE"
 }
