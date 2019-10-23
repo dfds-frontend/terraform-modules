@@ -9,3 +9,8 @@ variable "subject_alternative_names" {
 variable "dns_zone_id" {
   
 }
+
+variable "validation_method" {
+  type = "string"
+  description = "Allows values: DNS, EMAIL and NONE"
+}
