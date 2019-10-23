@@ -7,7 +7,7 @@ locals {
   distinct_domain_names = distinct(concat([var.domain_name], data.template_file.breakup_san.*.rendered))
 
   // Copy domain_validation_options for the distinct domain names
-  validation_domains = [for k, v in aws_acm_certificate.cert].domain_validation_options : tomap(v) if contains(local.distinct_domain_names, v.domain_name)]
+  validation_domains = [for k, v in aws_acm_certificate.cert.domain_validation_options : tomap(v) if contains(local.distinct_domain_names, v.domain_name)]
 }
 
 data "template_file" "breakup_san" {
