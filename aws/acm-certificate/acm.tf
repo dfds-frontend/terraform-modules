@@ -18,8 +18,10 @@ data "template_file" "breakup_san" {
 
 # Create the certificate request
 resource "aws_acm_certificate" "cert" {
-  domain_name = "${local.domain_names[0]}"
-  subject_alternative_names = "${slice(local.domain_names, 1, length(local.domain_names))}"
+  # domain_name = "${local.domain_names[0]}"
+  domain_name               = var.domain_name
+  # subject_alternative_names = "${slice(local.domain_names, 1, length(local.domain_names))}"
+  subject_alternative_names = var.subject_alternative_names
   validation_method = "DNS"
   lifecycle {
     create_before_destroy = true
