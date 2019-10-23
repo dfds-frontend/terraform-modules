@@ -9,3 +9,12 @@ variable "subject_alternative_names" {
 variable "dns_zone_id" {
   
 }
+
+variable "validation_method" {
+  type = "string"
+  description = "Allowed values DNS and EMAIL"
+}
+
+variable "wait_for_validation" {
+  default = true
+}
