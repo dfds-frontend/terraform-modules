@@ -73,12 +73,6 @@ variable price {
   default     = "PriceClass_100"
 }
 
-variable region {
-  description = "Target AWS region"
-  type        = string
-  default     = "us-east-1"
-}
-
 variable restriction_location {
   description = "The ISO 3166-1-alpha-2 codes for which you want CloudFront either to distribute your content (whitelist) or not distribute your content (blacklist)"
   type        = list
@@ -133,7 +127,6 @@ module dfds_cloudfront_resource_usemodule {
   dynamic_custom_origin_config   = "${var.dynamic_custom_origin_config}"
   dynamic_s3_origin_config       = "${var.dynamic_s3_origin_config}"  
   price                          = "${var.price}"
-  region                         = "${var.region}"
   restriction_type               = "${var.restriction_type}"
   ssl_certificate                = "${var.ssl_certificate}"
   ssl_support_method             = "${var.ssl_support_method}"

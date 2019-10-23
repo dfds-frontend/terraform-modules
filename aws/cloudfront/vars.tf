@@ -135,12 +135,6 @@ variable price {
   default     = "PriceClass_100"
 }
 
-variable region {
-  description = "Target AWS region (used in provider section, not in resource def.) only one is valid, as cloudfront only supports being setup in us-east-1"
-  type        = string
-  default     = "us-east-1"
-}
-
 variable restriction_location {
   description = "The ISO 3166-1-alpha-2 codes for which you want CloudFront either to distribute your content (whitelist) or not distribute your content (blacklist)"
   type        = list

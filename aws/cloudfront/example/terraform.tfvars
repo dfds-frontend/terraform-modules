@@ -1,5 +1,3 @@
-region                   = "us-east-1" //sets region in provider section
-
 aliases                  = []
 comment                  = "AWS Cloudfront Module"
 enable                   = true
