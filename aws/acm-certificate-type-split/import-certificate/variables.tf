@@ -14,4 +14,7 @@ variable "certificate_chain" {
   default = ""
 }
 
-//tag_name
+variable tag_name {
+  description = "The tagged name"
+  type        = string
+}

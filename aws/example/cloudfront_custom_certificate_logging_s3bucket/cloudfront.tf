@@ -1,0 +1,21 @@
+module dfds_cloudfront_resource_usemodule {
+  //source                         = "git::https://github.com/dfds-frontend/terraform-modules.git//aws/cloudfront" // To be used with tagging as well, this line is to serve as example for how this should be referenced in real world scenarios. The example here always refers to current local copy, hence the source definition below.
+  source                         = "./../"
+  aliases                        = "${var.aliases}"
+  comment                        = "${var.comment}"
+  dynamic_custom_error_response  = "${var.dynamic_custom_error_response}"
+  dynamic_default_cache_behavior = "${var.dynamic_default_cache_behavior}"
+  enable                         = "${var.enable}"
+  enable_ipv6                    = "${var.enable_ipv6}"
+  http_version                   = "${var.http_version}"
+  minimum_protocol_version       = "${var.minimum_protocol_version}"
+  dynamic_ordered_cache_behavior = "${var.dynamic_ordered_cache_behavior}"
+  dynamic_custom_origin_config   = "${var.dynamic_custom_origin_config}"
+  dynamic_s3_origin_config       = "${var.dynamic_s3_origin_config}"  
+  price                          = "${var.price}"
+  restriction_type               = "${var.restriction_type}"
+  ssl_certificate                = "${var.ssl_certificate}"
+  ssl_support_method             = "${var.ssl_support_method}"
+  tag_name                       = "${var.tag_name}"
+  webacl                         = "${var.webacl}"
+}
