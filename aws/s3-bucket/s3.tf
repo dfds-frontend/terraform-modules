@@ -1,3 +1,11 @@
+terraform {
+  # The configuration for this backend will be filled in by Terragrunt
+  backend "s3" {}
+
+  # The latest version of Terragrunt (v0.19.0 and above) requires Terraform 0.12.0 or above.
+  required_version = "~> 0.12.2"
+}
+
 resource "aws_s3_bucket" "bucket" {
   count = "${var.deploy ? 1:0 }"
   bucket = var.s3_bucket
