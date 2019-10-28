@@ -2,7 +2,7 @@ resource "aws_route53_record" "record" {
   zone_id = "${var.zone_id}"
   name    = "${var.record_name}"
   type    = "${var.record_type}"
-  records = "${var.record_value ? [var.record_value] : null}"
+  records = "${var.record_value ? [var.record_value] : []}"
   ttl     = "${var.record_ttl}"
 
   dynamic "alias" {
