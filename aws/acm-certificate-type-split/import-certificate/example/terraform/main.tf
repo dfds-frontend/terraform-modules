@@ -1,5 +1,6 @@
+// Combining certificate import with creation of an self signed cert (using tls provider), to demonstrate import functionality.
+// region is here defaulted to eu-central-1, as defined in module folder (DFDS default region)
 module "certificate_using_module" {
-  //source = "git::https://github.com/dfds-frontend/terraform-modules.git//aws/s3-bucket" // To be used with tagging as well, this line is to serve as example for how this should be referenced in real world scenarios. The example here always refers to current local copy, hence the source definition below.
   source = "./../../"
   private_key = "${module.selfsigned_certificate.certificate_private_key_pem}"
   certificate_body = "${module.selfsigned_certificate.certificate_body_pem}"
@@ -8,4 +9,9 @@ module "certificate_using_module" {
 
 module "selfsigned_certificate" {
     source = "./../self_signed_example_cert/"  
+}
+
+output "imported-certificate-arn" {
+  //output arn should be used eg in the cloudfront prop: acm_certificate_arn
+  value = module.certificate_using_module.imported-certificate-arn
 }
