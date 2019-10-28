@@ -16,3 +16,5 @@ variable "alias_target_zone_id" {
 variable "record_ttl" {
   default = "300"
 }
+
+variable "record_value" {}
