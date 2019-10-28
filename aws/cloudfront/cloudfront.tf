@@ -75,7 +75,7 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
       }
     }
 
-    viewer_protocol_policy = lookup(var.default_cache_behavior, "viewer_protocol_policy", "allow-all")
+    viewer_protocol_policy = lookup(var.default_cache_behavior, "viewer_protocol_policy", "redirect-to-https")
     min_ttl                = lookup(var.default_cache_behavior, "min_ttl", null)
     default_ttl            = lookup(var.default_cache_behavior, "default_ttl", null)
     max_ttl                = lookup(var.default_cache_behavior, "max_ttl", null)
