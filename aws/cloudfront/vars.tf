@@ -120,7 +120,8 @@ variable price {
 
 variable restriction_location {
   description = <<EOF
-    The ISO 3166-1-alpha-2 codes for which you want CloudFront either to distribute your content (whitelist) or not distribute your content (blacklist).dataUsed in cojunction with var 'restriction_type=whitelist/blacklist'.
+    The ISO 3166-1-alpha-2 codes for which you want CloudFront either to distribute your content (whitelist) or not distribute your content (blacklist).
+    Used in cojunction with var 'restriction_type=whitelist/blacklist'.
   EOF
 
   type        = list
