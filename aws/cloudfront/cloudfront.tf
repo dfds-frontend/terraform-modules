@@ -112,7 +112,7 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
           }
         }
 
-        viewer_protocol_policy = lookup(it.value, "viewer_protocol_policy", "allow-all")
+        viewer_protocol_policy = lookup(it.value, "viewer_protocol_policy", "redirect-to-https")
         min_ttl                = lookup(it.value, "min_ttl", null)
         default_ttl            = lookup(it.value, "default_ttl", null)
         max_ttl                = lookup(it.value, "max_ttl", null)
