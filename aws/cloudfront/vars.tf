@@ -57,7 +57,7 @@ variable "cache_behaviors" {
 }
 
 variable "default_cache_behavior" {
-  type = object {}
+  defualt = {}
 }
 
 
