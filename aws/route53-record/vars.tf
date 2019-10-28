@@ -17,4 +17,6 @@ variable "record_ttl" {
   default = "300"
 }
 
-variable "record_value" {}
+variable "record_value" {
+  type = "list"
+}
