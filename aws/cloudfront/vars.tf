@@ -57,27 +57,7 @@ variable "cache_behaviors" {
 }
 
 variable "default_cache_behavior" {
-  type = object({
-    # Declare an object using only the subset of attributes the module
-    # needs. Terraform will allow any object that has at least these
-    # attributes.
-    # allowed_methods = list(string) 
-    # cached_methods = list(string)
-    origin_id = string
-    forwarded_values_query_string = bool
-    forwarded_values_cookies_forward = string
-    # viewer_protocol_policy = string
-  }) 
-  default = { # use locals instead? 
-      allowed_methods = ["GET", "HEAD"]
-      origin_id = null
-      cached_methods = ["GET", "HEAD"]
-      protocol = "tcp"
-      forwarded_values_query_string = false
-      forwarded_values_cookies_forward = "none"
-      viewer_protocol_policy = "allow-all"
-    }
-  
+  type = object {}
 }
 
 
@@ -129,4 +109,5 @@ variable "logging_prefix" {
 
 variable "price_class" {
     description = "Price class for Cloudfront."
+    default = "PriceClass_100"
 }
