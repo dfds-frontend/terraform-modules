@@ -3,6 +3,7 @@ resource "aws_route53_record" "record" {
   name    = "${var.record_name}"
   type    = "${var.record_type}"
   records = "${var.record_type == "CNAME" ? [var.record_value] : null}"
+  ttl     = "${var.record_type == "CNAME" ? [var.record_ttl] : null}"
 
   dynamic "alias" {
     for_each = "${var.record_type == "A" ? [1] : [] }"

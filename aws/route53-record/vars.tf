@@ -12,3 +12,7 @@ variable "alias_target_dns_name" {
 variable "alias_target_zone_id" {
   default = ""
 }
+
+variable "record_ttl" {
+  default = "300"
+}
