@@ -45,19 +45,16 @@ variable dynamic_ordered_cache_behavior {
   default = []
 }
 
-/* "Origin groups property" are not needed currently (it is "optional" in AWS)
-so currently no ...*/
 variable dynamic_origin_group {
   description = "Origin Group to be used in dynamic block"
   type = any
   default = []
 }
-/* "Origin groups property" are not needed currently (it is "optional" in AWS)...*/
+
 variable origin_group_member {
   type = any
   default = []
 }
-
 
 variable dynamic_lambda_function_association_default {
   description = "A config block that triggers a lambda function with specific actions. Defined below, maximum 4.  For Default Cache Behavior block"
@@ -115,20 +112,6 @@ variable http_version {
   default     = "http2"
 }
 
-variable minimum_protocol_version {
-  description = <<EOF
-    The minimum version of the SSL protocol that you want CloudFront to use for HTTPS connections. 
-    One of SSLv3, TLSv1, TLSv1_2016, TLSv1.1_2016 or TLSv1.2_2018. Default: TLSv1. 
-    NOTE: If you are using a custom certificate (specified with acm_certificate_arn or iam_certificate_id), 
-    and have specified sni-only in ssl_support_method, TLSv1 or later must be specified. 
-    If you have specified vip in ssl_support_method, only SSLv3 or TLSv1 can be specified. 
-    If you have specified cloudfront_default_certificate, TLSv1 must be specified.
-    EOF
-
-  type = string
-  default     = "TLSv1"
-}
-
 variable price {
   description = "The price class of the CloudFront Distribution. Valid values are PriceClass_All, PriceClass_100, PriceClass_200"
   type        = string
@@ -136,7 +119,10 @@ variable price {
 }
 
 variable restriction_location {
-  description = "The ISO 3166-1-alpha-2 codes for which you want CloudFront either to distribute your content (whitelist) or not distribute your content (blacklist)"
+  description = <<EOF
+    The ISO 3166-1-alpha-2 codes for which you want CloudFront either to distribute your content (whitelist) or not distribute your content (blacklist).dataUsed in cojunction with var 'restriction_type=whitelist/blacklist'.
+  EOF
+
   type        = list
   default     = []
 }
@@ -148,20 +134,36 @@ variable restriction_type {
 }
 
 variable retain_on_delete {
-  description = "If true then the distribution is disables instead of deleted, when destroying the resource through Terraform. - leaving the resource deletion up to a manual process."
+  description = "If true then the distribution is disabled instead of deleted, when destroying the resource through Terraform. - leaving the resource deletion up to a manual process."
   type        = bool
   default     = false 
 }
 
-variable ssl_certificate {
-  description = "Specifies IAM certificate id for CloudFront distribution"
-  type        = string
-}
+variable viewer_certificate {
+  description = <<EOF
+    'acm_certificate_arn', a string representing the unique AWS arn for the certificate used for SSL. Example arn (will not work): 'arn:aws:acm:eu-central-1:378906186090:certificate/4f1155c2-dee5-4ea3-b5ea-fdb1c81d8543'
+    'ssl_support_method', currently sni-only is the option used in DFDS.
+    'minimum_protocol_version' Minimum version of the SSL protocol that you want CloudFront to use for HTTPS connections. 
+    One of SSLv3, TLSv1, TLSv1_2016, TLSv1.1_2016 or TLSv1.2_2018. Default: TLSv1.1_2016. 
+    NOTE: If you are using a custom certificate (specified with acm_certificate_arn or iam_certificate_id), 
+    and have specified sni-only in ssl_support_method, TLSv1 or later must be specified. 
+    If you have specified vip in ssl_support_method, only SSLv3 or TLSv1 can be specified. 
+    If you have specified cloudfront_default_certificate, TLSv1 must be specified.
+    EOF
+  
+  type = object (
+    {
+    acm_certificate_arn = string
+    ssl_support_method = string
+    minimum_protocol_version = string
+    }
+  )
 
-variable ssl_support_method {
-  description = "Specifies how you want CloudFront to serve HTTPS requests. One of: vip or sni-only."
-  type        = string
-  default     = "sni-only"
+  default = {
+    acm_certificate_arn = null
+    ssl_support_method = "sni-only"
+    minimum_protocol_version = "TLSv1.1_2016"
+  }
 }
 
 variable tag_name {
@@ -177,7 +179,12 @@ variable wait_for_deployment {
 }
 
 variable webacl {
-  description = "The WAF Web ACL"
+  description = <<EOF
+  Web ACL can be used to filter CloudFront requests.
+  This is the Id of the AWS WAF web ACL, see: 'https://www.terraform.io/docs/providers/aws/r/waf_web_acl.html#id' for more information on creating and using AWS WAF web ACL.
+  The used WAF Web ACL must exist in the WAF Global (CloudFront) region.
+  EOF
+
   type        = string
   default     = ""
 }

@@ -7,14 +7,11 @@ minimum_protocol_version = "TLSv1.1_2016"
 price                    = "PriceClass_100"
 
 restriction_type         = "none"
-ssl_certificate          = "sslcert"
-ssl_support_method       = "sni-only"
 tag_name                 = "AWS Cloudfront Module"
-//webacl                   = "" // not used in the example... utilizing the default value 
 
 dynamic_s3_origin_config = [
   /*
-  // Example of multiple s3 origin configurations, remember to replace values into your specific S3 bucket Origin domain name, path and OAI
+  // Example of multiple s3 origin configurations, remember to replace values into your specific S3 bucket Origin domain name, path and OAI(if needed, using OAI is considered best practice, instead of using 'WEB' buckets with public access)
   {
     domain_name            = "dfds-platform-portal-dev.s3.amazonaws.com"
     origin_path            = ""
@@ -74,6 +71,21 @@ dynamic_default_cache_behavior = [
 ]
 
 dynamic_ordered_cache_behavior = [
+  {
+    // This mimics that an SPA could live under a origin. The path here is NOT supported by the used 'target_origin_id', it is meant as an example!
+    path_pattern           = "/errorapplication/*"
+    allowed_methods        = ["GET", "HEAD", "OPTIONS", "POST", "PUT", "DELETE", "PATCH"]
+    cached_methods         = ["GET", "HEAD"]
+    target_origin_id       = "customeriam-reverseproxy"
+    compress               = false
+    query_string           = true
+    cookies_forward        = "all"
+    headers                = []
+    viewer_protocol_policy = "redirect-to-https"
+    min_ttl                = 0
+    default_ttl            = 0
+    max_ttl                = 0
+  },
   {
     path_pattern           = "/??-??/*"
     allowed_methods        = ["GET", "HEAD", "OPTIONS", "POST", "PUT", "DELETE", "PATCH"]
@@ -155,63 +167,19 @@ dynamic_custom_error_response = [
     response_page_path    = ""
   },
   {
+    // Example of sending the failed request to an prefdefined error handling appliaction while keeping the response code.
+    // This enables the error handling SPA to track errors, and maybe inform the user of what has happened to some extend.
+    // Not configuring an custom error response, simply leaves the response 'as is', from the origin where the error originated.
     error_caching_min_ttl = 1
     error_code            = 403
-    response_code         = null
-    response_page_path    = ""
+    response_code         = 403
+    response_page_path    = "/errorapplication/index.html"
   },
   {
+    // This example hides the response code for the end user and SPA where the client is rederected to.
     error_caching_min_ttl = 1
     error_code            = 404
-    response_code         = null
-    response_page_path    = ""
-  },
-  {
-    error_caching_min_ttl = 1
-    error_code            = 405
-    response_code         = null
-    response_page_path    = ""
-  },
-  {
-    error_caching_min_ttl = 1
-    error_code            = 414
-    response_code         = null
-    response_page_path    = ""
-  },
-  {
-    error_caching_min_ttl = 1
-    error_code            = 416
-    response_code         = null
-    response_page_path    = ""
-  },
-  {
-    error_caching_min_ttl = 1
-    error_code            = 500
-    response_code         = null
-    response_page_path    = ""
-  },
-  {
-    error_caching_min_ttl = 1
-    error_code            = 501
-    response_code         = null
-    response_page_path    = ""
-  },
-  {
-    error_caching_min_ttl = 1
-    error_code            = 502
-    response_code         = null
-    response_page_path    = ""
-  },
-  {
-    error_caching_min_ttl = 1
-    error_code            = 503
-    response_code         = null
-    response_page_path    = ""
-  },
-  {
-    error_caching_min_ttl = 1
-    error_code            = 504
-    response_code         = null
-    response_page_path    = ""
+    response_code         = 200
+    response_page_path    = "/errorapplication/index.html"
   }
 ]

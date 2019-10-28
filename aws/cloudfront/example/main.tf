@@ -85,16 +85,6 @@ variable restriction_type {
   default     = "none"
 }
 
-variable ssl_certificate {
-  description = "Specifies IAM certificate id for CloudFront distribution"
-  type        = string
-}
-
-variable ssl_support_method {
-  description = "Specifies how you want CloudFront to serve HTTPS requests. One of vip or sni-only."
-  type        = string
-}
-
 variable tag_name {
   description = "The tagged name"
   type        = string
@@ -122,14 +112,16 @@ module dfds_cloudfront_resource_usemodule {
   enable                         = "${var.enable}"
   enable_ipv6                    = "${var.enable_ipv6}"
   http_version                   = "${var.http_version}"
-  minimum_protocol_version       = "${var.minimum_protocol_version}"
   dynamic_ordered_cache_behavior = "${var.dynamic_ordered_cache_behavior}"
   dynamic_custom_origin_config   = "${var.dynamic_custom_origin_config}"
   dynamic_s3_origin_config       = "${var.dynamic_s3_origin_config}"  
   price                          = "${var.price}"
   restriction_type               = "${var.restriction_type}"
-  ssl_certificate                = "${var.ssl_certificate}"
-  ssl_support_method             = "${var.ssl_support_method}"
+  viewer_certificate             = {
+    acm_certificate_arn = "arn:aws:acm:eu-central-1:378906186090:certificate/4f1155c2-dee5-4ea3-b5ea-fdb1c81d8543"
+    ssl_support_method = "sni-only"
+    minimum_protocol_version = "TLSv1.1_2016"
+  }
   tag_name                       = "${var.tag_name}"
   webacl                         = "${var.webacl}"
 }

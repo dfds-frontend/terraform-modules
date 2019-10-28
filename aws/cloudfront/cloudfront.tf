@@ -227,11 +227,10 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
     }
   }
 
-//if this ""${var.ssl_certificate}"" is set, then set acm_certificate_id else just use cloudfront_default_certificate!
   viewer_certificate {
-    cloudfront_default_certificate = true 
-//    iam_certificate_id       = "${var.ssl_certificate}"
-//    minimum_protocol_version = "${var.minimum_protocol_version}"
-//    ssl_support_method       = "${var.ssl_support_method}"
+        acm_certificate_arn       = var.viewer_certificate.acm_certificate_arn
+        ssl_support_method        = var.viewer_certificate.ssl_support_method
+        minimum_protocol_version  = var.viewer_certificate.minimum_protocol_version
   }
+
 }
