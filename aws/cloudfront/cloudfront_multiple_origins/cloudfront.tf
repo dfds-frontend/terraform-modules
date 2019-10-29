@@ -94,8 +94,8 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
   }
 
   dynamic "ordered_cache_behavior" {
-      for_each = var.cache_behaviors # length() > 1 ? var.cache_behaviors : [] # if only 1 record then we only define the default behavior
-      iterator = it # alias for iterator. Otherwise the name would be of the dynamic blog "ordered_cache_behavior"
+      for_each = var.cache_behaviors
+      iterator = it
 
       content {
         target_origin_id = it.value.origin_id # origin
