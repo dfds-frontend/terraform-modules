@@ -8,7 +8,7 @@ remote_state {
   config = {
     encrypt        = true
     bucket = get_env("terraform_state_s3bucket", "terraform-state-${get_aws_account_id()}-example-cloudfront")
-    key            = "${path_relative_to_include()}/terraform.tfstate"
+    key            = "${path_relative_to_include()}/combined-example/terraform.tfstate"
     region         = "us-east-1"
     dynamodb_table = "terraform-locks"
   }
