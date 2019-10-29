@@ -1,7 +1,7 @@
 module dfds_cloudfront_resource_usemodule {
   //source                         = "git::https://github.com/dfds-frontend/terraform-modules.git//aws/cloudfront" // To be used with tagging as well, this line is to serve as example for how this should be referenced in real world scenarios. The example here always refers to current local copy, hence the source definition below.
   source                         = "./../../cloudfront/"
-  aliases                        = "${module.certificate_using_module.imported-certificate-domain_name}"
+  aliases                        = ["${module.certificate_using_module.imported-certificate-domain_name}"]
   comment                        = "${local.infrastructure_identifier}"
   dynamic_custom_error_response  = "${var.dynamic_custom_error_response}"
   dynamic_default_cache_behavior = "${var.dynamic_default_cache_behavior}"
