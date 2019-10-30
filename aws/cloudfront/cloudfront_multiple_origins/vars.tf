@@ -62,3 +62,8 @@ variable "price_class" {
     description = "Price class for Cloudfront."
     default = "PriceClass_100"
 }
+
+variable "wait_for_deployment" {  
+  default = true
+  description = "If enabled, the resource will wait for the distribution status to change from InProgress to Deployed. Setting this tofalse will skip the process."
+}

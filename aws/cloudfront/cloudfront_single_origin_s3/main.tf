@@ -23,4 +23,5 @@ module "aws_cf_dist_s3" {
     logging_include_cookies = "${var.logging_include_cookies}"
     logging_bucket = "${var.logging_bucket}"
     logging_prefix = "${var.logging_prefix}"
+    wait_for_deployment = "${var.wait_for_deployment}"
 }

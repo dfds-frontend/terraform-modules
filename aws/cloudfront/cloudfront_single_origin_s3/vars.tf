@@ -36,3 +36,7 @@ variable "request_lambda_edge_function_include_body" {
   default = false
 }
 
+variable "wait_for_deployment" {
+  default = true
+}
+
