@@ -1,3 +1,7 @@
+terraform {
+  required_version = "~> 0.12.2"
+}
+
 resource "aws_lambda_function" "lambda" {
   function_name = "${var.lambda_function_name}"
   role          = "${aws_iam_role.role.arn}"

@@ -1,3 +1,7 @@
+terraform {
+  required_version = "~> 0.12.2"
+}
+
 resource "aws_s3_bucket" "bucket" {
   count = "${var.deploy ? 1:0 }"
   bucket = var.s3_bucket
