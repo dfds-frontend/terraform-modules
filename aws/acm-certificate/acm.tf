@@ -1,3 +1,7 @@
+terraform {
+  required_version = "~> 0.12.2"
+}
+
 locals {
   // Get distinct list of domains and SANs
   distinct_domain_names = distinct(concat([var.domain_name], data.template_file.breakup_san.*.rendered))

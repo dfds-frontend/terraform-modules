@@ -1,3 +1,7 @@
+terraform {
+  required_version = "~> 0.12.2"
+}
+
 resource "aws_route53_record" "alias_record" {  
   count   = "${var.record_type == "A" ? 1 : 0}"
   zone_id = "${var.zone_id}"

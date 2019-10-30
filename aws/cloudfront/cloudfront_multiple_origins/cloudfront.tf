@@ -8,6 +8,7 @@ locals {
 }
 
 resource "aws_cloudfront_distribution" "cloudfront_distribution" {
+  wait_for_deployment = "${var.wait_for_deployment}"
   price_class = "${var.price_class}"  
   aliases = "${var.aliases}"
   viewer_certificate {
