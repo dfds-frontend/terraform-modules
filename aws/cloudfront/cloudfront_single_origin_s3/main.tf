@@ -4,7 +4,7 @@ locals {
 
 module "aws_cf_dist_s3" {
     # source = "../../../../../../../../terraform_modules//cf"
-    source = "../terraform_modules//cf"
+    source = "../cloudfront_multiple_origins"
     origins = [{
         is_s3_origin = true
         domain_name = var.s3_bucket_domain_name
