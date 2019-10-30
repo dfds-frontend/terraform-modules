@@ -65,5 +65,5 @@ variable "price_class" {
 
 variable "wait_for_deployment" {  
   default = true
-  description = "If enabled, the resource will wait for the distribution status to change from InProgress to Deployed. Setting this tofalse will skip the process."
+  description = "If enabled, the resource will wait for the distribution status to change from InProgress to Deployed. Setting this to false will skip the process."
 }
