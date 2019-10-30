@@ -13,7 +13,7 @@ module "aws_cf_dist_s3" {
     default_cache_behavior = {
         allowed_methods = ["GET", "HEAD"]
         cached_methods = ["GET", "HEAD"]
-        target_origin_id = "${local.s3bucket_origin_id}"
+        origin_id = "${local.s3bucket_origin_id}"
         forwarded_values_query_string = false
         forwarded_values_cookies_forward = "none"
     }
