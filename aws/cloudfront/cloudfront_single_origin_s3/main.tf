@@ -8,8 +8,6 @@ module "aws_cf_dist_s3" {
         is_s3_origin = true
         domain_name = var.s3_bucket_domain_name
         origin_id = "${local.s3bucket_origin_id}"
-        lambda_function_association_lambda_arn = "${var.request_lambda_edge_function_arn}"
-        lambda_function_association_include_body = "${var.request_lambda_edge_function_include_body}"
     }]
     default_cache_behavior = {
         allowed_methods = ["GET", "HEAD"]
@@ -17,6 +15,8 @@ module "aws_cf_dist_s3" {
         origin_id = "${local.s3bucket_origin_id}"
         forwarded_values_query_string = false
         forwarded_values_cookies_forward = "none"
+        lambda_function_association_lambda_arn = "${var.request_lambda_edge_function_arn}"
+        lambda_function_association_include_body = "${var.request_lambda_edge_function_include_body}"        
     }
     comment = "${var.comment}"
     origin_access_identity = "${var.origin_access_identity}"
