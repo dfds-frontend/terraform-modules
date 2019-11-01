@@ -15,6 +15,8 @@ module "aws_cf_dist_s3" {
         origin_id = "${local.s3bucket_origin_id}"
         forwarded_values_query_string = false
         forwarded_values_cookies_forward = "none"
+        lambda_function_association_lambda_arn = "${var.request_lambda_edge_function_arn}"
+        lambda_function_association_include_body = "${var.request_lambda_edge_function_include_body}"        
     }
     comment = "${var.comment}"
     origin_access_identity = "${var.origin_access_identity}"
