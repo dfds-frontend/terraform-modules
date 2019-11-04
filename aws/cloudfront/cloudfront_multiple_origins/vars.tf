@@ -18,8 +18,9 @@ variable "comment" {
 }
 
 variable "acm_certificate_arn" {
-  description = "The arn of the certificate that covers the custom domain when aliases are added to the cloudfront distribution."
-  default = ""
+  description = "The arn of the certificate that covers the custom domain when aliases are added to the cloudfront distribution."  
+  type = string
+  default = null
 }
 
 variable "custom_ssl_security_policy" {
