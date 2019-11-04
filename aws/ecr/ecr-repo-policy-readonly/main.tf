@@ -1,4 +1,6 @@
-resource "aws_ecr_repository_policy" "policy" {
+module "ecr_repository_policy_readonly" {
+  source = "../ecr-repo-policy"
+  
   repository = "${var.repo_name}"
 
   policy = <<EOF
@@ -18,7 +20,11 @@ resource "aws_ecr_repository_policy" "policy" {
     ]
 }
 EOF
+
 }
+
+
+
 
                 # "ecr:GetDownloadUrlForLayer",
                 # "ecr:BatchGetImage",

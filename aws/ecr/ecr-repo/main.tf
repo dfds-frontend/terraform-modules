@@ -4,7 +4,7 @@ terraform {
 
 
 resource "aws_ecr_repository" "repo" {
-  name                 = "${var.repo_name}"
+  name                 = "${var.name}"
   image_tag_mutability = "${var.is_tags_mutable ? "MUTABLE" : "IMMUTABLE"}" #"MUTABLE"
 
   image_scanning_configuration {
