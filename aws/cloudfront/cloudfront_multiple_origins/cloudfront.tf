@@ -4,7 +4,7 @@ terraform {
 
 locals {
   # Determine the certificate type
-  is_acm_cert = var.acm_certificate_arn != ""
+  is_acm_cert = var.acm_certificate_arn != null
 }
 
 resource "aws_cloudfront_distribution" "cloudfront_distribution" {

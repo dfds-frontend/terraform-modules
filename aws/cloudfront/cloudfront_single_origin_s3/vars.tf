@@ -36,7 +36,7 @@ variable "request_lambda_edge_function_include_body" {
   default = false
 }
 
-variable "wait_for_deployment" {
+variable "wait_for_deployment" {  
   default = true
+  description = "If enabled, the resource will wait for the distribution status to change from InProgress to Deployed. Setting this to false will skip the process."
 }
-
