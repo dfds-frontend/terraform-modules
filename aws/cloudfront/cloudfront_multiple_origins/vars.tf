@@ -70,7 +70,7 @@ variable "wait_for_deployment" {
 }
 
 
-variable "custom_error_response" {
+variable "custom_error_responses" {
   description = "Custom error response to be used in dynamic block. Documentation is here: https://www.terraform.io/docs/providers/aws/r/cloudfront_distribution.html#custom-error-response-arguments"
   type = any
   default = []
