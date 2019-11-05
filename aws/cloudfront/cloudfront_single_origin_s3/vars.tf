@@ -50,5 +50,6 @@ variable "custom_error_response_code" {
 }
 
 variable "custom_error_response_page_path" {
+  description = "Path should be in this format {something}/{applcation_name}/{path_to_error_html_page_inside_s3_bucket}. Example: /error-pages/portal/index.html"
   type = "string"
 }
