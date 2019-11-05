@@ -40,3 +40,15 @@ variable "wait_for_deployment" {
   default = true
   description = "If enabled, the resource will wait for the distribution status to change from InProgress to Deployed. Setting this to false will skip the process."
 }
+
+variable "custom_error_response_error_caching_min_ttl" {
+  default = 5
+}
+
+variable "custom_error_response_code" {
+  type = "string"
+}
+
+variable "custom_error_response_page_path" {
+  type = "string"
+}

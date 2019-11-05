@@ -21,6 +21,14 @@ module "aws_cf_dist_s3" {
         default_ttl = 0
         max_ttl = 0
     }
+
+    custom_error_responses = [{
+        error_caching_min_ttl = "${var.custom_error_response_error_caching_min_ttl}"
+        error_code            = "403"
+        response_code         = "${var.custom_error_response_code}"
+        response_page_path    = "${var.custom_error_response_page_path}"
+    }]
+
     comment = "${var.comment}"
     origin_access_identity = "${var.origin_access_identity}"
     logging_enable = "${var.logging_enable}"

@@ -68,3 +68,10 @@ variable "wait_for_deployment" {
   default = true
   description = "If enabled, the resource will wait for the distribution status to change from InProgress to Deployed. Setting this to false will skip the process."
 }
+
+
+variable "custom_error_response" {
+  description = "Custom error response to be used in dynamic block. Documentation is here: https://www.terraform.io/docs/providers/aws/r/cloudfront_distribution.html#custom-error-response-arguments"
+  type = any
+  default = []
+}
