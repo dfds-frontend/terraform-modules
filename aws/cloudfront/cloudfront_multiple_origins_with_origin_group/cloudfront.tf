@@ -217,7 +217,8 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
   }
 
   tags = {
-    Name            = "${var.tag_name}"
+    "Name"            = "${var.tag_name}"
+    "Managed by"      = "Terraform"
   }
 
   restrictions {
