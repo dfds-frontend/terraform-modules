@@ -4,7 +4,8 @@ resource "aws_s3_bucket" "bucket" {
   acl    = var.bucket_canned_acl
 
   tags = {
-    "Managed by" = "Terraform"
+    "Name"        = "${var.tag_name}"
+    "Managed by"  = "Terraform"
   }
 
   versioning {

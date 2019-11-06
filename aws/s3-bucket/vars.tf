@@ -44,3 +44,9 @@ variable "lifecycle_rule_files_prefix" {
   default = ""
   description = "Specify which files, the retention settings will apply for, based on prefix/file path."
 }
+
+variable tag_name {
+  description = "The tagged name"
+  type        = string
+  default     = ""
+}
