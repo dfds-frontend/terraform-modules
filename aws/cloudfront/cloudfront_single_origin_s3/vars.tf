@@ -54,15 +54,15 @@ variable "custom_error_response_page_path" {
   type = "string"
 }
 
-variable "default_cache_behavior_min_ttl" {
+variable "cache_behavior_min_ttl" {
   description = "Default: The minimum cache "
   default = 0 
 }
 
-variable "default_cache_behavior_default_ttl" {
+variable "cache_behavior_default_ttl" {
   default = 86400
 }
 
-variable "default_cache_behavior_max_ttl" {
+variable "cache_behavior_max_ttl" {
   default = 31536000
 }

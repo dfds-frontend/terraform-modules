@@ -17,9 +17,9 @@ module "aws_cf_dist_s3" {
         forwarded_values_cookies_forward = "none"
         lambda_function_association_lambda_arn = "${var.request_lambda_edge_function_arn}"
         lambda_function_association_include_body = "${var.request_lambda_edge_function_include_body}"
-        min_ttl = "${var.default_cache_behavior_min_ttl}"
-        default_ttl = "${var.default_cache_behavior_default_ttl}"
-        max_ttl = "${var.default_cache_behavior_max_ttl}"
+        min_ttl = "${var.cache_behavior_min_ttl}"
+        default_ttl = "${var.cache_behavior_default_ttl}"
+        max_ttl = "${var.cache_behavior_max_ttl}"
     }
 
     custom_error_responses = [{
