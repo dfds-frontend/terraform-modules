@@ -54,13 +54,19 @@ variable "custom_error_response_page_path" {
   type = "string"
 }
 
+
+##############################################################################################################################
+# Cache control settings
+# More info: https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Expiration.html#expiration-individual-objects
+##############################################################################################################################
 variable "cache_behavior_min_ttl" {
   description = "Default: The minimum cache "
-  default = 0 
+  default = 0
 }
 
 variable "cache_behavior_default_ttl" {
-  default = 86400
+  description = "If the origin does not add a Cache-Control max-age directive to objects, then CloudFront caches objects for the value of the CloudFront default TTL (1 week)"
+  default = 604800 #1 week   86400 = 1 day
 }
 
 variable "cache_behavior_max_ttl" {
