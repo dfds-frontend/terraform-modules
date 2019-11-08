@@ -109,6 +109,8 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
         path_pattern = it.value.path_pattern # path
         allowed_methods  = lookup(it.value, "allowed_methods", ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"])
         cached_methods   = lookup(it.value, "cached_methods", ["GET", "HEAD"])
+
+        # Whether you want CloudFront to automatically compress content for web requests that include Accept-Encoding: gzip in the request header (default: true)
         compress         = lookup(it.value, "compress", true)  
 
         forwarded_values {
