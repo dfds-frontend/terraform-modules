@@ -60,7 +60,7 @@ variable "custom_error_response_page_path" {
 # More info: https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Expiration.html#expiration-individual-objects
 ##############################################################################################################################
 variable "cache_behavior_min_ttl" {
-  description = "Default: The minimum cache "
+  description = "The default minimum amount of time (seconds) to cache objects in Cloudfront. Default is 0 seconds."
   default = 0
 }
 
@@ -70,5 +70,6 @@ variable "cache_behavior_default_ttl" {
 }
 
 variable "cache_behavior_max_ttl" {
+  description = "The maximum amount of time (seconds) to cache objects in Cloudfront. If header value is default as follows; Expires > maximum TTL then CloudFront caches objects for the value of the CloudFront maximum TTL."
   default = 31536000
 }

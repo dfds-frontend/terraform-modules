@@ -77,10 +77,15 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
     }
 
     viewer_protocol_policy = lookup(var.default_cache_behavior, "viewer_protocol_policy", "redirect-to-https")
-    min_ttl                = lookup(var.default_cache_behavior, "min_ttl", null)
-    default_ttl            = lookup(var.default_cache_behavior, "default_ttl", null)
-    max_ttl                = lookup(var.default_cache_behavior, "max_ttl", null)
 
+    # Minimum TTL: The default minimum amount of time (seconds) to cache objects in Cloudfront. Default is 0 seconds
+    min_ttl                = lookup(var.default_cache_behavior, "min_ttl", 0)
+
+    # Default TTL: "If the origin does not add a Cache-Control max-age directive to objects, then CloudFront caches objects for the value of the CloudFront default TTL (1 week)"
+    default_ttl            = lookup(var.default_cache_behavior, "default_ttl", 604800)
+
+    # Maximum TTL: The maximum amount of time (seconds) to cache objects in Cloudfront. If header value is default as follows; Expires > maximum TTL then CloudFront caches objects for the value of the CloudFront maximum TTL
+    max_ttl                = lookup(var.default_cache_behavior, "max_ttl", 31536000)
 
     dynamic "lambda_function_association"{
       for_each = lookup(var.default_cache_behavior, "lambda_function_association_lambda_arn", null) == null ? [] : [1]
@@ -114,9 +119,15 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
         }
 
         viewer_protocol_policy = lookup(it.value, "viewer_protocol_policy", "redirect-to-https")
-        min_ttl                = lookup(it.value, "min_ttl", null)
-        default_ttl            = lookup(it.value, "default_ttl", null)
-        max_ttl                = lookup(it.value, "max_ttl", null)
+
+        # Minimum TTL: The default minimum amount of time (seconds) to cache objects in Cloudfront. Default is 0 seconds
+        min_ttl                = lookup(it.value, "min_ttl", 0) 
+
+        # Default TTL: "If the origin does not add a Cache-Control max-age directive to objects, then CloudFront caches objects for the value of the CloudFront default TTL (1 week)"
+        default_ttl            = lookup(it.value, "default_ttl", 604800) 
+
+        # Maximum TTL: The maximum amount of time (seconds) to cache objects in Cloudfront. If header value is default as follows; Expires > maximum TTL then CloudFront caches objects for the value of the CloudFront maximum TTL
+        max_ttl                = lookup(it.value, "max_ttl", 31536000) 
 
         dynamic "lambda_function_association"{
           for_each = lookup(it.value, "lambda_function_association_lambda_arn", null) != null ? [1] : []
