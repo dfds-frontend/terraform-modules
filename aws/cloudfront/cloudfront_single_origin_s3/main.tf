@@ -16,8 +16,19 @@ module "aws_cf_dist_s3" {
         forwarded_values_query_string = false
         forwarded_values_cookies_forward = "none"
         lambda_function_association_lambda_arn = "${var.request_lambda_edge_function_arn}"
-        lambda_function_association_include_body = "${var.request_lambda_edge_function_include_body}"        
+        lambda_function_association_include_body = "${var.request_lambda_edge_function_include_body}"
+        min_ttl = "${var.cache_behavior_min_ttl}"
+        default_ttl = "${var.cache_behavior_default_ttl}"
+        max_ttl = "${var.cache_behavior_max_ttl}"
     }
+
+    custom_error_responses = [{
+        error_caching_min_ttl = "${var.custom_error_response_error_caching_min_ttl}"
+        error_code            = "403"
+        response_code         = "${var.custom_error_response_code}"
+        response_page_path    = "${var.custom_error_response_page_path}"
+    }]
+
     comment = "${var.comment}"
     origin_access_identity = "${var.origin_access_identity}"
     logging_enable = "${var.logging_enable}"

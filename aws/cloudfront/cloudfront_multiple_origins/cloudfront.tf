@@ -4,7 +4,7 @@ terraform {
 
 locals {
   # Determine the certificate type
-  is_acm_cert = var.acm_certificate_arn != ""
+  is_acm_cert = var.acm_certificate_arn != null
 }
 
 resource "aws_cloudfront_distribution" "cloudfront_distribution" {
@@ -67,6 +67,7 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
     allowed_methods  = lookup(var.default_cache_behavior, "allowed_methods", ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]) # This to allow redirect 
     cached_methods   = lookup(var.default_cache_behavior, "cached_methods", ["GET", "HEAD"])
     target_origin_id = var.default_cache_behavior.origin_id
+    compress         = lookup(var.default_cache_behavior, "compress", true)
 
     forwarded_values {
       query_string = lookup(var.default_cache_behavior, "forwarded_values_query_string", true)
@@ -77,10 +78,15 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
     }
 
     viewer_protocol_policy = lookup(var.default_cache_behavior, "viewer_protocol_policy", "redirect-to-https")
-    min_ttl                = lookup(var.default_cache_behavior, "min_ttl", null)
-    default_ttl            = lookup(var.default_cache_behavior, "default_ttl", null)
-    max_ttl                = lookup(var.default_cache_behavior, "max_ttl", null)
 
+    # Minimum TTL: The default minimum amount of time (seconds) to cache objects in Cloudfront. Default is 0 seconds
+    min_ttl                = lookup(var.default_cache_behavior, "min_ttl", 0)
+
+    # Default TTL: "If the origin does not add a Cache-Control max-age directive to objects, then CloudFront caches objects for the value of the CloudFront default TTL (1 week)"
+    default_ttl            = lookup(var.default_cache_behavior, "default_ttl", 604800)
+
+    # Maximum TTL: The maximum amount of time (seconds) to cache objects in Cloudfront. If header value is default as follows; Expires > maximum TTL then CloudFront caches objects for the value of the CloudFront maximum TTL
+    max_ttl                = lookup(var.default_cache_behavior, "max_ttl", 31536000)
 
     dynamic "lambda_function_association"{
       for_each = lookup(var.default_cache_behavior, "lambda_function_association_lambda_arn", null) == null ? [] : [1]
@@ -91,7 +97,7 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
         lambda_arn   = var.default_cache_behavior.lambda_function_association_lambda_arn
         include_body = lookup(var.default_cache_behavior, "lambda_function_association_include_body", false)
       }
-    }
+    }    
   }
 
   dynamic "ordered_cache_behavior" {
@@ -103,7 +109,9 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
         path_pattern = it.value.path_pattern # path
         allowed_methods  = lookup(it.value, "allowed_methods", ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"])
         cached_methods   = lookup(it.value, "cached_methods", ["GET", "HEAD"])
-        
+
+        # Whether you want CloudFront to automatically compress content for web requests that include Accept-Encoding: gzip in the request header (default: true)
+        compress         = lookup(it.value, "compress", true)  
 
         forwarded_values {
           query_string = lookup(it.value, "forwarded_values_query_string", true) 
@@ -114,9 +122,15 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
         }
 
         viewer_protocol_policy = lookup(it.value, "viewer_protocol_policy", "redirect-to-https")
-        min_ttl                = lookup(it.value, "min_ttl", null)
-        default_ttl            = lookup(it.value, "default_ttl", null)
-        max_ttl                = lookup(it.value, "max_ttl", null)
+
+        # Minimum TTL: The default minimum amount of time (seconds) to cache objects in Cloudfront. Default is 0 seconds
+        min_ttl                = lookup(it.value, "min_ttl", 0) 
+
+        # Default TTL: "If the origin does not add a Cache-Control max-age directive to objects, then CloudFront caches objects for the value of the CloudFront default TTL (1 week)"
+        default_ttl            = lookup(it.value, "default_ttl", 604800) 
+
+        # Maximum TTL: The maximum amount of time (seconds) to cache objects in Cloudfront. If header value is default as follows; Expires > maximum TTL then CloudFront caches objects for the value of the CloudFront maximum TTL
+        max_ttl                = lookup(it.value, "max_ttl", 31536000) 
 
         dynamic "lambda_function_association"{
           for_each = lookup(it.value, "lambda_function_association_lambda_arn", null) != null ? [1] : []
@@ -127,7 +141,7 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
             lambda_arn   = it.value.lambda_function_association_lambda_arn
             include_body = lookup(it.value, "lambda_function_association_include_body", false)
           }
-        }                  
+        }
       } 
     }
 
@@ -136,4 +150,21 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
       restriction_type = "none"
     }
   }
+
+  dynamic "custom_error_response" {
+    for_each = [for i in "${var.custom_error_responses}" : {
+      error_caching_min_ttl = i.error_caching_min_ttl
+      error_code            = i.error_code
+      response_code         = i.response_code
+      response_page_path    = i.response_page_path
+    }]
+
+    content {
+      error_caching_min_ttl = custom_error_response.value.error_caching_min_ttl
+      error_code            = custom_error_response.value.error_code
+      response_code         = custom_error_response.value.response_code
+      response_page_path    = custom_error_response.value.response_page_path
+    }
+  }  
+
 }
