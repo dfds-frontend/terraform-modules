@@ -69,7 +69,7 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
     target_origin_id = var.default_cache_behavior.origin_id
     # Whether you want CloudFront to automatically compress content for web requests that include Accept-Encoding: gzip in the request header (default: false). 
     # Enabling this feature will speed up download time but it can increase TTFB which can impact user experience
-    compress         = lookup(it.value, "compress", false)  
+    compress         = lookup(var.default_cache_behavior, "compress", false)  
 
     forwarded_values {
       query_string = lookup(var.default_cache_behavior, "forwarded_values_query_string", true)
