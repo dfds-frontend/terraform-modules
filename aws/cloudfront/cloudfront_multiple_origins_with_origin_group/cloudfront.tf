@@ -123,9 +123,9 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
           include_body = j.include_body
         }]
         content {
-          event_type = lambda_function_association_default.value.event_type
-          lambda_arn = lambda_function_association_default.value.lambda_arn
-          include_body = lambda_function_association_default.value.include_body
+          event_type = lambda_function_association.value.event_type
+          lambda_arn = lambda_function_association.value.lambda_arn
+          include_body = lambda_function_association.value.include_body
         }
       }
 
