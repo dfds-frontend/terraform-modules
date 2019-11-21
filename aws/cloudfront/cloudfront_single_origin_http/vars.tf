@@ -53,19 +53,14 @@ variable "wait_for_deployment" {
   description = "If enabled, the resource will wait for the distribution status to change from InProgress to Deployed. Setting this to false will skip the process."
 }
 
-variable "custom_error_response_error_caching_min_ttl" {
-  default = 5
+variable "custom_error_responses" {
+  type = list(object({
+    error_caching_min_ttl = number
+    error_code = number
+    response_code = number
+    response_page_path = string
+  }))
 }
-
-variable "custom_error_response_code" {
-  type = "string"
-}
-
-variable "custom_error_response_page_path" {
-  description = "Path should be in this format {something}/{applcation_name}/{path_to_error_html_page_inside_s3_bucket}. Example: /error-pages/portal/index.html"
-  type = "string"
-}
-
 
 ##############################################################################################################################
 # Cache control settings

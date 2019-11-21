@@ -22,12 +22,7 @@ module "aws_cf_dist_http" {
         max_ttl = "${var.cache_behavior_max_ttl}"
     }
 
-    custom_error_responses = [{
-        error_caching_min_ttl = "${var.custom_error_response_error_caching_min_ttl}"
-        error_code            = "403"
-        response_code         = "${var.custom_error_response_code}"
-        response_page_path    = "${var.custom_error_response_page_path}"
-    }]
+    custom_error_responses = "${var.custom_error_responses}"
 
     comment = "${var.comment}"
     logging_enable = "${var.logging_enable}"
