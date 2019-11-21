@@ -1,14 +1,21 @@
-variable "s3_bucket_domain_name" {}
+variable "domain_name" {}
 
 variable "comment" {
   description = "A short description of the cloudfront distribution. Comments used to enable the user to distinquish between cloudfront distributions."
   default     = ""
 }
 
-variable "origin_access_identity" {
-  default     = ""
-  description = "The path that identifies the origin access identity to be used for accessing s3 bucket origins."
+variable "cache_behavior_allowed_methods" {
+  description = "Controls which HTTP methods CloudFront processes and forwards to the origin."
+  default = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
 }
+
+variable "cache_behavior_cached_methods" {
+  description = "Controls whether CloudFront caches the response to requests using the specified HTTP methods."
+  default = ["GET", "HEAD"]
+}
+
+
 
 variable "logging_enable" {
   description = "Enable/Disable Cloudfront access logs."
@@ -23,13 +30,13 @@ variable "logging_include_cookies" {
 variable "logging_bucket" {
   description = "S3 bucket to be used to store Cloudfront access logs"
   type = string
-  default = null  
+  default = null
 }
 
 variable "logging_prefix" {
   description = "Folder path inside s3 bucket where Cloudfront access logs will be stored."
   type = string
-  default = null  
+  default = null
 }
 
 variable "request_lambda_edge_function_arn" {
