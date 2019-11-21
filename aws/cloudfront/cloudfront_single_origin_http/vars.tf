@@ -55,7 +55,7 @@ variable "wait_for_deployment" {
 
 variable "custom_error_responses" {
   type = list(object({
-    error_caching_min_ttl = string
+    error_caching_min_ttl = number
     error_code = number
     response_code = number
     response_page_path = string
