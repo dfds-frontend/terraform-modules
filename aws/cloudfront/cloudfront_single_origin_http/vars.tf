@@ -29,10 +29,14 @@ variable "logging_include_cookies" {
 
 variable "logging_bucket" {
   description = "S3 bucket to be used to store Cloudfront access logs"
+  type = string
+  default = null
 }
 
 variable "logging_prefix" {
   description = "Folder path inside s3 bucket where Cloudfront access logs will be stored."
+  type = string
+  default = null
 }
 
 variable "request_lambda_edge_function_arn" {
