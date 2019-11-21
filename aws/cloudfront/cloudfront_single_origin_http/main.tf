@@ -29,6 +29,8 @@ module "aws_cf_dist_http" {
         response_page_path    = "${var.custom_error_response_page_path}"
     }]
 
+    custom_error_responses = "${var.custom_error_responses}"
+
     comment = "${var.comment}"
     logging_enable = "${var.logging_enable}"
     logging_include_cookies = "${var.logging_include_cookies}"
