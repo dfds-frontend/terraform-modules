@@ -29,7 +29,8 @@ variable "logging_prefix" {
 }
 
 variable "request_lambda_edge_function_arn" {
-  default = ""
+  type = string
+  default = null
 }
 
 variable "request_lambda_edge_function_include_body" {

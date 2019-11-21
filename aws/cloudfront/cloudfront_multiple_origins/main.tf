@@ -94,9 +94,9 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
       iterator = it
 
       content {
-        event_type   = "origin-request"
-        lambda_arn   = var.default_cache_behavior.lambda_function_association_lambda_arn
-        include_body = lookup(var.default_cache_behavior, "lambda_function_association_include_body", false)
+        event_type   = lookup(var.default_cache_behavior.lambda_function_association_lambda_arn, "lambda_function_association_lambda_arn", null) != null ? "origin-request" : null
+        lambda_arn   = lookup(var.default_cache_behavior.lambda_function_association_lambda_arn, "lambda_function_association_lambda_arn", null)
+        include_body = lookup(var.default_cache_behavior.lambda_function_association_lambda_arn, "lambda_function_association_lambda_arn", null) != null ? lookup(var.default_cache_behavior, "lambda_function_association_include_body", false) : null        
       }
     }    
   }
@@ -139,9 +139,9 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
           iterator = it_sub
 
           content {
-            event_type   = "origin-request"
-            lambda_arn   = it.value.lambda_function_association_lambda_arn
-            include_body = lookup(it.value, "lambda_function_association_include_body", false)
+            event_type   = lookup(it.value, "lambda_function_association_lambda_arn", null) != null ? "origin-request" : null
+            lambda_arn   = lookup(it.value, "lambda_function_association_lambda_arn", null)
+            include_body = lookup(it.value, "lambda_function_association_lambda_arn", null) != null ? lookup(it.value, "lambda_function_association_include_body", false) : null
           }
         }
       } 
