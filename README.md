@@ -10,3 +10,8 @@ terraform {
 ```
 
 This should be declared in the top of the main file in the module.
+
+
+
+Boilerplate:
+For each release; update tag number reference
