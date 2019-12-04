@@ -94,9 +94,9 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
       iterator = it
 
       content {
-        event_type   = lookup(var.default_cache_behavior, "lambda_function_association_lambda_arn", null) == null ? null : "origin-request"
+        event_type   = null #lookup(var.default_cache_behavior, "lambda_function_association_lambda_arn", null) == null ? null : "origin-request"
         lambda_arn   = lookup(var.default_cache_behavior, "lambda_function_association_lambda_arn", null)
-        include_body = lookup(var.default_cache_behavior, "lambda_function_association_lambda_arn", null) == null ? null: lookup(var.default_cache_behavior, "lambda_function_association_include_body", false)
+        include_body = null #lookup(var.default_cache_behavior, "lambda_function_association_lambda_arn", null) == null ? null: lookup(var.default_cache_behavior, "lambda_function_association_include_body", false)
       }
     }    
   }
