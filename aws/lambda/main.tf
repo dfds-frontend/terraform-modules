@@ -4,10 +4,12 @@ terraform {
 
 resource "aws_lambda_function" "lambda" {
   function_name = "${var.lambda_function_name}"
+  source_code_hash = "${data.archive_file.lambda_zip.output_base64sha256}"
   role          = "${aws_iam_role.role.arn}"
   handler       = "${var.lambda_function_handler}.handler"
   runtime       = "${var.runtime}"
-  filename      = "${var.filename}"
+  # filename      = "${var.filename}"
+  filename = "lambda.zip"
   publish = "${var.publish}"
   
   dynamic "environment" {
@@ -65,3 +67,39 @@ resource "aws_iam_role_policy" "cloudwatch_logs" {
 }
 EOF
 }
+
+
+
+data "archive_file" "lambda_zip" {
+    type        = "zip"
+    source_dir  = "${var.filename}"
+    output_path = "lambda.zip"
+}
+
+# resource "aws_lambda_function" "my_lambda" {
+#   filename = "lambda.zip"
+#   source_code_hash = "${data.archive_file.lambda_zip.output_base64sha256}"
+#   function_name = "my_lambda"
+#   role = "${aws_iam_role.lambda.arn}"
+#   description = "Some AWS lambda"
+#   handler = "index.handler"
+#   runtime = "nodejs4.3"
+
+
+  
+#   function_name = "${var.lambda_function_name}"
+#   source_code_hash = "${data.archive_file.lambda_zip.output_base64sha256}"
+#   role          = "${aws_iam_role.role.arn}"
+#   handler       = "${var.lambda_function_handler}.handler"
+#   runtime       = "${var.runtime}"
+#   filename      = "${var.filename}"
+#   publish = "${var.publish}"
+  
+#   dynamic "environment" {
+#     for_each = length(keys(var.lambda_env_variables)) > 0 ? [1]: []
+
+#     content {
+#       variables = "${var.lambda_env_variables}"
+#     }
+#   }  
+# }
