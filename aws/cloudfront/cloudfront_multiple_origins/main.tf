@@ -89,16 +89,16 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
     # Maximum TTL: The maximum amount of time (seconds) to cache objects in Cloudfront. If header value is default as follows; Expires > maximum TTL then CloudFront caches objects for the value of the CloudFront maximum TTL
     max_ttl                = lookup(var.default_cache_behavior, "max_ttl", 31536000)
 
-    dynamic "lambda_function_association"{
-      for_each = lookup(var.default_cache_behavior, "lambda_function_association_lambda_arn", null) == null ? null : [1]
-      iterator = it
+    # dynamic "lambda_function_association"{
+    #   for_each = lookup(var.default_cache_behavior, "lambda_function_association_lambda_arn", null) == null ? null : [1]
+    #   iterator = it
 
-      content {
-        event_type   = null #lookup(var.default_cache_behavior, "lambda_function_association_lambda_arn", null) == null ? null : "origin-request"
-        lambda_arn   = lookup(var.default_cache_behavior, "lambda_function_association_lambda_arn", null)
-        include_body = null #lookup(var.default_cache_behavior, "lambda_function_association_lambda_arn", null) == null ? null: lookup(var.default_cache_behavior, "lambda_function_association_include_body", false)
-      }
-    }    
+    #   content {
+    #     event_type   = null #lookup(var.default_cache_behavior, "lambda_function_association_lambda_arn", null) == null ? null : "origin-request"
+    #     lambda_arn   = lookup(var.default_cache_behavior, "lambda_function_association_lambda_arn", null)
+    #     include_body = null #lookup(var.default_cache_behavior, "lambda_function_association_lambda_arn", null) == null ? null: lookup(var.default_cache_behavior, "lambda_function_association_include_body", false)
+    #   }
+    # }    
   }
 
   dynamic "ordered_cache_behavior" {
