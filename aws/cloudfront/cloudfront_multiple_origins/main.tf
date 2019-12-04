@@ -90,7 +90,7 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
     max_ttl                = lookup(var.default_cache_behavior, "max_ttl", 31536000)
 
     dynamic "lambda_function_association"{
-      for_each = lookup(var.default_cache_behavior, "lambda_function_association_lambda_arn", null) == null ? [] : [1]
+      for_each = lookup(var.default_cache_behavior, "lambda_function_association_lambda_arn", null) == null ? null : [1]
       iterator = it
 
       content {
