@@ -22,8 +22,8 @@ module "aws_cloudfront-app" {
   logging_include_cookies = false
   logging_bucket = "${module.aws_s3-app.bucket_domain_name}"
   logging_prefix = "cf_logs"
-  request_lambda_edge_function_arn = "${module.aws_lambda_edge_behavior_default.lambda_function_qualified_arn}" # Disable this and update before removing lambda resource
-  request_lambda_edge_function_include_body = false # Disable this and update before removing lambda resource
+  # request_lambda_edge_function_arn = "${module.aws_lambda_edge_behavior_default.lambda_function_qualified_arn}" # Disable this and update before removing lambda resource
+  # request_lambda_edge_function_include_body = false # Disable this and update before removing lambda resource
   wait_for_deployment = "${var.cf_dist_wait_for_deployment}"
   custom_error_response_page_path = "/router/my_s3bucket_app/app/index.html"
   custom_error_response_code = 200

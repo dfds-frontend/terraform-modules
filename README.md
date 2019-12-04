@@ -1,4 +1,4 @@
-![Terraform verison ](https://img.shields.io/badge/tf-=%3E0.12.2-blue)
+![Terraform verison ](https://img.shields.io/badge/tf-%3E=0.12.2-blue)
 # terraform-modules
 
 ## Contribution guide
