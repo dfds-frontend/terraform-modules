@@ -13,3 +13,7 @@ output "lambda_function_invoke_arn" {
 output "lambda_function_qualified_arn" {
   value = "${aws_lambda_function.lambda.qualified_arn}"
 }
+
+output "lambda_function_latest_published_version" {
+  value = "${aws_lambda_function.lambda.version}"
+}
