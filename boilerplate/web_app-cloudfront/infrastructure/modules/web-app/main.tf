@@ -14,7 +14,7 @@ provider "aws" {
 }
 
 module "aws_cloudfront-app" {
-  source = "git::https://github.com/dfds-frontend/terraform-modules.git//aws/cloudfront/cloudfront_single_origin_http?ref=v0.6.1"
+  source = "git::https://github.com/dfds-frontend/terraform-modules.git//aws/cloudfront/cloudfront_single_origin_http?ref=v0.8.0"
   comment = "${local.infrastructure_identifier}"
   domain_name = "${var.origin_domain_name}"
   logging_enable = "${var.cf_dist_logging_enable}"
@@ -38,7 +38,7 @@ module "aws_cloudfront-app" {
 }
 
 module "aws_lambda_edge_behavior_default" {
-  source = "git::https://github.com/dfds-frontend/terraform-modules.git//aws/lambda?ref=v0.6.1"
+  source = "git::https://github.com/dfds-frontend/terraform-modules.git//aws/lambda?ref=v0.8.0"
   lambda_function_name = "${local.safe_infrastructure_identifier}"
   lambda_role_name = "${local.safe_infrastructure_identifier}"
   lambda_function_handler = "redirect-rules"  # filename without extension
@@ -51,7 +51,7 @@ module "aws_lambda_edge_behavior_default" {
 }
 
 module "aws_s3-logging" {
-  source = "git::https://github.com/dfds-frontend/terraform-modules.git//aws/s3-bucket?ref=v0.6.1"
+  source = "git::https://github.com/dfds-frontend/terraform-modules.git//aws/s3-bucket?ref=v0.8.0"
   deploy = "${var.cf_dist_logging_enable}"
   s3_bucket = "${local.safe_infrastructure_identifier}-logging"
   enable_versioning = false
