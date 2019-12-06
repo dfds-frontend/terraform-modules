@@ -1,7 +1,3 @@
-app_name = "DFDS WebApp"
-
-cf_dist_lambda_edge_zip_filepath = "redirect-rules_2.zip"
-
 cf_dist_logging_enable = true
 
 env = "dev"

@@ -8,8 +8,13 @@ Cloudfront enable content from s3 bucket through a secure HTTPS connection and p
 - [Terragrunt](https://github.com/gruntwork-io/terragrunt) minimum version 0.19.x
 
 # How to
-- Update bucket name for terraform state in /infrastructure/terragrunt.hcl. Terragrunt can also read from environment variable terraform_state_s3bucket. **Note**: Underscore character can not be used in naming the s3 bucket. 
+- Update bucket name for terraform state in /infrastructure/terragrunt.hcl. Terragrunt can also read from environment variable terraform_state_s3bucket. See [Amazon S3 Bucket Naming Requirements](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-s3-bucket-naming-requirements.html). 
 - Update .tfvars in every environment. This file is under /infrastructure/environments/{environment name}/terraform.tfvars
+- Navigate to modules/app/dependencies.tf and update relevant shared variables in locals section, then 
+- Navigate to modules/app/main.tf and update the following parameters to reflect the expected behavior of the application
+  custom_error_response_page_path = "/router/${local.app_path}/app/index.html"
+  custom_error_response_code      = 200
+- Update modules/app/redirect-rules.js which holds the source code for lambda@edge function so it can handle the routing inside the application.
 - You can build infrastructure using docker with the image that is provided [here](https://gitlab.com/dfds-platform/docker-terraform-terragrunt). Then you can run following terragrunt commands:
 Dry-run: 
 ```
