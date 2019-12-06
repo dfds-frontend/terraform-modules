@@ -22,7 +22,7 @@
 exports.handler = (event, context, callback) => {
     const request = event.Records[0].cf.request;
     var originReqPath = request.uri    
-    var requestResource = originReqPath.match(/[^\\]*\.(\w+)$/)
+    const requestResource = originReqPath.match(/[^\\]*\.(\w+)$/)
     if (!requestResource) {        
         originReqPath = originReqPath.replace(/\/$/, "") + "/index.html" // append index.html to non-resource requests
     }
@@ -31,7 +31,7 @@ exports.handler = (event, context, callback) => {
     // The supported behavior path, for an application, has the following pattern: */{app_path}/ 
     // A path pattern can support multiple path levels. Example: my-business-unit/my-application
     // ==========================================================================================//
-    var app_path = "my-business-unit/my-application"
+    const app_path = "my-business-unit/my-application"
     // strip /assets/{app_path} from URL request path
     originReqPath = originReqPath.replace("/assets/" + app_path, "") 
     // strip /router/{app_path} from URL request path
