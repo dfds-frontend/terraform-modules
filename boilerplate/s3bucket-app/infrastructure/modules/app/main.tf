@@ -26,12 +26,17 @@ module "aws_cloudfront_app" {
   # Before removing lambda resource or destroying resources: 
   #   1) Disable the following lines and run apply. 
   #   2) Wait about 1 hour or wait until Cloudfront change status to Deployed. 
-  # request_lambda_edge_function_arn = "${module.aws_lambda_edge_behavior_default.lambda_function_qualified_arn}"
-  # request_lambda_edge_function_include_body = false
+  request_lambda_edge_function_arn = "${module.aws_lambda_edge_behavior_default.lambda_function_qualified_arn}"
+  request_lambda_edge_function_include_body = false
   #===========================================================================#
   wait_for_deployment             = "${var.cf_dist_wait_for_deployment}"
+
+  #===========================================================================#
+  # The following parameters are very application specific and need to be 
+  # revised in order to enable a proper error reposne handling
   custom_error_response_page_path = "/router/${local.app_path}/app/index.html"
   custom_error_response_code      = 200
+  #===========================================================================#
   cache_behavior_min_ttl          = 0
   cache_behavior_default_ttl      = 0
   cache_behavior_max_ttl          = 0

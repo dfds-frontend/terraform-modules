@@ -2,7 +2,7 @@
 
 // ==========================================================================================//
 // This is an example of lambda@edge function that modifies path for requests that are 
-// forwarded to origin that is expected to support l
+// forwarded to origin with static pages with multi-language support. 
 // It supports request path that is of the following pattern */app_path/*. It meant to support 
 // An example of a supported request could be as follows: 
 //                         https://www.my-example.com/[locale]/my-business-unit/my-application/
