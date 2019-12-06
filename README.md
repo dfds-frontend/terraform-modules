@@ -63,3 +63,10 @@ module "mymodule" {
     ```
 ## Examples in this project 
 The examples in this repo are used as part of the documentation and for running the tests.
+
+## Using modules and examples in this repo
+Following are the prerequisites for using the modules and examples:
+- [Terraform](https://www.terraform.io/) v0.12.x
+- [Terragrunt](https://github.com/gruntwork-io/terragrunt) minimum version 0.19.x
+
+You can build infrastructure using docker with the image that is provided [here](https://gitlab.com/dfds-platform/docker-terraform-terragrunt).

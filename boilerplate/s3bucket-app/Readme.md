@@ -4,12 +4,13 @@ Cloudfront enable content from s3 bucket through a secure HTTPS connection and p
 
 # Prerequisites
 - Access to a capability account on Amazon
-- Terraform v0.12.x and Terragrunt minimum version 0.19.x
+- [Terraform](https://www.terraform.io/) v0.12.x
+- [Terragrunt](https://github.com/gruntwork-io/terragrunt) minimum version 0.19.x
 
 # How to
 - Update bucket name for terraform state in /infrastructure/terragrunt.hcl. Terragrunt can also read from environment variable terraform_state_s3bucket. **Note**: Underscore character can not be used in naming the s3 bucket. 
 - Update .tfvars in every environment. This file is under /infrastructure/environments/{environment name}/terraform.tfvars
-- Use the docker-terraform-terragrunt image provided [here](https://gitlab.com/dfds-platform/docker-terraform-terragrunt) and run following commands:
+- You can build infrastructure using docker with the image that is provided [here](https://gitlab.com/dfds-platform/docker-terraform-terragrunt). Then you can run following terragrunt commands:
 Dry-run: 
 ```
 terragrunt plan --terragrunt-source-update
