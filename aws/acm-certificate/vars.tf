@@ -19,11 +19,11 @@ variable "wait_for_validation" {
   default = true
 }
 
-variable "validation_allow_overwrite_records" {
-  description = "Whether to allow overwrite of Route53 records"
-  type        = bool
-  default     = true
-}
+# variable "validation_allow_overwrite_records" {
+#   description = "Whether to allow overwrite of Route53 records"
+#   type        = bool
+#   default     = true
+# }
 
 # variable "validate_certificate" {
 #   description = "Whether to validate certificate by creating Route53 record"

@@ -51,7 +51,7 @@ resource "aws_route53_record" "validation" {
     element(local.validation_domains, count.index)["resource_record_value"]
   ]
 
-  allow_overwrite = var.validation_allow_overwrite_records
+  # allow_overwrite = var.validation_allow_overwrite_records
 
   depends_on = [aws_acm_certificate.cert]
 }
