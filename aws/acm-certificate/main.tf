@@ -10,7 +10,7 @@ locals {
   // Copy domain_validation_options for the distinct domain names
   validation_domains = var.create_certificate ? [for k, v in aws_acm_certificate.cert[0].domain_validation_options : tomap(v) if contains(local.distinct_domain_names, v.domain_name)] : []
 
-  create_certificate = 1
+  create_certificate = true
 }
 
 # locals {
