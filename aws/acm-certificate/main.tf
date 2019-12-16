@@ -8,7 +8,9 @@ locals {
   distinct_domain_names = distinct(concat([var.domain_name], [for s in var.subject_alternative_names : replace(s, "*.", "")]))
 
   // Copy domain_validation_options for the distinct domain names
-  validation_domains = var.create_certificate ? [for k, v in aws_acm_certificate.cert.domain_validation_options : tomap(v) if contains(local.distinct_domain_names, v.domain_name)] : []
+  validation_domains = var.create_certificate ? [for k, v in aws_acm_certificate.cert[0].domain_validation_options : tomap(v) if contains(local.distinct_domain_names, v.domain_name)] : []
+
+  create_certificate = 1
 }
 
 # locals {
@@ -20,7 +22,7 @@ locals {
 # }
 
 resource "aws_acm_certificate" "cert" {
-  # count = var.create_certificate ? 1 : 0
+  count = local.create_certificate ? 1 : 0
 
   domain_name               = var.domain_name
   subject_alternative_names = var.subject_alternative_names
@@ -57,7 +59,7 @@ resource "aws_route53_record" "validation" {
 resource "aws_acm_certificate_validation" "cert" {
   count = var.create_certificate && var.validation_method == "DNS" && var.validate_certificate && var.wait_for_validation ? 1 : 0
 
-  certificate_arn = aws_acm_certificate.cert.arn
+  certificate_arn = aws_acm_certificate.cert[0].arn
 
   validation_record_fqdns = aws_route53_record.validation.*.fqdn
 }
