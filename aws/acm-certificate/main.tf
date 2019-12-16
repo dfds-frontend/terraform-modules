@@ -42,7 +42,7 @@ resource "aws_acm_certificate" "cert" {
 resource "aws_route53_record" "validation" {
   count = local.create_certificate && var.validation_method == "DNS" && local.validate_certificate ? length(local.distinct_domain_names) : 0
 
-  zone_id = var.zone_id
+  zone_id = var.dns_zone_id
   name    = element(local.validation_domains, count.index)["resource_record_name"]
   type    = element(local.validation_domains, count.index)["resource_record_type"]
   ttl     = 60
