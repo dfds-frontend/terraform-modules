@@ -8,7 +8,7 @@ resource "aws_lambda_function" "lambda" {
   role          = "${aws_iam_role.role.arn}"
   handler       = "${var.lambda_function_handler}.handler"
   runtime       = "${var.runtime}"
-  filename = "lambda.zip"
+  filename = "${var.filename}.zip"
   publish = "${var.publish}"
   
   # dynamic "environment" { # not allowed on lambda edge
