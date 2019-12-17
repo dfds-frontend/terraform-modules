@@ -15,8 +15,10 @@ module "aws_cf_dist_s3" {
         origin_id = "${local.s3bucket_origin_id}"
         forwarded_values_query_string = false
         forwarded_values_cookies_forward = "none"
-        lambda_function_association_lambda_arn = "${var.request_lambda_edge_function_arn}"
-        lambda_function_association_include_body = "${var.request_lambda_edge_function_include_body}"
+        lambda_function_association_origin_req_lambda_arn = "${var.origin_request_lambda_edge_function_arn}"
+        lambda_function_association_origin_req_include_body = "${var.origin_request_lambda_edge_function_include_body}"     
+        lambda_function_association_viewer_req_lambda_arn = "${var.viewer_request_lambda_edge_function_arn}"
+        lambda_function_association_viewer_req_include_body = "${var.viewer_request_lambda_edge_function_include_body}"     
         min_ttl = "${var.cache_behavior_min_ttl}"
         default_ttl = "${var.cache_behavior_default_ttl}"
         max_ttl = "${var.cache_behavior_max_ttl}"

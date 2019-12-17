@@ -39,12 +39,21 @@ variable "logging_prefix" {
   default = null
 }
 
-variable "request_lambda_edge_function_arn" {
+variable "origin_request_lambda_edge_function_arn" {
   type = string
   default = null
 }
 
-variable "request_lambda_edge_function_include_body" {
+variable "origin_request_lambda_edge_function_include_body" {
+  default = false
+}
+
+variable "viewer_request_lambda_edge_function_arn" {
+  type = string
+  default = null
+}
+
+variable "viewer_request_lambda_edge_function_include_body" {
   default = false
 }
 
@@ -67,13 +76,13 @@ variable "custom_error_responses" {
 # More info: https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Expiration.html#expiration-individual-objects
 ##############################################################################################################################
 variable "cache_behavior_min_ttl" {
-  description = "The default minimum amount of time (seconds) to cache objects in Cloudfront. Default is 0 seconds."
+  description = "The default minimum amount of time (seconds) to cache objects in Cloudfront. Default is no cache."
   default = 0
 }
 
 variable "cache_behavior_default_ttl" {
-  description = "If the origin does not add a Cache-Control max-age directive to objects, then CloudFront caches objects for the value of the CloudFront default TTL (1 week)"
-  default = 604800 #1 week   86400 = 1 day
+  description = "If the origin does not add a Cache-Control max-age directive to objects, then CloudFront caches objects for the value of the CloudFront default TTL (no cache)."
+  default = 0
 }
 
 variable "cache_behavior_max_ttl" {

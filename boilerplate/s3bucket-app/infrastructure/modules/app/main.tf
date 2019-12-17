@@ -14,7 +14,7 @@ provider "aws" {
 }
 
 module "aws_cloudfront_app" {
-  source                  = "git::https://github.com/dfds-frontend/terraform-modules.git//aws/cloudfront/cloudfront_single_origin_s3?ref=v0.7.1"
+  source                  = "git::https://github.com/dfds-frontend/terraform-modules.git//aws/cloudfront/cloudfront_single_origin_s3?ref=v0.9.0"
   comment                 = "${local.infrastructure_identifier}"
   s3_bucket_domain_name   = "${module.aws_s3bucket_app.bucket_domain_name}"
   origin_access_identity  = "${module.aws_cf_oai.origin_access_identity}"
@@ -43,7 +43,7 @@ module "aws_cloudfront_app" {
 }
 
 module "aws_s3bucket_app" {
-  source            = "git::https://github.com/dfds-frontend/terraform-modules.git//aws/s3-bucket?ref=v0.8.0"
+  source            = "git::https://github.com/dfds-frontend/terraform-modules.git//aws/s3-bucket?ref=v0.9.0"
   s3_bucket         = "${local.safe_infrastructure_identifier}"
   allowed_iam_arns  = ["${module.aws_cf_oai.oai_arn}"]
   enable_versioning = false
@@ -52,12 +52,12 @@ module "aws_s3bucket_app" {
 }
 
 module "aws_cf_oai" {
-  source  = "git::https://github.com/dfds-frontend/terraform-modules.git//aws/origin-access-identity?ref=v0.8.0"
+  source  = "git::https://github.com/dfds-frontend/terraform-modules.git//aws/origin-access-identity?ref=v0.9.0"
   comment = "${local.infrastructure_identifier} user for accessing s3 buckets"
 }
 
 module "aws_lambda_edge_behavior_default" {
-  source                  = "git::https://github.com/dfds-frontend/terraform-modules.git//aws/lambda/lambda_edge?ref=v0.8.0"
+  source                  = "git::https://github.com/dfds-frontend/terraform-modules.git//aws/lambda/lambda_edge?ref=v0.9.0"
   lambda_function_name    = "${local.safe_infrastructure_identifier}"
   lambda_role_name        = "${local.safe_infrastructure_identifier}"
   lambda_function_handler = "redirect-rules"  # filename without extension
