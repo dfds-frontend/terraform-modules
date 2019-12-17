@@ -89,17 +89,20 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
     # Maximum TTL: The maximum amount of time (seconds) to cache objects in Cloudfront. If header value is default as follows; Expires > maximum TTL then CloudFront caches objects for the value of the CloudFront maximum TTL
     max_ttl                = lookup(var.default_cache_behavior, "max_ttl", 31536000)
 
-    dynamic "lambda_function_association" { # TODO: There can only be 4 functions => 
-      for_each = lookup(var.default_cache_behavior, "lambda_function_association_lambda_arn", null) == null ? [] : [1]
+    # origin-request lambda@edge
+    dynamic "lambda_function_association" { 
+      for_each = lookup(var.default_cache_behavior, "lambda_function_association_origin_req_lambda_arn", null) == null ? [] : [1]
       iterator = it
 
       content {
-        event_type   = lookup(var.default_cache_behavior, "lambda_function_association_lambda_arn", null) != null ? "origin-request" : null
-        lambda_arn   = lookup(var.default_cache_behavior, "lambda_function_association_lambda_arn", null)
-        include_body = lookup(var.default_cache_behavior, "lambda_function_association_lambda_arn", null) != null ? lookup(var.default_cache_behavior, "lambda_function_association_include_body", false) : null        
+        event_type   = lookup(var.default_cache_behavior, "lambda_function_association_origin_req_lambda_arn", null) != null ? "origin-request" : null
+        lambda_arn   = lookup(var.default_cache_behavior, "lambda_function_association_origin_req_lambda_arn", null)
+        include_body = lookup(var.default_cache_behavior, "lambda_function_association_origin_req_lambda_arn", null) != null ? lookup(var.default_cache_behavior, "lambda_function_association_origin_req_include_body", false) : null        
       }
-    }    
-    dynamic "lambda_function_association" { # TODO: There can only be 4 functions => 
+    }  
+
+    # viewer-request lambda@edge
+    dynamic "lambda_function_association" {
       for_each = lookup(var.default_cache_behavior, "lambda_function_association_viewer_req_lambda_arn", null) == null ? [] : [1]
       iterator = it
 
@@ -108,7 +111,7 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
         lambda_arn   = lookup(var.default_cache_behavior, "lambda_function_association_viewer_req_lambda_arn", null)
         include_body = lookup(var.default_cache_behavior, "lambda_function_association_viewer_req_lambda_arn", null) != null ? lookup(var.default_cache_behavior, "lambda_function_association_viewer_req_include_body", false) : null        
       }
-    }        
+    }
   }
 
   dynamic "ordered_cache_behavior" {
@@ -144,16 +147,29 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
         # Maximum TTL: The maximum amount of time (seconds) to cache objects in Cloudfront. If header value is default as follows; Expires > maximum TTL then CloudFront caches objects for the value of the CloudFront maximum TTL
         max_ttl                = lookup(it.value, "max_ttl", 31536000)
 
-        dynamic "lambda_function_association" {    # TODO: There can only be 4 functions => 
-          for_each = lookup(it.value, "lambda_function_association_lambda_arn", null) != null ? [1] : []
+        # origin-request lambda@edge
+        dynamic "lambda_function_association" {
+          for_each = lookup(it.value, "lambda_function_association_origin_req_lambda_arn", null) != null ? [1] : []
           iterator = it_sub
 
           content {
-            event_type   = lookup(it.value, "lambda_function_association_lambda_arn", null) != null ? "origin-request" : null
-            lambda_arn   = lookup(it.value, "lambda_function_association_lambda_arn", null)
-            include_body = lookup(it.value, "lambda_function_association_lambda_arn", null) != null ? lookup(it.value, "lambda_function_association_include_body", false) : null
-          }          
+            event_type   = lookup(it.value, "lambda_function_association_origin_req_lambda_arn", null) != null ? "origin-request" : null
+            lambda_arn   = lookup(it.value, "lambda_function_association_origin_req_lambda_arn", null)
+            include_body = lookup(it.value, "lambda_function_association_origin_req_lambda_arn", null) != null ? lookup(it.value, "lambda_function_association_origin_req_include_body", false) : null
+          }         
         }
+
+        # viewer-request lambda@edge
+        dynamic "lambda_function_association" {
+          for_each = lookup(it.value, "lambda_function_association_viewer_req_lambda_arn", null) != null ? [1] : []
+          iterator = it_sub
+
+          content {
+            event_type   = lookup(it.value, "lambda_function_association_viewer_req_lambda_arn", null) != null ? "viewer-request" : null
+            lambda_arn   = lookup(it.value, "lambda_function_association_viewer_req_lambda_arn", null)
+            include_body = lookup(it.value, "lambda_function_association_viewer_req_lambda_arn", null) != null ? lookup(it.value, "lambda_function_association_viewer_req_include_body", false) : null
+          }         
+        }        
       } 
     }
 
