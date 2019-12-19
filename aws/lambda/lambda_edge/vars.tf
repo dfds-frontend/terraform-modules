@@ -27,5 +27,13 @@ variable "publish" {
 
 
 variable "filename" {
-  description = "Path for the object to upload to lambda function."
+  description = "Path to the file that contains source code to upload to lambda function."
+  type = string
+  default = null
+}
+
+variable "directory_name" {
+  description = "Path to the directory the contains source files to upload to lambda function."
+  type = string
+  default = null
 }

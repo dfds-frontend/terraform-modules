@@ -70,5 +70,6 @@ EOF
 data "archive_file" "lambda_zip" {
     type        = "zip"
     source_file  = "${var.filename}"
-    output_path = "${var.filename}.zip"
+    source_dir  = "${var.directory_name}"
+    output_path = "${var.filename =! null ? var.filename.zip : var.directory_name.zip"
 }
