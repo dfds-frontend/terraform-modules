@@ -5,9 +5,7 @@ terraform {
   
 locals {
   create_certificate = true
-  validate_certificate = true
 
-  
   // Get distinct list of domains and SANs
   distinct_domain_names = distinct(concat([var.domain_name], [for s in var.subject_alternative_names : replace(s, "*.", "")]))
 
@@ -26,8 +24,6 @@ locals {
 # }
 
 resource "aws_acm_certificate" "cert" {
-  count = local.create_certificate ? 1 : 0
-
   domain_name               = var.domain_name
   subject_alternative_names = var.subject_alternative_names
   validation_method         = var.validation_method
@@ -40,7 +36,7 @@ resource "aws_acm_certificate" "cert" {
 }
 
 resource "aws_route53_record" "validation" {
-  count = local.create_certificate && var.validation_method == "DNS" && local.validate_certificate ? length(local.distinct_domain_names) : 0
+  count = var.create_certificate && var.validation_method == "DNS" && var.validate_certificate ? length(local.distinct_domain_names) : 0
 
   zone_id = var.dns_zone_id
   name    = element(local.validation_domains, count.index)["resource_record_name"]
@@ -61,7 +57,7 @@ resource "aws_route53_record" "validation" {
 # This resource represents a successful validation of an ACM certificate in concert with other resources.
 # WARNING: This resource implements a part of the validation workflow. It does not represent a real-world entity in AWS, therefore changing or deleting this resource on its own has no immediate effect.
 resource "aws_acm_certificate_validation" "cert" {
-  count = local.create_certificate && var.validation_method == "DNS" && local.validate_certificate && var.wait_for_validation ? 1 : 0
+  count = var.create_certificate && var.validation_method == "DNS" && var.validate_certificate && var.wait_for_validation ? 1 : 0
 
   certificate_arn = aws_acm_certificate.cert[0].arn
 

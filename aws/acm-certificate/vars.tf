@@ -1,3 +1,9 @@
+variable "create_certificate" {
+  description = "Whether to create ACM certificate"
+  type        = bool
+  default     = true
+}
+
 variable "domain_name" {}
 
 
@@ -27,8 +33,12 @@ variable "validation_allow_overwrite_records" {
   default     = true
 }
 
-# variable "validate_certificate" {
-#   description = "Whether to validate certificate by creating Route53 record"
-#   type        = bool
-#   default     = true
-# }
+variable "validate_certificate" {
+  description = "Whether to validate certificate by creating Route53 record"
+  type        = bool
+  default     = true
+}
+
+variable "name" {
+  
+}
