@@ -5,7 +5,9 @@ terraform {
   
 locals {
   # create_certificate = true
+  # validate_certificate = true
 
+  
   // Get distinct list of domains and SANs
   distinct_domain_names = distinct(concat([var.domain_name], [for s in var.subject_alternative_names : replace(s, "*.", "")]))
 
@@ -24,6 +26,8 @@ locals {
 # }
 
 resource "aws_acm_certificate" "cert" {
+  count = var.create_certificate ? 1 : 0
+
   domain_name               = var.domain_name
   subject_alternative_names = var.subject_alternative_names
   validation_method         = var.validation_method
