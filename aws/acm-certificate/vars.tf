@@ -15,7 +15,7 @@ variable "subject_alternative_names" {
 variable "dns_zone_id" {
   description = "The ID of the hosted zone to contain this record."
   type        = string
-  default     = ""  
+  default     = null 
 }
 
 variable "validation_method" {
@@ -37,8 +37,4 @@ variable "validate_certificate" {
   description = "Whether to validate certificate by creating Route53 record"
   type        = bool
   default     = true
-}
-
-variable "name" {
-  
 }
