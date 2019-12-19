@@ -71,5 +71,5 @@ data "archive_file" "lambda_zip" {
     type        = "zip"
     source_file  = "${var.filename}"
     source_dir  = "${var.directory_name}"
-    output_path = "${var.filename =! null ? var.filename.zip : var.directory_name.zip"
+    output_path = "${var.filename != null ? var.filename.zip : var.directory_name.zip}"
 }
