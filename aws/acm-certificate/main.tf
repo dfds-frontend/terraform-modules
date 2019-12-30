@@ -99,7 +99,7 @@ resource "aws_acm_certificate_validation" "cert" {
   # validation_record_fqdns = aws_route53_record.validation.*.fqdn
 
     certificate_arn = "${aws_acm_certificate.cert[0].arn}"
-  validation_record_fqdns = "${aws_route53_record.validation.*.fqdn}"
+  validation_record_fqdns = aws_route53_record.validation.*.fqdn #"${aws_route53_record.validation.0.fqdn}"
 }
 
 
