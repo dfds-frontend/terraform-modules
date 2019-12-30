@@ -22,13 +22,13 @@ output "validation_route53_record_fqdns" {
   value       = aws_route53_record.validation.*.fqdn
 }
 
-output "distinct_domain_names" {
-  description = "List of distinct domains names used for the validation."
-  value       = local.distinct_domain_names
-}
+# output "distinct_domain_names" {
+#   description = "List of distinct domains names used for the validation."
+#   value       = local.distinct_domain_names
+# }
 
-output "validation_domains" {
-  description = "List of distinct domain validation options. This is useful if subject alternative names contain wildcards."
-  value       = local.validation_domains
-}
+# output "validation_domains" {
+#   description = "List of distinct domain validation options. This is useful if subject alternative names contain wildcards."
+#   value       = local.validation_domains
+# }
 
