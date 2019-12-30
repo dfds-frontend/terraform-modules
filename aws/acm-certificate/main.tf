@@ -91,15 +91,21 @@ resource "aws_route53_record" "validation" {
 # Validate the certificate using the DNS validation records created
 # This resource represents a successful validation of an ACM certificate in concert with other resources.
 # WARNING: This resource implements a part of the validation workflow. It does not represent a real-world entity in AWS, therefore changing or deleting this resource on its own has no immediate effect.
+# resource "aws_acm_certificate_validation" "cert" {
+#   count = var.create_certificate && var.validation_method == "DNS" && var.validate_certificate && var.wait_for_validation ? 1 : 0
+
+#   # certificate_arn = aws_acm_certificate.cert[0].arn
+
+#   # validation_record_fqdns = aws_route53_record.validation.*.fqdn
+
+#   certificate_arn = "${aws_acm_certificate.cert[0].arn}"
+#   validation_record_fqdns = aws_route53_record.validation.*.fqdn #"${aws_route53_record.validation.0.fqdn}"
+# }
+
 resource "aws_acm_certificate_validation" "cert" {
   count = var.create_certificate && var.validation_method == "DNS" && var.validate_certificate && var.wait_for_validation ? 1 : 0
-
-  # certificate_arn = aws_acm_certificate.cert[0].arn
-
-  # validation_record_fqdns = aws_route53_record.validation.*.fqdn
-
   certificate_arn = "${aws_acm_certificate.cert[0].arn}"
-  validation_record_fqdns = aws_route53_record.validation.*.fqdn #"${aws_route53_record.validation.0.fqdn}"
+  validation_record_fqdns = ["${aws_route53_record.validation.*.fqdn}"]
 }
 
 # data "template_file" "breakup_san" {
