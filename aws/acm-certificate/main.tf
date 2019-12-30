@@ -94,9 +94,9 @@ resource "aws_route53_record" "validation" {
 resource "aws_acm_certificate_validation" "cert" {
   count = var.create_certificate && var.validation_method == "DNS" && var.validate_certificate && var.wait_for_validation ? 1 : 0
 
-  certificate_arn = aws_acm_certificate.cert[0].arn
+  # certificate_arn = aws_acm_certificate.cert[0].arn
 
-  validation_record_fqdns = aws_route53_record.validation.*.fqdn
+  # validation_record_fqdns = aws_route53_record.validation.*.fqdn
 
     certificate_arn = "${aws_acm_certificate.main[0].arn}"
   validation_record_fqdns = "${aws_route53_record.validation.*.fqdn}"
