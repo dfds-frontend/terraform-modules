@@ -102,6 +102,11 @@ resource "aws_acm_certificate_validation" "cert" {
   validation_record_fqdns = "${aws_route53_record.validation.*.fqdn}"
 }
 
+resource "aws_acm_certificate_validation" "main1" {
+  certificate_arn = "${aws_acm_certificate.main[0].arn}"
+  validation_record_fqdns = "${aws_route53_record.validation.2.fqdn}"
+}
+
 # data "template_file" "breakup_san" {
 #   count = length(var.subject_alternative_names)
 
