@@ -63,7 +63,7 @@ locals {
 }
 
 
-resource "aws_acm_certificate" "main" {
+resource "aws_acm_certificate" "cert" {
   count = "${var.create_certificate ? 1 :0}"
   domain_name = "${local.domain_names[0]}"
   subject_alternative_names = "${slice(local.domain_names, 1, length(local.domain_names))}"
@@ -78,10 +78,10 @@ resource "aws_acm_certificate" "main" {
 resource "aws_route53_record" "validation" {
   # count = "${var.deploy ? length(local.domain_names) : 0}"
   count = var.create_certificate && var.validation_method == "DNS" && var.validate_certificate ? length(local.domain_names) : 0
-  name = "${lookup(aws_acm_certificate.main[0].domain_validation_options[count.index], "resource_record_name")}"
-  type = "${lookup(aws_acm_certificate.main[0].domain_validation_options[count.index], "resource_record_type")}"
+  name = "${lookup(aws_acm_certificate.cert[0].domain_validation_options[count.index], "resource_record_name")}"
+  type = "${lookup(aws_acm_certificate.cert[0].domain_validation_options[count.index], "resource_record_type")}"
   zone_id ="${var.dns_zone_id}" #" "${var.zone_id}"
-  records = ["${lookup(aws_acm_certificate.main[0].domain_validation_options[count.index], "resource_record_value")}"]
+  records = ["${lookup(aws_acm_certificate.cert[0].domain_validation_options[count.index], "resource_record_value")}"]
 
   allow_overwrite = var.validation_allow_overwrite_records
   ttl = 60
@@ -98,7 +98,7 @@ resource "aws_acm_certificate_validation" "cert" {
 
   # validation_record_fqdns = aws_route53_record.validation.*.fqdn
 
-    certificate_arn = "${aws_acm_certificate.main[0].arn}"
+    certificate_arn = "${aws_acm_certificate.cert[0].arn}"
   validation_record_fqdns = "${aws_route53_record.validation.*.fqdn}"
 }
 
