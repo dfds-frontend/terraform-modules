@@ -77,7 +77,7 @@ resource "aws_acm_certificate" "main" {
 
 resource "aws_route53_record" "validation" {
   # count = "${var.deploy ? length(local.domain_names) : 0}"
-  count = var.create_certificate && var.validation_method == "DNS" && var.validate_certificate ? length(local.distinct_domain_names) : 0
+  count = var.create_certificate && var.validation_method == "DNS" && var.validate_certificate ? length(local.domain_names) : 0
   name = "${lookup(aws_acm_certificate.main[0].domain_validation_options[count.index], "resource_record_name")}"
   type = "${lookup(aws_acm_certificate.main[0].domain_validation_options[count.index], "resource_record_type")}"
   zone_id ="${var.dns_zone_id}" #" "${var.zone_id}"
@@ -91,21 +91,18 @@ resource "aws_route53_record" "validation" {
 # Validate the certificate using the DNS validation records created
 # This resource represents a successful validation of an ACM certificate in concert with other resources.
 # WARNING: This resource implements a part of the validation workflow. It does not represent a real-world entity in AWS, therefore changing or deleting this resource on its own has no immediate effect.
-# resource "aws_acm_certificate_validation" "cert" {
-#   count = var.create_certificate && var.validation_method == "DNS" && var.validate_certificate && var.wait_for_validation ? 1 : 0
+resource "aws_acm_certificate_validation" "cert" {
+  count = var.create_certificate && var.validation_method == "DNS" && var.validate_certificate && var.wait_for_validation ? 1 : 0
 
-#   # certificate_arn = aws_acm_certificate.cert[0].arn
+  # certificate_arn = aws_acm_certificate.cert[0].arn
 
-#   # validation_record_fqdns = aws_route53_record.validation.*.fqdn
+  # validation_record_fqdns = aws_route53_record.validation.*.fqdn
 
-#     certificate_arn = "${aws_acm_certificate.main[0].arn}"
-#   validation_record_fqdns = "${aws_route53_record.validation.*.fqdn}"
-# }
-
-resource "aws_acm_certificate_validation" "main1" {
-  certificate_arn = "${aws_acm_certificate.main[0].arn}"
-  validation_record_fqdns = "${aws_route53_record.validation.2.fqdn}"
+    certificate_arn = "${aws_acm_certificate.main[0].arn}"
+  validation_record_fqdns = "${aws_route53_record.validation.*.fqdn}"
 }
+
+
 
 # data "template_file" "breakup_san" {
 #   count = length(var.subject_alternative_names)
