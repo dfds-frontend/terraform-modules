@@ -112,6 +112,18 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
         include_body = lookup(var.default_cache_behavior, "lambda_function_association_viewer_req_lambda_arn", null) != null ? lookup(var.default_cache_behavior, "lambda_function_association_viewer_req_include_body", false) : null        
       }
     }
+    
+    # origin-response lambda@edge
+    dynamic "lambda_function_association" { 
+      for_each = lookup(var.default_cache_behavior, "lambda_function_association_origin_res_lambda_arn", null) == null ? [] : [1]
+      iterator = it
+
+      content {
+        event_type   = lookup(var.default_cache_behavior, "lambda_function_association_origin_res_lambda_arn", null) != null ? "origin-response" : null
+        lambda_arn   = lookup(var.default_cache_behavior, "lambda_function_association_origin_res_lambda_arn", null)
+        include_body = lookup(var.default_cache_behavior, "lambda_function_association_origin_res_lambda_arn", null) != null ? lookup(var.default_cache_behavior, "lambda_function_association_origin_res_include_body", false) : null        
+      }
+    }
   }
 
   dynamic "ordered_cache_behavior" {
@@ -168,8 +180,21 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
             event_type   = lookup(it.value, "lambda_function_association_viewer_req_lambda_arn", null) != null ? "viewer-request" : null
             lambda_arn   = lookup(it.value, "lambda_function_association_viewer_req_lambda_arn", null)
             include_body = lookup(it.value, "lambda_function_association_viewer_req_lambda_arn", null) != null ? lookup(it.value, "lambda_function_association_viewer_req_include_body", false) : null
+          }
+        }
+
+        # origin-response lambda@edge
+        dynamic "lambda_function_association" {
+          for_each = lookup(it.value, "lambda_function_association_viewer_res_lambda_arn", null) != null ? [1] : []
+          iterator = it_sub
+
+          content {
+            event_type   = lookup(it.value, "lambda_function_association_viewer_res_lambda_arn", null) != null ? "origin-response" : null
+            lambda_arn   = lookup(it.value, "lambda_function_association_viewer_res_lambda_arn", null)
+            include_body = lookup(it.value, "lambda_function_association_viewer_res_lambda_arn", null) != null ? lookup(it.value, "lambda_function_association_viewer_res_include_body", false) : null
           }         
-        }        
+        }
+        
       } 
     }
 
