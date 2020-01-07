@@ -44,11 +44,11 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
         custom_header = lookup(it.value, "custom_header", null)
 
         dynamic "custom_header" {
-          for_each = lookup(var.value, "custom_header", null) == null ? [] : [1]
-          iterator = it
+          for_each = lookup(it.value, "custom_header", null) == null ? [] : [1]
+          iterator = custom_header
           content {
-            name = lookup(it.value, "name", null)
-            value = lookup(it.value, "value", null)
+            name = lookup(custom_header.value, "name", null)
+            value = lookup(custom_header.value, "value", null)
           }          
         }        
         
