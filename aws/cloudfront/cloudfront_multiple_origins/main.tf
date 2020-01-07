@@ -41,8 +41,7 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
         domain_name = it.value.domain_name
         origin_id = it.value.origin_id
         origin_path = lookup(it.value, "origin_path", null)
-        custom_header = lookup(it.value, "custom_header", null)
-
+        
         dynamic "custom_header" {
           for_each = lookup(it.value, "custom_header", null) == null ? [] : [1]
           iterator = custom_header
