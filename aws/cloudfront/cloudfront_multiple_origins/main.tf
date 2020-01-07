@@ -42,14 +42,17 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
         origin_id = it.value.origin_id
         origin_path = lookup(it.value, "origin_path", null)
         
-        dynamic "custom_header" {
-          for_each = lookup(it.value, "custom_header", null) == null ? [] : [1]          
-          content {
-            name = lookup(custom_header.value, "name", null)
-            value = lookup(custom_header.value, "value", null)
-          }          
-        }        
-        
+    #    dynamic "custom_header" {
+     #     for_each = lookup(it.value, "custom_header", null) == null ? [] : [1]          
+      #    content {
+       #     name = lookup(custom_header.value, "name", null)
+        #    value = lookup(custom_header.value, "value", null)
+         # }          
+       # }        
+        custom_header = { 
+           name = "X-CF-Masscache-Host"
+            value = "asdsad-ext.qa.sadasd.com"
+        }
         dynamic "s3_origin_config" {
           for_each = lookup(it.value, "is_s3_origin", false) ? [1] : [] # apply s3 origin settings
           iterator = s3_origin_config
