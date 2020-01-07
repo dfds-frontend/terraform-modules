@@ -49,7 +49,7 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
         #    value = lookup(custom_header.value, "value", null)
          # }          
        # }        
-        custom_header = { 
+        custom_header { 
            name = "X-CF-Masscache-Host"
             value = "asdsad-ext.qa.sadasd.com"
         }
