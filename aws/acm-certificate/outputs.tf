@@ -1,7 +1,3 @@
-# output "certificate_arn" {
-#   value = "${element(concat(aws_acm_certificate_validation.cert.*.certificate_arn, list("")), 0)}"  
-# }
-
 output "certificate_arn" {
   description = "The ARN of the certificate"
   value       = element(concat(aws_acm_certificate.cert.*.arn, [""]), 0)
