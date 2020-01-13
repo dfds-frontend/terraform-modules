@@ -1,3 +1,9 @@
+variable "create_certificate" {
+  description = "Whether to create ACM certificate"
+  type        = bool
+  default     = true
+}
+
 variable "domain_name" {}
 
 
@@ -9,7 +15,7 @@ variable "subject_alternative_names" {
 variable "dns_zone_id" {
   description = "The ID of the hosted zone to contain this record."
   type        = string
-  default     = ""  
+  default     = null 
 }
 
 variable "validation_method" {
@@ -27,8 +33,16 @@ variable "validation_allow_overwrite_records" {
   default     = true
 }
 
-# variable "validate_certificate" {
-#   description = "Whether to validate certificate by creating Route53 record"
-#   type        = bool
-#   default     = true
-# }
+variable "validate_certificate" {
+  description = "Whether to validate certificate by creating Route53 record"
+  type        = bool
+  default     = true
+}
+
+variable "tags" {
+  description = "A mapping of tags to assign to the resource"
+  type        = map(string)
+  default     = {
+    "Managed by" : "Terraform"
+    }
+}

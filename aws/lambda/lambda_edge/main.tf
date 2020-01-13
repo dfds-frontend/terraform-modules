@@ -8,7 +8,7 @@ resource "aws_lambda_function" "lambda" {
   role          = "${aws_iam_role.role.arn}"
   handler       = "${var.lambda_function_handler}.handler"
   runtime       = "${var.runtime}"
-  filename = "${var.filename}.zip"
+  filename = "${data.archive_file.lambda_zip.output_path}" #"${var.filename}.zip"
   publish = "${var.publish}"
   
   # dynamic "environment" { # not allowed on lambda edge
@@ -70,5 +70,6 @@ EOF
 data "archive_file" "lambda_zip" {
     type        = "zip"
     source_file  = "${var.filename}"
-    output_path = "${var.filename}.zip"
+    source_dir  = "${var.directory_name}"
+    output_path = var.filename != null ? "${var.filename}.zip" : "${var.directory_name}.zip"
 }

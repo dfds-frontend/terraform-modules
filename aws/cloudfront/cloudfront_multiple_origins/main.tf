@@ -41,7 +41,15 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
         domain_name = it.value.domain_name
         origin_id = it.value.origin_id
         origin_path = lookup(it.value, "origin_path", null)
-              
+        
+        dynamic "custom_header" {
+          for_each = lookup(it.value, "custom_header", null) == null ? [] : [1]
+          content {
+            name = "${it.value.custom_header.name}"
+            value = "${it.value.custom_header.value}"
+          }
+        }       
+        
         dynamic "s3_origin_config" {
           for_each = lookup(it.value, "is_s3_origin", false) ? [1] : [] # apply s3 origin settings
           iterator = s3_origin_config
@@ -112,6 +120,18 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
         include_body = lookup(var.default_cache_behavior, "lambda_function_association_viewer_req_lambda_arn", null) != null ? lookup(var.default_cache_behavior, "lambda_function_association_viewer_req_include_body", false) : null        
       }
     }
+    
+    # origin-response lambda@edge
+    dynamic "lambda_function_association" { 
+      for_each = lookup(var.default_cache_behavior, "lambda_function_association_origin_res_lambda_arn", null) == null ? [] : [1]
+      iterator = it
+
+      content {
+        event_type   = lookup(var.default_cache_behavior, "lambda_function_association_origin_res_lambda_arn", null) != null ? "origin-response" : null
+        lambda_arn   = lookup(var.default_cache_behavior, "lambda_function_association_origin_res_lambda_arn", null)
+        include_body = lookup(var.default_cache_behavior, "lambda_function_association_origin_res_lambda_arn", null) != null ? lookup(var.default_cache_behavior, "lambda_function_association_origin_res_include_body", false) : null        
+      }
+    }
   }
 
   dynamic "ordered_cache_behavior" {
@@ -168,8 +188,21 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
             event_type   = lookup(it.value, "lambda_function_association_viewer_req_lambda_arn", null) != null ? "viewer-request" : null
             lambda_arn   = lookup(it.value, "lambda_function_association_viewer_req_lambda_arn", null)
             include_body = lookup(it.value, "lambda_function_association_viewer_req_lambda_arn", null) != null ? lookup(it.value, "lambda_function_association_viewer_req_include_body", false) : null
+          }
+        }
+
+        # origin-response lambda@edge
+        dynamic "lambda_function_association" {
+          for_each = lookup(it.value, "lambda_function_association_viewer_res_lambda_arn", null) != null ? [1] : []
+          iterator = it_sub
+
+          content {
+            event_type   = lookup(it.value, "lambda_function_association_viewer_res_lambda_arn", null) != null ? "origin-response" : null
+            lambda_arn   = lookup(it.value, "lambda_function_association_viewer_res_lambda_arn", null)
+            include_body = lookup(it.value, "lambda_function_association_viewer_res_lambda_arn", null) != null ? lookup(it.value, "lambda_function_association_viewer_res_include_body", false) : null
           }         
-        }        
+        }
+        
       } 
     }
 
