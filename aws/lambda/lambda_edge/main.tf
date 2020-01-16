@@ -13,7 +13,7 @@ resource "aws_lambda_function" "lambda" {
   role          = "${aws_iam_role.role.arn}"
   handler       = "${var.lambda_function_handler}.handler"
   runtime       = "${var.runtime}"
-  filename = "${local.use_zipfile_as_source ? var.zipfilename : data.archive_file.lambda_zip[0].output_path}" #"${var.filename}.zip"
+  filename = "${local.use_zipfile_as_source ? var.zipfilename : data.archive_file.lambda_zip[0].output_path}"
   publish = "${var.publish}"
   
   # dynamic "environment" { # not allowed on lambda edge
