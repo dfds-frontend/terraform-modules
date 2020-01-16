@@ -27,13 +27,37 @@ variable "publish" {
 
 
 variable "filename" {
-  description = "Path to the file that contains source code to upload to lambda function."
+  description = <<TEXT
+  Path to the file that contains source code to upload to lambda function. It connot be used with the following:
+      directory_name
+      zipfilename
+      source_code_hash
+    TEXT
+
   type = string
   default = null
 }
 
 variable "directory_name" {
-  description = "Path to the directory the contains source files to upload to lambda function."
+  description = <<TEXT
+    Path to the directory the contains source files to upload to lambda function. It connot be used with the following:
+      filename
+      zipfilename
+      source_code_hash
+    TEXT
+
   type = string
   default = null
+}
+
+variable "zipfilename" {
+  description = "Path to zip file containing the source files to upload to lambda function. It should be used along with zipfilename"
+  type = string
+  default = null
+}
+
+variable "source_code_hash" {
+  description = "The hash string generated for zipfile source, that Terraform uses to determine whether to uploade a new code to lambda function. It can only be used with zipfilename"
+  type = string
+  default = null  
 }

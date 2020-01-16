@@ -2,13 +2,18 @@ terraform {
   required_version = "~> 0.12.2"
 }
 
+locals {
+  use_zipfile_as_source = var.zipfilename != null ? true : false
+}
+
+
 resource "aws_lambda_function" "lambda" {
   function_name = "${var.lambda_function_name}"
-  source_code_hash = "${data.archive_file.lambda_zip.output_base64sha256}"
+  source_code_hash = "${local.use_zipfile_as_source ? var.source_code_hash : data.archive_file.lambda_zip[0].output_base64sha256}"
   role          = "${aws_iam_role.role.arn}"
   handler       = "${var.lambda_function_handler}.handler"
   runtime       = "${var.runtime}"
-  filename = "${data.archive_file.lambda_zip.output_path}" #"${var.filename}.zip"
+  filename = "${local.use_zipfile_as_source ? var.zipfilename : data.archive_file[0].lambda_zip.output_path}" #"${var.filename}.zip"
   publish = "${var.publish}"
   
   # dynamic "environment" { # not allowed on lambda edge
@@ -68,6 +73,7 @@ EOF
 }
 
 data "archive_file" "lambda_zip" {
+    count = local.use_zipfile_as_source ? 0 : 1
     type        = "zip"
     source_file  = "${var.filename}"
     source_dir  = "${var.directory_name}"
