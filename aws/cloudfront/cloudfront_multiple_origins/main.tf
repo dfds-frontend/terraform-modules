@@ -84,6 +84,8 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
       cookies {
         forward = lookup(var.default_cache_behavior, "forwarded_values_cookies_forward", "all")
       }
+
+      headers = lookup(var.default_cache_behavior, "forwarded_values_headers", null)
     }
 
     viewer_protocol_policy = lookup(var.default_cache_behavior, "viewer_protocol_policy", "redirect-to-https")
@@ -154,6 +156,8 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
           cookies {
             forward = lookup(it.value, "forwarded_values_cookies_forward", "all")
           }
+          
+          headers = lookup(it.value, "forwarded_values_headers", null)
         }
 
         viewer_protocol_policy = lookup(it.value, "viewer_protocol_policy", "redirect-to-https")
@@ -226,6 +230,8 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
       response_code         = custom_error_response.value.response_code
       response_page_path    = custom_error_response.value.response_page_path
     }
-  }  
-
+  }
+  
+  tags = var.tags
+  
 }

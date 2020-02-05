@@ -38,3 +38,11 @@ variable "lifecycle_rule_files_prefix" {
   default = ""
   description = "Specify which files, the retention settings will apply for, based on prefix/file path."
 }
+
+variable "tags" {
+  description = "A mapping of tags to assign to the resource"
+  type        = map(string)
+  default     = {
+    "Managed by" : "Terraform"
+    }
+}

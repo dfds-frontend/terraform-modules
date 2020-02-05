@@ -23,6 +23,7 @@ resource "aws_lambda_function" "lambda" {
   #     variables = "${var.lambda_env_variables}"
   #   }
   # }
+  tags = var.tags
 }
 
 resource "aws_iam_role" "role" {
