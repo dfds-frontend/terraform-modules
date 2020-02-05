@@ -1,6 +1,11 @@
-  
-#Initializes the variables needed to generate a new account
-#The values vill be propagated via a tfvars file
 variable "dns_zone_name" {
   type = "string"
+}
+
+variable "tags" {
+  description = "A mapping of tags to assign to the resource"
+  type        = map(string)
+  default     = {
+    "Managed by" : "Terraform"
+    }
 }

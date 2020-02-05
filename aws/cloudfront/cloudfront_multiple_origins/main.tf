@@ -230,6 +230,8 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
       response_code         = custom_error_response.value.response_code
       response_page_path    = custom_error_response.value.response_page_path
     }
-  }  
-
+  }
+  
+  tags = var.tags
+  
 }

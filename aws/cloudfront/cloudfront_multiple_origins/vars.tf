@@ -75,3 +75,11 @@ variable "custom_error_responses" {
   type = any
   default = []
 }
+
+variable "tags" {
+  description = "A mapping of tags to assign to the resource"
+  type        = map(string)
+  default     = {
+    "Managed by" : "Terraform"
+    }
+}

@@ -61,3 +61,11 @@ variable "source_code_hash" {
   type = string
   default = null  
 }
+
+variable "tags" {
+  description = "A mapping of tags to assign to the resource"
+  type        = map(string)
+  default     = {
+    "Managed by" : "Terraform"
+    }
+}
