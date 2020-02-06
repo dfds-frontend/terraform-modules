@@ -24,3 +24,8 @@ variable "record_ttl" {
 variable "record_value" {
   type = "string"
 }
+
+variable "create_record" {
+  type = bool
+  default = true
+}
