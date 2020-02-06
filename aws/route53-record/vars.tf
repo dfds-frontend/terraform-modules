@@ -29,3 +29,8 @@ variable "create_record" {
   type = bool
   default = true
 }
+
+variable "allow_overwrite" {
+  type = bool
+  default = true  
+}

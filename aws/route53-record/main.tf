@@ -12,6 +12,7 @@ resource "aws_route53_record" "alias_record" {
     zone_id                = "${var.alias_target_zone_id}"
     evaluate_target_health = false
   }
+  allow_overwrite = "${var.allow_overwrite}"
 }
 
 resource "aws_route53_record" "cname_record" {
@@ -21,4 +22,5 @@ resource "aws_route53_record" "cname_record" {
   type    = "${var.record_type}"
   ttl     = "${var.record_ttl}"
   records = ["${var.record_value}"]
+  allow_overwrite = "${var.allow_overwrite}"
 }
