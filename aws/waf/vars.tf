@@ -2,10 +2,8 @@ variable "deploy" {
   default = true
 }
 
-variable waf_prefix {
+variable name_prefix {
   description = "Prefix to use when naming resources"
-
-  default = "samdi"
 }
 
 variable "tags" {
