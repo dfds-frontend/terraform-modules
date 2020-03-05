@@ -34,6 +34,8 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
   comment         = "${var.comment}"
   enabled         = true
 
+  web_acl_id       = "${var.web_acl_id}"
+
   dynamic "origin" {
     for_each = var.origins
     iterator = it

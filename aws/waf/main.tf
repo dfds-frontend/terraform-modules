@@ -24,6 +24,12 @@ resource aws_waf_web_acl waf_acl {
   }
 }
 
+# TODO: 
+## Enable logging
+## Test with sandbox
+## Add Disable to rule_sqli_action (add or remove rule using terraform count property!)
+
+
 ## 1.
 ## OWASP Top 10 A1
 ## Mitigate SQL Injection Attacks
