@@ -6,8 +6,8 @@ terraform {
 # WAF ACL with each rule defined and prioritized accordingly.
 #
 resource aws_waf_web_acl waf_acl {
-  name        = "${var.waf_prefix}"
-  metric_name = replace("${var.waf_prefix}acl", "/[^0-9A-Za-z]/", "")
+  name        = "${var.name_prefix}"
+  metric_name = replace("${var.name_prefix}acl", "/[^0-9A-Za-z]/", "")
 
   default_action {
     type = "ALLOW"
@@ -30,8 +30,8 @@ resource aws_waf_web_acl waf_acl {
 ## Matches attempted SQL Injection patterns in the URI, QUERY_STRING, BODY, COOKIES
 
 resource aws_waf_rule mitigate_sqli {
-  name        = "${var.waf_prefix}-SQL-Injection-Rule"
-  metric_name = replace("${var.waf_prefix}sqlinjectionrule", "/[^0-9A-Za-z]/", "")
+  name        = "${var.name_prefix}-SQL-Injection-Rule"
+  metric_name = replace("${var.name_prefix}sqlinjectionrule", "/[^0-9A-Za-z]/", "")
 
   predicates {
     data_id = aws_waf_sql_injection_match_set.sql_injection_match_set.id
@@ -41,7 +41,7 @@ resource aws_waf_rule mitigate_sqli {
 }
 
 resource aws_waf_sql_injection_match_set sql_injection_match_set {
-  name = "${var.waf_prefix}-SQL-injection-Detection"
+  name = "${var.name_prefix}-SQL-injection-Detection"
 
   sql_injection_match_tuples {
     text_transformation = "HTML_ENTITY_DECODE"

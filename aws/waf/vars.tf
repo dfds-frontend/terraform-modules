@@ -17,6 +17,6 @@ variable "tags" {
 }
 
 variable rule_sqli_action {
-  default     = "COUNT"
+  default     = "BLOCK"
   description = "Rule action type. Either BLOCK, ALLOW, or COUNT (useful for testing)"
 }
