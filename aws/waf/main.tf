@@ -22,6 +22,15 @@ resource aws_waf_web_acl waf_acl {
     rule_id  = aws_waf_rule.mitigate_sqli.id
     type     = "REGULAR"
   }
+  rules {
+    action {
+      type = var.rule_xss_action
+    }
+
+    priority = 50
+    rule_id  = aws_waf_rule.mitigate_xss.id
+    type     = "REGULAR"
+  }
 }
 
 # TODO: 
@@ -130,6 +139,95 @@ resource aws_waf_sql_injection_match_set sql_injection_match_set {
     field_to_match {
       type = "HEADER"
       data = "Authorization"
+    }
+  }
+}
+
+
+
+
+## 3.
+## OWASP Top 10 A3
+## Mitigate Cross Site Scripting Attacks
+## Matches attempted XSS patterns in the URI, QUERY_STRING, BODY, COOKIES
+
+resource "aws_waf_rule" "mitigate_xss" {
+  name        = "${var.waf_prefix}-XSS-Detection-Rule"
+  metric_name = replace("${var.waf_prefix}xssrule", "/[^0-9A-Za-z]/", "")
+
+  predicates {
+    data_id = aws_waf_xss_match_set.xss_match_set.id
+    negated = false
+    type    = "XssMatch"
+  }
+}
+
+resource "aws_waf_xss_match_set" "xss_match_set" {
+  name = "${var.name_prefix}-XSS-Detection"
+
+  xss_match_tuples {
+    text_transformation = "HTML_ENTITY_DECODE"
+
+    field_to_match {
+      type = "BODY"
+    }
+  }
+
+  xss_match_tuples {
+    text_transformation = "URL_DECODE"
+
+    field_to_match {
+      type = "BODY"
+    }
+  }
+
+  xss_match_tuples {
+    text_transformation = "HTML_ENTITY_DECODE"
+
+    field_to_match {
+      type = "URI"
+    }
+  }
+
+  xss_match_tuples {
+    text_transformation = "URL_DECODE"
+
+    field_to_match {
+      type = "URI"
+    }
+  }
+
+  xss_match_tuples {
+    text_transformation = "HTML_ENTITY_DECODE"
+
+    field_to_match {
+      type = "QUERY_STRING"
+    }
+  }
+
+  xss_match_tuples {
+    text_transformation = "URL_DECODE"
+
+    field_to_match {
+      type = "QUERY_STRING"
+    }
+  }
+
+  xss_match_tuples {
+    text_transformation = "HTML_ENTITY_DECODE"
+
+    field_to_match {
+      type = "HEADER"
+      data = "cookie"
+    }
+  }
+
+  xss_match_tuples {
+    text_transformation = "URL_DECODE"
+
+    field_to_match {
+      type = "HEADER"
+      data = "cookie"
     }
   }
 }
