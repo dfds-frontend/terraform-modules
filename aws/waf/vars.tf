@@ -23,3 +23,8 @@ variable "rule_xss_action" {
   default     = "COUNT"
   description = "Rule action type. Either BLOCK, ALLOW, or COUNT (useful for testing)"
 }
+
+variable "rule_http_flood_action" {
+  default     = "COUNT"
+  description = "Rule action type. Either BLOCK, ALLOW, or COUNT (useful for testing)"
+}

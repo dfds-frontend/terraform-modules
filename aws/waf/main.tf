@@ -18,7 +18,7 @@ resource aws_waf_web_acl waf_acl {
       type = var.rule_sqli_action
     }
 
-    priority = 40
+    priority = 10
     rule_id  = aws_waf_rule.mitigate_sqli.id
     type     = "REGULAR"
   }
@@ -27,10 +27,19 @@ resource aws_waf_web_acl waf_acl {
       type = var.rule_xss_action
     }
 
-    priority = 50
+    priority = 20
     rule_id  = aws_waf_rule.mitigate_xss.id
     type     = "REGULAR"
   }
+  rules {
+    action {
+      type = var.rule_http_flood_action
+    }
+
+    priority = 30
+    rule_id  = aws_waf_rate_based_rule.mitigate_http_flood.id
+    type     = "RATE_BASED"
+  } 
 }
 
 # TODO: 
@@ -230,4 +239,13 @@ resource "aws_waf_xss_match_set" "xss_match_set" {
       data = "cookie"
     }
   }
+}
+
+// By default, allow any traffic. Rate limit any given IP that makes more than 100 requests over a 5 minute window
+resource "aws_waf_rate_based_rule" "mitigate_http_flood" {
+  name        = "${var.name_prefix}-HTTP-Flood-Rule"
+  metric_name = replace("${var.name_prefix}httpfloodrulerate", "/[^0-9A-Za-z]/", "")
+
+  rate_key    = "IP"
+  rate_limit  = 100
 }
