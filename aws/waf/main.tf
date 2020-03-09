@@ -152,8 +152,8 @@ resource aws_waf_sql_injection_match_set sql_injection_match_set {
 ## Matches attempted XSS patterns in the URI, QUERY_STRING, BODY, COOKIES
 
 resource "aws_waf_rule" "mitigate_xss" {
-  name        = "${var.waf_prefix}-XSS-Detection-Rule"
-  metric_name = replace("${var.waf_prefix}xssrule", "/[^0-9A-Za-z]/", "")
+  name        = "${var.name_prefix}-XSS-Detection-Rule"
+  metric_name = replace("${var.name_prefix}xssrule", "/[^0-9A-Za-z]/", "")
 
   predicates {
     data_id = aws_waf_xss_match_set.xss_match_set.id
