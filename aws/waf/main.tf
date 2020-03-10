@@ -39,7 +39,9 @@ resource aws_waf_web_acl waf_acl {
     priority = 30
     rule_id  = aws_waf_rate_based_rule.mitigate_http_flood.id
     type     = "RATE_BASED"
-  } 
+  }
+
+  tags = "${var.tags}"
 }
 
 
