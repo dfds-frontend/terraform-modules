@@ -11,6 +11,11 @@ variable "default_cache_behavior" {
   default = {}
 }
 
+variable "web_acl_id" {
+  description = "If you're using AWS WAF to filter CloudFront requests, the Id of the AWS WAF web ACL that is associated with the distribution."
+  type = string
+  default = null
+}
 
 variable "comment" {
   description = "A short description of the cloudfront distribution. Comments used to enable the user to distinquish between cloudfront distributions."
