@@ -42,10 +42,6 @@ resource aws_waf_web_acl waf_acl {
   } 
 }
 
-# TODO: 
-## Enable logging
-## Add Disable to rule_sqli_action or Default value to null => disabled
-
 
 ## 1.
 ## OWASP Top 10 A1
