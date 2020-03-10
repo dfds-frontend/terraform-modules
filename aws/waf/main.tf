@@ -44,8 +44,7 @@ resource aws_waf_web_acl waf_acl {
 
 # TODO: 
 ## Enable logging
-## Test with sandbox
-## Add Disable to rule_sqli_action (add or remove rule using terraform count property!)
+## Add Disable to rule_sqli_action or Default value to null => disabled
 
 
 ## 1.
@@ -241,6 +240,7 @@ resource "aws_waf_xss_match_set" "xss_match_set" {
   }
 }
 
+// Mitigate DOS, HTTP flood attack
 // By default, allow any traffic. Rate limit any given IP that makes more than 100 requests over a 5 minute window
 resource "aws_waf_rate_based_rule" "mitigate_http_flood" {
   name        = "${var.name_prefix}-HTTP-Flood-Rule"
