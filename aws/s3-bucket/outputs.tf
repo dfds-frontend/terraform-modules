@@ -7,5 +7,5 @@ output "bucket_name" {
 }
 
 output "bucket_arn" {
-  value = "value = "${element(concat(aws_s3_bucket.bucket.*.arn, list("")), 0)}"
+  value = "${element(concat(aws_s3_bucket.bucket.*.arn, list("")), 0)}"
 }
