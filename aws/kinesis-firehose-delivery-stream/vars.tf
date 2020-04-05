@@ -22,6 +22,11 @@ variable "buffer_interval" {
 variable "error_output_prefix" {
   
 }
+
 variable "tags" {
-  
+  description = "A mapping of tags to assign to the resource"
+  type        = map(string)
+  default     = {
+    "Managed by" : "Terraform"
+    }  
 }
