@@ -4,7 +4,7 @@ terraform {
 resource "aws_kinesis_firehose_delivery_stream" "delivery_stream" {
   name        = "${var.name}-kinesis-firehose" #"terraform-kinesis-firehose-extended-s3-test-stream"
   destination = "extended_s3"
-  tags = "${var.tags}"
+  
 
   extended_s3_configuration {
     role_arn   = "${aws_iam_role.firehose_role.arn}"
@@ -14,7 +14,7 @@ resource "aws_kinesis_firehose_delivery_stream" "delivery_stream" {
     buffer_interval = "${var.buffer_interval}"
     error_output_prefix = "${var.error_output_prefix}"
 
-    
+    tags = "${var.tags}"  
 
     processing_configuration {
       enabled = "${var.enable_processing_configuration}" #"true"
