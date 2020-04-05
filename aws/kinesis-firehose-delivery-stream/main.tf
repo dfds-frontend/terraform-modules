@@ -4,7 +4,9 @@ terraform {
 resource "aws_kinesis_firehose_delivery_stream" "delivery_stream" {
   name        = "${var.name}-kinesis-firehose" #"terraform-kinesis-firehose-extended-s3-test-stream"
   destination = "extended_s3"
-  tags = "${var.tags}"
+  tags = {
+    "Managed by" : "Terraform"
+    }  # "${var.tags}"
 
   extended_s3_configuration {
     role_arn   = "${aws_iam_role.firehose_role.arn}"
