@@ -69,3 +69,8 @@ variable "tags" {
     "Managed by" : "Terraform"
     }
 }
+
+variable "timeout" {
+  description = "The amount of time your Lambda Function has to run in seconds. Defaults to 3."
+  default = null
+}

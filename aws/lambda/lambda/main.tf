@@ -15,6 +15,8 @@ resource "aws_lambda_function" "lambda" {
   runtime       = "${var.runtime}"
   filename = "${local.use_zipfile_as_source ? var.zipfilename : data.archive_file.lambda_zip[0].output_path}"
   publish = "${var.publish}"
+  timeout = "${var.timeout}"
+  memory_size = "${var.memory_size}"
   
   dynamic "environment" {
     for_each = length(keys(var.lambda_env_variables)) > 0 ? [1]: []
