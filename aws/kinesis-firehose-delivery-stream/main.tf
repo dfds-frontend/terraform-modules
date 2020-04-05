@@ -14,7 +14,7 @@ resource "aws_kinesis_firehose_delivery_stream" "delivery_stream" {
     buffer_interval = "${var.buffer_interval}"
     error_output_prefix = "${var.error_output_prefix}"
 
-    tags = "${var.tags}"  
+    # tags = "${var.tags}"  
 
     processing_configuration {
       enabled = "${var.enable_processing_configuration}" #"true"
