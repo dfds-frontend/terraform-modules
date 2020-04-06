@@ -57,7 +57,7 @@ resource "aws_iam_role" "firehose_role" {
 }
 
 resource "aws_iam_role_policy" "kinesis_firehose_access_bucket_policy" {
-  name   = "kinesis_firehose_access_bucket_policy"
+  name   = "${var.name}-firehose-access-bucket-policy"
   role   = aws_iam_role.firehose_role.name
   policy = data.aws_iam_policy_document.kinesis_firehose_access_bucket_assume_policy.json
 }
@@ -93,4 +93,29 @@ data "aws_iam_policy_document" "kinesis_firehose_access_bucket_assume_policy" {
       "${var.bucket_arn}/*",
     ]
   }
+}
+
+
+## TODO: Check and test!!
+
+data "aws_iam_policy_document" "lambda_assume_policy" {
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "lambda:InvokeFunction",
+      "lambda:GetFunctionConfiguration",
+    ]
+
+    resources = [
+      var.processor_lambda_arn,
+      "${var.processor_lambda_arn}:*",
+    ]
+  }
+}
+
+resource "aws_iam_role_policy" "lambda_policy" {
+  name   = "lambda_function_policy"
+  role   = aws_iam_role.kinesis_firehose_stream_role.name
+  policy = data.aws_iam_policy_document.lambda_assume_policy.json
 }
