@@ -31,22 +31,66 @@ resource "aws_kinesis_firehose_delivery_stream" "delivery_stream" {
   }
 }
 
-resource "aws_iam_role" "firehose_role" {
-  name = "${var.name}-firehose-role"
+# resource "aws_iam_role" "firehose_role" {
+#   name = "${var.name}-firehose-role"
 
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "firehose.amazonaws.com"
-      },
-      "Effect": "Allow",
-      "Sid": ""
-    }
-  ]
+#   assume_role_policy = <<EOF
+# {
+#   "Version": "2012-10-17",
+#   "Statement": [
+#     {
+#       "Action": "sts:AssumeRole",
+#       "Principal": {
+#         "Service": "firehose.amazonaws.com"
+#       },
+#       "Effect": "Allow",
+#       "Sid": ""
+#     }
+#   ]
+# }
+# EOF
+# }
+
+resource "aws_iam_role" "firehose_role" {
+  name               = "${var.name}-firehose-role"
+  assume_role_policy = data.aws_iam_policy_document.kinesis_firehose_stream_assume_role.json
 }
-EOF
+
+resource "aws_iam_role_policy" "kinesis_firehose_access_bucket_policy" {
+  name   = "kinesis_firehose_access_bucket_policy"
+  role   = aws_iam_role.firehose_role.name
+  policy = data.aws_iam_policy_document.kinesis_firehose_access_bucket_assume_policy.json
+}
+
+
+data "aws_iam_policy_document" "kinesis_firehose_stream_assume_role" {
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["firehose.amazonaws.com"]
+    }
+  }
+}
+
+data "aws_iam_policy_document" "kinesis_firehose_access_bucket_assume_policy" {
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "s3:AbortMultipartUpload",
+      "s3:GetBucketLocation",
+      "s3:GetObject",
+      "s3:ListBucket",
+      "s3:ListBucketMultipartUploads",
+      "s3:PutObject",
+    ]
+
+    resources = [
+      "${var.bucket_arn}",
+      "${var.bucket_arn}/*",
+    ]
+  }
 }
