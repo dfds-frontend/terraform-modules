@@ -144,9 +144,7 @@ resource "aws_iam_role_policy" "lambda_policy" {
 #   role   = aws_iam_role.firehose_role.name
 #   policy = data.aws_iam_policy_document.kinesis_policy.json
 # }
-variable "log_regions" {
-  default = ["eu-central-1"]
-}
+
 
 # TODO: run for each region
 data "aws_iam_policy_document" "cloudwatch_logs_assume_role" {
@@ -174,12 +172,12 @@ data "aws_iam_policy_document" "cloudwatch_logs_assume_policy" {
 }
 
 resource "aws_iam_role" "cloudwatch_logs_role" {
-  name               = "cloudwatch_logs_role"
+  name               = "${var.name}-firehose_cloudwatch_logs_role"
   assume_role_policy = data.aws_iam_policy_document.cloudwatch_logs_assume_role.json
 }
 
 resource "aws_iam_role_policy" "cloudwatch_logs_policy" {
-  name   = "cloudwatch_logs_policy"
+  name   = "${var.name}-firehose_cloudwatch_logs_policy"
   role   = aws_iam_role.cloudwatch_logs_role.name
   policy = data.aws_iam_policy_document.cloudwatch_logs_assume_policy.json
 }

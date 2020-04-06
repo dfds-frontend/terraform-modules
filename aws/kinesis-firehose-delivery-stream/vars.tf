@@ -30,3 +30,7 @@ variable "tags" {
     "Managed by" : "Terraform"
     }  
 }
+
+variable "log_regions" {
+  default = ["eu-central-1"]
+}
