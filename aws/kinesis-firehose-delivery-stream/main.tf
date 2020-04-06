@@ -172,12 +172,12 @@ data "aws_iam_policy_document" "cloudwatch_logs_assume_policy" {
 }
 
 resource "aws_iam_role" "cloudwatch_logs_role" {
-  name               = "${var.name}-firehose_cloudwatch_logs_role"
+  name               = "${var.name}-firehose_cw_logs_role"
   assume_role_policy = data.aws_iam_policy_document.cloudwatch_logs_assume_role.json
 }
 
 resource "aws_iam_role_policy" "cloudwatch_logs_policy" {
-  name   = "${var.name}-firehose_cloudwatch_logs_policy"
+  name   = "${var.name}-firehose_cw_logs_policy"
   role   = aws_iam_role.cloudwatch_logs_role.name
   policy = data.aws_iam_policy_document.cloudwatch_logs_assume_policy.json
 }
