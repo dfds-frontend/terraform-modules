@@ -120,7 +120,7 @@ resource "aws_iam_role_policy" "lambda_policy" {
 }
 
 
-data "aws_iam_policy_document" "kinesis_assume_policy" {
+data "aws_iam_policy_document" "kinesis_policy" {
   statement {
     effect    = "Allow"
     # actions   = ["firehose:*"]
@@ -134,13 +134,13 @@ data "aws_iam_policy_document" "kinesis_assume_policy" {
   }
 }
 
-resource "aws_iam_role" "kinesis_role" {
-  name               = "${var.name}-kinesis_role"
-  assume_role_policy = data.aws_iam_policy_document.cloudwatch_logs_assume_role.json
-}
+# resource "aws_iam_role" "kinesis_role" {
+#   name               = "${var.name}-kinesis_role"
+#   assume_role_policy = data.aws_iam_policy_document.kinesis_policy.json
+# }
 
 resource "aws_iam_role_policy" "kinesis_policy" {
   name   = "${var.name}-kinesis_policy"
-  role   = aws_iam_role.kinesis_role.name
-  policy = data.aws_iam_policy_document.kinesis_assume_policy.json
+  role   = aws_iam_role.firehose_role.name
+  policy = data.aws_iam_policy_document.kinesis_policy.json
 }
