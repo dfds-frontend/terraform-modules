@@ -120,27 +120,67 @@ resource "aws_iam_role_policy" "lambda_policy" {
 }
 
 
-data "aws_iam_policy_document" "kinesis_policy" {
-  statement {
-    effect    = "Allow"
-    # actions   = ["firehose:*"]
-    actions = [
-      "kinesis:DescribeStream",
-      "kinesis:GetShardIterator",
-      "kinesis:GetRecords",
-      "kinesis:ListShards"
-    ]    
-    resources = [aws_kinesis_firehose_delivery_stream.delivery_stream.arn]
-  }
-}
+# data "aws_iam_policy_document" "kinesis_policy" {
+#   statement {
+#     effect    = "Allow"
+#     # actions   = ["firehose:*"]
+#     actions = [
+#       "kinesis:DescribeStream",
+#       "kinesis:GetShardIterator",
+#       "kinesis:GetRecords",
+#       "kinesis:ListShards"
+#     ]    
+#     resources = [aws_kinesis_firehose_delivery_stream.delivery_stream.arn]
+#   }
+# }
 
 # resource "aws_iam_role" "kinesis_role" {
 #   name               = "${var.name}-kinesis_role"
 #   assume_role_policy = data.aws_iam_policy_document.kinesis_policy.json
 # }
 
-resource "aws_iam_role_policy" "kinesis_policy" {
-  name   = "${var.name}-kinesis_policy"
-  role   = aws_iam_role.firehose_role.name
-  policy = data.aws_iam_policy_document.kinesis_policy.json
+# resource "aws_iam_role_policy" "kinesis_policy" {
+#   name   = "${var.name}-kinesis_policy"
+#   role   = aws_iam_role.firehose_role.name
+#   policy = data.aws_iam_policy_document.kinesis_policy.json
+# }
+variable "log_regions" {
+  default = ["eu-central-1"]
 }
+
+# TODO: run for each region
+data "aws_iam_policy_document" "cloudwatch_logs_assume_role" {
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = [for region in var.log_regions:
+        "logs.${region}.amazonaws.com"
+        ]
+
+        # ["logs.${length(var.region) > 0 ? var.region : data.aws_region.default.name}.amazonaws.com"]
+    }
+  }
+}
+
+data "aws_iam_policy_document" "cloudwatch_logs_assume_policy" {
+  statement {
+    effect    = "Allow"
+    actions   = ["firehose:*"]
+    resources = [aws_kinesis_firehose_delivery_stream.delivery_stream.arn]
+  }
+}
+
+resource "aws_iam_role" "cloudwatch_logs_role" {
+  name               = "cloudwatch_logs_role"
+  assume_role_policy = data.aws_iam_policy_document.cloudwatch_logs_assume_role.json
+}
+
+resource "aws_iam_role_policy" "cloudwatch_logs_policy" {
+  name   = "cloudwatch_logs_policy"
+  role   = aws_iam_role.cloudwatch_logs_role.name
+  policy = data.aws_iam_policy_document.cloudwatch_logs_assume_policy.json
+}
+
