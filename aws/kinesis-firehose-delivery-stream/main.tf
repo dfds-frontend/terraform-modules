@@ -116,6 +116,6 @@ data "aws_iam_policy_document" "lambda_assume_policy" {
 
 resource "aws_iam_role_policy" "lambda_policy" {
   name   = "lambda_function_policy"
-  role   = aws_iam_role.kinesis_firehose_stream_role.name
+  role   = aws_iam_role.firehose_role.name
   policy = data.aws_iam_policy_document.lambda_assume_policy.json
 }
