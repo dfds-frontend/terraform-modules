@@ -32,5 +32,6 @@ variable "tags" {
 }
 
 variable "log_regions" {
+  
   default = ["eu-central-1"]
 }
