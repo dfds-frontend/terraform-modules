@@ -31,7 +31,7 @@ variable "tags" {
     }  
 }
 
-variable "log_regions" {
-  
+variable "cloudwatch_source_regions" {
+
   default = ["eu-central-1"]
 }

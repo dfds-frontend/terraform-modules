@@ -96,38 +96,41 @@ resource "aws_iam_role_policy" "lambda_policy" {
   policy = data.aws_iam_policy_document.lambda_assume_policy.json
 }
 
-# data "aws_iam_policy_document" "cloudwatch_logs_assume_role" {
-#   statement {
-#     effect  = "Allow"
-#     actions = ["sts:AssumeRole"]
+# ############################################################
+# Allow Cloudwatch resources from different regions 
+# such as subscriptionFilter to assume roles on Firehose
+# ############################################################
+data "aws_iam_policy_document" "cloudwatch_logs_assume_role" {
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
 
-#     principals {
-#       type        = "Service"
-#       identifiers = [for region in var.log_regions:
-#         "logs.${region}.amazonaws.com"
-#         ]
+    principals {
+      type        = "Service"
+      identifiers = [for region in var.cloudwatch_source_regions:
+        "logs.${region}.amazonaws.com"
+        ]
 
-#         # ["logs.${length(var.region) > 0 ? var.region : data.aws_region.default.name}.amazonaws.com"]
-#     }
-#   }
-# }
+        # ["logs.${length(var.region) > 0 ? var.region : data.aws_region.default.name}.amazonaws.com"]
+    }
+  }
+}
 
-# data "aws_iam_policy_document" "cloudwatch_logs_assume_policy" {
-#   statement {
-#     effect    = "Allow"
-#     actions   = ["firehose:*"]
-#     resources = [aws_kinesis_firehose_delivery_stream.delivery_stream.arn]
-#   }
-# }
+data "aws_iam_policy_document" "cloudwatch_logs_assume_policy" {
+  statement {
+    effect    = "Allow"
+    actions   = ["firehose:*"]
+    resources = [aws_kinesis_firehose_delivery_stream.delivery_stream.arn]
+  }
+}
 
-# resource "aws_iam_role" "cloudwatch_logs_role" {
-#   name               = "${var.name}-firehose_cw_logs_role"
-#   assume_role_policy = data.aws_iam_policy_document.cloudwatch_logs_assume_role.json
-# }
+resource "aws_iam_role" "cloudwatch_logs_role" {
+  name               = "${var.name}-firehose_cw_logs_role"
+  assume_role_policy = data.aws_iam_policy_document.cloudwatch_logs_assume_role.json
+}
 
-# resource "aws_iam_role_policy" "cloudwatch_logs_policy" {
-#   name   = "${var.name}-firehose_cw_logs_policy"
-#   role   = aws_iam_role.cloudwatch_logs_role.name
-#   policy = data.aws_iam_policy_document.cloudwatch_logs_assume_policy.json
-# }
-
+resource "aws_iam_role_policy" "cloudwatch_logs_policy" {
+  name   = "${var.name}-firehose_cw_logs_policy"
+  role   = aws_iam_role.cloudwatch_logs_role.name
+  policy = data.aws_iam_policy_document.cloudwatch_logs_assume_policy.json
+}
