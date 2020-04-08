@@ -19,3 +19,7 @@ variable "destination_arn" {
 variable "distribution" {
   default = null
 }
+
+variable "log_group_arn" {
+  description = "Create dependency on log group"
+}
