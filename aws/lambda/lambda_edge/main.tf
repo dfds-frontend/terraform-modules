@@ -24,6 +24,10 @@ resource "aws_lambda_function" "lambda" {
   #   }
   # }
   tags = var.tags
+
+  depends_on = [
+    aws_cloudwatch_log_group.lambda 
+  ]
 }
 
 resource "aws_iam_role" "role" {
@@ -79,4 +83,11 @@ data "archive_file" "lambda_zip" {
     source_file  = "${var.filename}"
     source_dir  = "${var.directory_name}"
     output_path = var.filename != null ? "${var.filename}.zip" : "${var.directory_name}.zip"
+}
+
+
+resource "aws_cloudwatch_log_group" "lambda" {
+  name = "/aws/lambda/us-east-1.${var.lambda_function_name}"
+  tags = var.tags
+  retention_in_days = 90
 }
