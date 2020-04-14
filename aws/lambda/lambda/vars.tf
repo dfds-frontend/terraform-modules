@@ -1,9 +1,5 @@
-variable "lambda_function_name" {
+variable "name" {
   
-}
-
-variable "lambda_role_name" {
-  description = "Name of iam role to create for the lambda function."
 }
 
 variable "lambda_function_handler" {
@@ -77,4 +73,9 @@ variable "timeout" {
 
 variable "memory_size" {
   default = null
+}
+
+variable "allow_create_loggroup" {
+  description = "Allow lambda@edge to create Cloudwatch log group for the lambda edge on-demand in every region where it runs."
+  default = false
 }

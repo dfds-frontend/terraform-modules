@@ -72,9 +72,6 @@ data "aws_iam_policy_document" "kinesis_firehose_access_bucket_assume_policy" {
   }
 }
 
-
-## TODO: Check and test!!
-
 data "aws_iam_policy_document" "lambda_assume_policy" {
   statement {
     effect = "Allow"

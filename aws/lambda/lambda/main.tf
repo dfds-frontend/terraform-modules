@@ -4,11 +4,11 @@ terraform {
 
 locals {
   use_zipfile_as_source = var.zipfilename != null ? true : false
+  cloudwatch_logs_policy_actions = var.allow_create_loggroup ? ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents"] : ["logs:CreateLogStream", "logs:PutLogEvents"]
 }
 
-
 resource "aws_lambda_function" "lambda" {
-  function_name = "${var.lambda_function_name}"
+  function_name = "${var.name}"
   source_code_hash = "${local.use_zipfile_as_source ? var.source_code_hash : data.archive_file.lambda_zip[0].output_base64sha256}"
   role          = "${aws_iam_role.role.arn}"
   handler       = "${var.lambda_function_handler}.handler"
@@ -29,7 +29,7 @@ resource "aws_lambda_function" "lambda" {
 }
 
 resource "aws_iam_role" "role" {
-  name = "${var.lambda_role_name}"
+  name = "${var.name}"
  
   assume_role_policy = <<POLICY
 {
@@ -50,28 +50,22 @@ resource "aws_iam_role" "role" {
 POLICY
 }
 
-resource "aws_iam_role_policy" "cloudwatch_logs" {
-  name = "${var.lambda_role_name}"
-  role = "${aws_iam_role.role.id}" 
+data "aws_iam_policy_document" "cloudwatch_logs" {
+  statement {
+    effect = "Allow"
 
-  policy = <<EOF
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "logs:CreateLogGroup", 
-                "logs:CreateLogStream",
-                "logs:PutLogEvents"
-            ],
-            "Resource": [
-                "arn:aws:logs:*:*:*"
-            ]
-        }
+    actions = "${local.cloudwatch_logs_policy_actions}"
+
+    resources = [
+      "arn:aws:logs:*:*:*"
     ]
+  }
 }
-EOF
+
+resource "aws_iam_role_policy" "cloudwatch_logs" {
+  name = "${var.name}"
+  role = "${aws_iam_role.role.name}"
+  policy = data.aws_iam_policy_document.cloudwatch_logs.json
 }
 
 data "archive_file" "lambda_zip" {

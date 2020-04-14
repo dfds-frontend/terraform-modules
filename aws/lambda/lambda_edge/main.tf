@@ -4,6 +4,7 @@ terraform {
 
 locals {
   use_zipfile_as_source = var.zipfilename != null ? true : false
+  cloudwatch_logs_policy_actions = var.allow_create_loggroup ? ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents"] : ["logs:CreateLogStream", "logs:PutLogEvents"]
 }
 
 
@@ -66,12 +67,6 @@ resource "aws_iam_role_policy" "cloudwatch_logs" {
   role = "${aws_iam_role.role.name}"
   policy = data.aws_iam_policy_document.cloudwatch_logs.json
 }
-
-
-locals {
-  cloudwatch_logs_policy_actions = var.allow_create_loggroup ? ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents"] : ["logs:CreateLogStream", "logs:PutLogEvents"]
-}
-
 
 data "archive_file" "lambda_zip" {
     count = local.use_zipfile_as_source ? 0 : 1
