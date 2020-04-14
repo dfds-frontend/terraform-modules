@@ -53,6 +53,35 @@ resource "aws_iam_role" "role" {
 POLICY
 }
 
+variable "allow_create_loggroup" {
+  default = true
+}
+
+
+# resource "aws_iam_role_policy" "cloudwatch_logs" {
+#   name = "${var.lambda_role_name}"
+#   role = "${aws_iam_role.role.id}" 
+
+#   policy = <<EOF
+# {
+#     "Version": "2012-10-17",
+#     "Statement": [
+#         {
+#             "Effect": "Allow",
+#             "Action": [
+#                 "logs:CreateLogGroup", 
+#                 "logs:CreateLogStream",
+#                 "logs:PutLogEvents"
+#             ],
+#             "Resource": [
+#                 "arn:aws:logs:*:*:*"
+#             ]
+#         }
+#     ]
+# }
+# EOF
+# }
+
 resource "aws_iam_role_policy" "cloudwatch_logs" {
   name = "${var.lambda_role_name}"
   role = "${aws_iam_role.role.id}" 
@@ -63,11 +92,7 @@ resource "aws_iam_role_policy" "cloudwatch_logs" {
     "Statement": [
         {
             "Effect": "Allow",
-            "Action": [
-                "logs:CreateLogGroup", 
-                "logs:CreateLogStream",
-                "logs:PutLogEvents"
-            ],
+            "Action": "${var.allow_create_loggroup ? ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents"] : ["logs:CreateLogStream", "logs:PutLogEvents"]}",
             "Resource": [
                 "arn:aws:logs:*:*:*"
             ]
