@@ -3,7 +3,7 @@ output "lambda_function_arn" {
 }
 
 output "lambda_function_name" {
-  value = "${var.lambda_function_name}"
+  value = "${var.name}"
 }
 
 output "lambda_function_invoke_arn" {
