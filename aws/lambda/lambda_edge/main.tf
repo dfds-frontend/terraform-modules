@@ -102,7 +102,7 @@ data "aws_iam_policy_document" "cloudwatch_logs" {
   statement {
     effect = "Allow"
 
-    actions = ${local.cloudwatch_logs_policy_actions}
+    actions = "${local.cloudwatch_logs_policy_actions}"
 
     resources = [
       "arn:aws:logs:*:*:*"
