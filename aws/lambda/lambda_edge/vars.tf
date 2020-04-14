@@ -1,10 +1,10 @@
-variable "lambda_function_name" {
+variable "name" {
   
 }
 
-variable "lambda_role_name" {
-  description = "Name of iam role to create for the lambda function."
-}
+# variable "lambda_role_name" {
+#   description = "Name of iam role to create for the lambda function."
+# }
 
 variable "lambda_function_handler" {
   description = "The source file without file extension."
@@ -68,4 +68,8 @@ variable "tags" {
   default     = {
     "Managed by" : "Terraform"
     }
+}
+
+variable "allow_create_loggroup" {
+  default = true
 }

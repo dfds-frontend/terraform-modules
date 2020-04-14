@@ -8,7 +8,7 @@ locals {
 
 
 resource "aws_lambda_function" "lambda" {
-  function_name = "${var.lambda_function_name}"
+  function_name = "${var.name}"
   source_code_hash = "${local.use_zipfile_as_source ? var.source_code_hash : data.archive_file.lambda_zip[0].output_base64sha256}"
   role          = "${aws_iam_role.role.arn}"
   handler       = "${var.lambda_function_handler}.handler"
@@ -27,7 +27,7 @@ resource "aws_lambda_function" "lambda" {
 }
 
 resource "aws_iam_role" "role" {
-  name = "${var.lambda_role_name}"
+  name = "${var.name}"
  
   assume_role_policy = <<POLICY
 {
@@ -48,11 +48,6 @@ resource "aws_iam_role" "role" {
 }
 POLICY
 }
-
-variable "allow_create_loggroup" {
-  default = true
-}
-
 
 # resource "aws_iam_role_policy" "cloudwatch_logs" {
 #   name = "${var.lambda_role_name}"
@@ -113,7 +108,7 @@ data "aws_iam_policy_document" "cloudwatch_logs" {
 resource "aws_iam_role_policy" "cloudwatch_logs" {
   # name   = "${var.name}-lambda_function_policy"
   # name = "${var.lambda_role_name}"
-  name = "${var.lambda_role_name}"
+  name = "${var.name}"
   role = "${aws_iam_role.role.name}"
   # role   = aws_iam_role.firehose_role.name
   policy = data.aws_iam_policy_document.cloudwatch_logs.json
