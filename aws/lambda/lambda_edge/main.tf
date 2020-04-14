@@ -88,7 +88,7 @@ resource "aws_iam_role_policy" "cloudwatch_logs" {
     "Statement": [
         {
             "Effect": "Allow",
-            "Action": "${var.allow_create_loggroup ? ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents"] : ["logs:CreateLogStream", "logs:PutLogEvents"]}",
+            "Action": ${local.cloudwatch_logs_policy_actions},
             "Resource": [
                 "arn:aws:logs:*:*:*"
             ]
@@ -97,6 +97,11 @@ resource "aws_iam_role_policy" "cloudwatch_logs" {
 }
 EOF
 }
+
+locals {
+  cloudwatch_logs_policy_actions = var.allow_create_loggroup ? ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents"] : ["logs:CreateLogStream", "logs:PutLogEvents"]
+}
+
 
 data "archive_file" "lambda_zip" {
     count = local.use_zipfile_as_source ? 0 : 1
