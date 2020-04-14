@@ -7,7 +7,6 @@ locals {
   cloudwatch_logs_policy_actions = var.allow_create_loggroup ? ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents"] : ["logs:CreateLogStream", "logs:PutLogEvents"]
 }
 
-
 resource "aws_lambda_function" "lambda" {
   function_name = "${var.name}"
   source_code_hash = "${local.use_zipfile_as_source ? var.source_code_hash : data.archive_file.lambda_zip[0].output_base64sha256}"
@@ -16,14 +15,16 @@ resource "aws_lambda_function" "lambda" {
   runtime       = "${var.runtime}"
   filename = "${local.use_zipfile_as_source ? var.zipfilename : data.archive_file.lambda_zip[0].output_path}"
   publish = "${var.publish}"
+  timeout = "${var.timeout}"
+  memory_size = "${var.memory_size}"
   
-  # dynamic "environment" { # not allowed on lambda edge
-  #   for_each = length(keys(var.lambda_env_variables)) > 0 ? [1]: []
+  dynamic "environment" {
+    for_each = length(keys(var.lambda_env_variables)) > 0 ? [1]: []
 
-  #   content {
-  #     variables = "${var.lambda_env_variables}"
-  #   }
-  # }
+    content {
+      variables = "${var.lambda_env_variables}"
+    }
+  }
   tags = var.tags
 }
 
@@ -38,8 +39,7 @@ resource "aws_iam_role" "role" {
       "Action": "sts:AssumeRole",
       "Principal": {
         "Service": [
-          "lambda.amazonaws.com", 
-          "edgelambda.amazonaws.com"
+          "lambda.amazonaws.com"
         ]
       },
       "Effect": "Allow",

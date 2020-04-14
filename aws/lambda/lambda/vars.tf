@@ -2,10 +2,6 @@ variable "name" {
   
 }
 
-# variable "lambda_role_name" {
-#   description = "Name of iam role to create for the lambda function."
-# }
-
 variable "lambda_function_handler" {
   description = "The source file without file extension."
 }
@@ -21,7 +17,7 @@ variable "runtime" {
 }
 
 variable "publish" {
-  default = true
+  default = false
   description = "Enable publishing under a new version. This is required when enabling in order to enable lambda function to be used by cloudfront."
 }
 
@@ -68,6 +64,15 @@ variable "tags" {
   default     = {
     "Managed by" : "Terraform"
     }
+}
+
+variable "timeout" {
+  description = "The amount of time your Lambda Function has to run in seconds. Defaults to 3."
+  default = null
+}
+
+variable "memory_size" {
+  default = null
 }
 
 variable "allow_create_loggroup" {
