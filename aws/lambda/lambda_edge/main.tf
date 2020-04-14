@@ -78,25 +78,47 @@ variable "allow_create_loggroup" {
 # EOF
 # }
 
-resource "aws_iam_role_policy" "cloudwatch_logs" {
-  name = "${var.lambda_role_name}"
-  role = "${aws_iam_role.role.id}" 
+# resource "aws_iam_role_policy" "cloudwatch_logs" {
+#   name = "${var.lambda_role_name}"
+#   role = "${aws_iam_role.role.id}" 
 
-  policy = <<EOF
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": ${local.cloudwatch_logs_policy_actions},
-            "Resource": [
-                "arn:aws:logs:*:*:*"
-            ]
-        }
+#   policy = <<EOF
+# {
+#     "Version": "2012-10-17",
+#     "Statement": [
+#         {
+#             "Effect": "Allow",
+#             "Action": ${local.cloudwatch_logs_policy_actions},
+#             "Resource": [
+#                 "arn:aws:logs:*:*:*"
+#             ]
+#         }
+#     ]
+# }
+# EOF
+# }
+
+data "aws_iam_policy_document" "cloudwatch_logs" {
+  statement {
+    effect = "Allow"
+
+    actions = ${local.cloudwatch_logs_policy_actions}
+
+    resources = [
+      "arn:aws:logs:*:*:*"
     ]
+  }
 }
-EOF
+
+resource "aws_iam_role_policy" "lambda_policy" {
+  # name   = "${var.name}-lambda_function_policy"
+  # name = "${var.lambda_role_name}"
+  name = "${var.lambda_role_name}"
+  role = "${aws_iam_role.role.name}"
+  # role   = aws_iam_role.firehose_role.name
+  policy = data.aws_iam_policy_document.cloudwatch_logs.json
 }
+
 
 locals {
   cloudwatch_logs_policy_actions = var.allow_create_loggroup ? ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents"] : ["logs:CreateLogStream", "logs:PutLogEvents"]
