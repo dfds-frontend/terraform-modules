@@ -49,50 +49,6 @@ resource "aws_iam_role" "role" {
 POLICY
 }
 
-# resource "aws_iam_role_policy" "cloudwatch_logs" {
-#   name = "${var.lambda_role_name}"
-#   role = "${aws_iam_role.role.id}" 
-
-#   policy = <<EOF
-# {
-#     "Version": "2012-10-17",
-#     "Statement": [
-#         {
-#             "Effect": "Allow",
-#             "Action": [
-#                 "logs:CreateLogGroup", 
-#                 "logs:CreateLogStream",
-#                 "logs:PutLogEvents"
-#             ],
-#             "Resource": [
-#                 "arn:aws:logs:*:*:*"
-#             ]
-#         }
-#     ]
-# }
-# EOF
-# }
-
-# resource "aws_iam_role_policy" "cloudwatch_logs" {
-#   name = "${var.lambda_role_name}"
-#   role = "${aws_iam_role.role.id}" 
-
-#   policy = <<EOF
-# {
-#     "Version": "2012-10-17",
-#     "Statement": [
-#         {
-#             "Effect": "Allow",
-#             "Action": ${local.cloudwatch_logs_policy_actions},
-#             "Resource": [
-#                 "arn:aws:logs:*:*:*"
-#             ]
-#         }
-#     ]
-# }
-# EOF
-# }
-
 data "aws_iam_policy_document" "cloudwatch_logs" {
   statement {
     effect = "Allow"
@@ -106,11 +62,8 @@ data "aws_iam_policy_document" "cloudwatch_logs" {
 }
 
 resource "aws_iam_role_policy" "cloudwatch_logs" {
-  # name   = "${var.name}-lambda_function_policy"
-  # name = "${var.lambda_role_name}"
   name = "${var.name}"
   role = "${aws_iam_role.role.name}"
-  # role   = aws_iam_role.firehose_role.name
   policy = data.aws_iam_policy_document.cloudwatch_logs.json
 }
 
