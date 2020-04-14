@@ -71,5 +71,6 @@ variable "tags" {
 }
 
 variable "allow_create_loggroup" {
+  description = "Allow lambda@edge to create Cloudwatch log group for the lambda edge on-demand in every region where it runs."
   default = false
 }
