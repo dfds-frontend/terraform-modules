@@ -24,10 +24,6 @@ resource "aws_lambda_function" "lambda" {
   #   }
   # }
   tags = var.tags
-
-  depends_on = [
-    aws_cloudwatch_log_group.lambda 
-  ]
 }
 
 resource "aws_iam_role" "role" {
