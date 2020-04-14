@@ -71,5 +71,5 @@ variable "tags" {
 }
 
 variable "allow_create_loggroup" {
-  default = true
+  default = false
 }
