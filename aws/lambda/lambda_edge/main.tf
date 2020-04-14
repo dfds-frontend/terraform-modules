@@ -110,7 +110,7 @@ data "aws_iam_policy_document" "cloudwatch_logs" {
   }
 }
 
-resource "aws_iam_role_policy" "lambda_policy" {
+resource "aws_iam_role_policy" "cloudwatch_logs" {
   # name   = "${var.name}-lambda_function_policy"
   # name = "${var.lambda_role_name}"
   name = "${var.lambda_role_name}"
