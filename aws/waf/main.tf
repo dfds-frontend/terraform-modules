@@ -278,7 +278,7 @@ resource "aws_lambda_function" "reputation_lists_parser" {
   count = "${var.reputation_lists_protection_activated == "yes" ? 1 : 0}"
   function_name = "${var.name_prefix}_reputation_lists_parser"
   description   = "This lambda function checks third-party IP reputation lists hourly for new IP ranges to block. These lists include the Spamhaus Dont Route Or Peer (DROP) and Extended Drop (EDROP) lists, the Proofpoint Emerging Threats IP list, and the Tor exit node list."
-  role          = "${aws_iam_role.lambda_role_reputation_list_parser.arn}"
+  role          = "${aws_iam_role.lambda_role_reputation_list_parser[count.index].arn}"
   handler       = "reputation-lists-parser.handler"
   # filename      = "${path.module}/files/reputation-lists-parser/reputation-lists-parser.zip"
   filename      = "reputation-lists-parser.zip"
