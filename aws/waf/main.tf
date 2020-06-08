@@ -247,3 +247,56 @@ resource "aws_waf_rate_based_rule" "mitigate_http_flood" {
   rate_key    = "IP"
   rate_limit  = 100
 }
+
+
+
+###################################################################
+# IP Set based matching
+###################################################################
+
+resource "aws_waf_rule" "waf_reputation" {
+  count = "${var.reputation_lists_protection_activated == "yes" ? 1 : 0}"
+
+  depends_on  = ["aws_waf_ipset.waf_reputation_set"]
+  name        = "${var.name_prefix}-IP-Reputation-Rule"
+  metric_name = "${var.name_prefix}IPReputationRule"
+
+  predicates {
+    data_id = "${aws_waf_ipset.waf_reputation_set.id}"
+    negated = false
+    type    = "IPMatch"
+  }
+}
+
+
+resource "aws_waf_ipset" "waf_reputation_set" {
+  count = "${var.reputation_lists_protection_activated == "yes" ? 1 : 0}"
+  name  = "reputation-set"
+}
+
+resource "aws_lambda_function" "reputation_lists_parser" {
+  count = "${var.reputation_lists_protection_activated == "yes" ? 1 : 0}"
+  function_name = "${var.name_prefix}_reputation_lists_parser"
+  description   = "This lambda function checks third-party IP reputation lists hourly for new IP ranges to block. These lists include the Spamhaus Dont Route Or Peer (DROP) and Extended Drop (EDROP) lists, the Proofpoint Emerging Threats IP list, and the Tor exit node list."
+  role          = "${aws_iam_role.lambda_role_reputation_list_parser.arn}"
+  handler       = "reputation-lists-parser.handler"
+  filename      = "${path.module}/files/reputation-lists-parser/reputation-lists-parser.zip"
+  runtime       = "nodejs12.10" ==============version??
+  memory_size   = "128"
+  timeout       = "300"
+
+  environment {
+    variables = {
+      SEND_ANONYMOUS_USAGE_DATA = "test"
+      UUID                      = "${random_uuid.uuid.result}"
+      METRIC_NAME_PREFIX        = "test"
+      LOG_LEVEL                 = "${var.log_level}"
+    }
+  }
+}
+
+
+
+resource "random_uuid" "uuid" {
+  # keepers = {  #   change = "${timestamp()}"  # }
+}
