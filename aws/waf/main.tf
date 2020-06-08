@@ -259,7 +259,7 @@ resource "aws_waf_rule" "waf_reputation" {
 
   depends_on  = ["aws_waf_ipset.waf_reputation_set"]
   name        = "${var.name_prefix}-IP-Reputation-Rule"
-  metric_name = "${replace(var.name_prefix,"-",""}IPReputationRule"
+  metric_name = "${replace(var.name_prefix,"-","")}IPReputationRule"
 
   predicates {
     data_id = element(concat(aws_waf_ipset.waf_reputation_set.*.id, [""]), 0) // "${aws_waf_ipset.waf_reputation_set.id}"
