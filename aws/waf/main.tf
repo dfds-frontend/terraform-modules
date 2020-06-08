@@ -308,7 +308,7 @@ resource "random_uuid" "uuid" {
 resource "aws_iam_role" "lambda_role_reputation_list_parser" {
   count              = "${var.reputation_lists_protection_activated == "yes" ? 1 : 0}"
   name               = "${var.name_prefix}LambdaRoleReputationListParser"
-  assume_role_policy = element(concat(data.aws_iam_policy_document.*.assume_role.json, [""]), 0) // "${data.aws_iam_policy_document.assume_role.json}"
+  assume_role_policy = element(concat(data.aws_iam_policy_document.assume_role.*.json, [""]), 0) // "${data.aws_iam_policy_document.assume_role.json}"
 }
 
 resource "aws_iam_role_policy" "reputation_list_parser" {
