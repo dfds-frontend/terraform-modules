@@ -39,3 +39,5 @@ variable "log_level" {
   description = "Log level settings, set one of DEBUG, INFO, WARNING, ERROR, CRITICAL"
   default     = "INFO"
 }
+
+variable "aws_region" {}
