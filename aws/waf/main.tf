@@ -316,7 +316,7 @@ resource "aws_iam_role_policy" "reputation_list_parser" {
 
   name   = "${var.name_prefix}ReputationListParser"
   role   = "${aws_iam_role.lambda_role_reputation_list_parser.id}"
-  policy = "${data.aws_iam_policy_document.reputation_list_parser.json}"
+  policy = data.aws_iam_policy_document.reputation_list_parser[count.index].json # element(concat(data.aws_iam_policy_document.reputation_list_parser.*.json, [""]), 0) # "${data.aws_iam_policy_document.reputation_list_parser.json}"
 }
 
 data "aws_iam_policy_document" "reputation_list_parser" {
