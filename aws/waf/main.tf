@@ -375,7 +375,5 @@ data "aws_iam_policy_document" "reputation_list_parser" {
   }
 }
 
-
-
 # 
 data "aws_caller_identity" "current" {}
