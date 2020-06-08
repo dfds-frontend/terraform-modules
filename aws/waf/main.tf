@@ -262,7 +262,7 @@ resource "aws_waf_rule" "waf_reputation" {
   metric_name = "${var.name_prefix}IPReputationRule"
 
   predicates {
-    data_id = "${aws_waf_ipset.waf_reputation_set.id}"
+    data_id = element(concat(aws_waf_ipset.waf_reputation_set.*.id, [""]), 0) // "${aws_waf_ipset.waf_reputation_set.id}"
     negated = false
     type    = "IPMatch"
   }
@@ -308,7 +308,7 @@ resource "random_uuid" "uuid" {
 resource "aws_iam_role" "lambda_role_reputation_list_parser" {
   count              = "${var.reputation_lists_protection_activated == "yes" ? 1 : 0}"
   name               = "${var.name_prefix}LambdaRoleReputationListParser"
-  assume_role_policy = "${data.aws_iam_policy_document.assume_role.json}"
+  assume_role_policy = element(concat(data.aws_iam_policy_document.*.assume_role.json, [""]), 0) // "${data.aws_iam_policy_document.assume_role.json}"
 }
 
 resource "aws_iam_role_policy" "reputation_list_parser" {
@@ -343,7 +343,8 @@ data "aws_iam_policy_document" "reputation_list_parser" {
     effect = "Allow"
 
     resources = [
-      "arn:aws:waf::${data.aws_caller_identity.current.account_id}:ipset/${aws_waf_ipset.waf_reputation_set.id}",
+      # "arn:aws:waf::${data.aws_caller_identity.current.account_id}:ipset/${aws_waf_ipset.waf_reputation_set.id}",
+      "arn:aws:waf::${data.aws_caller_identity.current.account_id}:ipset/${element(concat(aws_waf_ipset.waf_reputation_set.*.id))}",
     ]
   }
 
@@ -373,3 +374,8 @@ data "aws_iam_policy_document" "reputation_list_parser" {
     ]
   }
 }
+
+
+
+# 
+data "aws_caller_identity" "current" {}
