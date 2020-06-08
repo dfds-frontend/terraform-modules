@@ -262,7 +262,7 @@ resource "aws_waf_rule" "waf_reputation" {
   metric_name = "${var.name_prefix}IPReputationRule"
 
   predicates {
-    data_id = element(concat(aws_waf_ipset.waf_reputation_set.*.id, [""]), 0) // "${aws_waf_ipset.waf_reputation_set.id}"
+    data_id = element(aws_waf_ipset.waf_reputation_set, count.index)["id"] // "${aws_waf_ipset.waf_reputation_set.id}"
     negated = false
     type    = "IPMatch"
   }
