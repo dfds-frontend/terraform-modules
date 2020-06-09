@@ -42,7 +42,7 @@ resource aws_waf_web_acl waf_acl {
   }
 
   dynamic "rules" {
-    for_each = var.reputation_lists_protection_activated == "yes" ? 1 : 0
+    for_each = var.reputation_lists_protection_activated == "yes" ? [1] : []
     content {
       action {
         type = var.rule_reputation_lists_protection_action
