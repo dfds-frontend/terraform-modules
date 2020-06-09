@@ -40,4 +40,9 @@ variable "log_level" {
   default     = "INFO"
 }
 
+variable "rule_reputation_lists_protection_action" {
+  default     = "COUNT"
+}
+
+
 variable "aws_region" {}

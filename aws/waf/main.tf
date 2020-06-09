@@ -41,6 +41,19 @@ resource aws_waf_web_acl waf_acl {
     type     = "RATE_BASED"
   }
 
+  dynamic "rules" {
+    for_each = var.reputation_lists_protection_activated == "yes" ? 1 : 0
+    content {
+      action {
+        type = var.rule_reputation_lists_protection_action
+      }
+
+      priority = 40
+      rule_id  = element(concat(aws_waf_ipset.waf_reputation_set.*.id, [""]), 0)      
+      type     = "RATE_BASED"      
+    }
+  }
+
   tags = "${var.tags}"
 }
 
