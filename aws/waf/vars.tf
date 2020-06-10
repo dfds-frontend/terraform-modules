@@ -47,16 +47,22 @@ variable "aws_region" {}
 variable "waf_blacklist_ipset" {
   description = "Provide waf blacklist to deny accessing web resources"
   # default     = []
-  default = [{
-    {
-      value = "1.1.1.1/32"
+  # default = [{
+  #   {
+  #     value = "1.1.1.1/32"
 
-      type = "IPV4"
-    },
-    {
-      value = "2.2.2.2/32"
+  #     type = "IPV4"
+  #   },
+  #   {
+  #     value = "2.2.2.2/32"
 
-      type = "IPV4"
-    },
-  }]
+  #     type = "IPV4"
+  #   },
+  # }]
+
+
+  default = [
+    { value = "1.2.3.4/32", type="IPV4"},
+    { value = "2.3.4.5/28", type="IPV4"},
+  ]
 }
