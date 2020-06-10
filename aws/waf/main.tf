@@ -426,12 +426,6 @@ data "aws_iam_policy_document" "assume_role" {
 
 
 
-resource "aws_waf_ipset" "waf_blacklist_set" {
-  name               = "blacklist-set"
-  ip_set_descriptors = "${var.waf_blacklist_ipset}"
-}
-
-
 ###################################################################
 # Black list
 ###################################################################
