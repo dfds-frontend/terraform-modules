@@ -51,18 +51,18 @@ resource aws_waf_web_acl waf_acl {
     type     = "REGULAR"
   }  
 
-  dynamic "rules" {
-    for_each = var.reputation_lists_protection_activated ? [1] : []
-    content {
-      action {
-        type = var.rule_reputation_lists_protection_action
-      }
+  # dynamic "rules" {
+  #   for_each = var.reputation_lists_protection_activated ? [1] : []
+  #   content {
+  #     action {
+  #       type = var.rule_reputation_lists_protection_action
+  #     }
 
-      priority = 50
-      rule_id  = element(concat(aws_waf_ipset.waf_reputation_set.*.id, [""]), 0)      
-      type     = "REGULAR"      
-    }
-  }
+  #     priority = 50
+  #     rule_id  = element(concat(aws_waf_ipset.waf_reputation_set.*.id, [""]), 0)      
+  #     type     = "REGULAR"      
+  #   }
+  # }
 
  
 
