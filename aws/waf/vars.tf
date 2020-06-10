@@ -70,3 +70,8 @@ variable "waf_blacklist_ipset" {
 variable "reputation_lists_protection_lambda_source" {
   
 }
+
+
+variable "rule_blacklist_action" {
+  default = "COUNT"
+}

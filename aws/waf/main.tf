@@ -50,21 +50,18 @@ resource aws_waf_web_acl waf_acl {
 
       priority = 40
       rule_id  = element(concat(aws_waf_ipset.waf_reputation_set.*.id, [""]), 0)      
-      type     = "RATE_BASED"      
+      type     = "Regular"      
     }
   }
 
-  dynamic "rules" {
-    for_each = var.reputation_lists_protection_activated ? [1] : []
-    content {
-      action {
-        type = var.rule_reputation_lists_protection_action
-      }
-
-      priority = 40
-      rule_id  = element(concat(aws_waf_ipset.waf_reputation_set.*.id, [""]), 0)      
-      type     = "RATE_BASED"      
+  rules {
+    action {
+      type = var.rule_blacklist_action
     }
+
+    priority = 50
+    rule_id  = aws_waf_rule.waf_blacklist.id
+    type     = "Regular"
   }
 
   tags = "${var.tags}"
