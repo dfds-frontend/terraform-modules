@@ -446,7 +446,7 @@ resource "aws_waf_ipset" "waf_blacklist_set" {
   name               = "blacklist-set"
   dynamic "ip_set_descriptors" {
     iterator = ip
-    for_each = var.waf_blacklist_ipset
+    for_each = local.ip_set_descriptors # var.waf_blacklist_ipset
 
     content {
       type  = ip.type # "IPV4"
@@ -455,9 +455,9 @@ resource "aws_waf_ipset" "waf_blacklist_set" {
   }  
 }
 
-# locals {
-#   ip_set_descriptors = [
-#     { value = "1.2.3.4/32", type="IPV4"},
-#     { value = "2.3.4.5/28", type="IPV4"},
-#   ]
-# }
+locals {
+  ip_set_descriptors = [
+    { value = "1.2.3.4/32", type="IPV4"},
+    { value = "2.3.4.5/28", type="IPV4"},
+  ]
+}
