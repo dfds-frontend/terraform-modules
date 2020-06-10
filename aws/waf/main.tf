@@ -389,6 +389,7 @@ data "aws_iam_policy_document" "reputation_list_parser" {
 
 
 module "aws_cw_log_group_lambda_reputation_lists_parser" {
+  count = "${var.reputation_lists_protection_activated ? 1 : 0}"
   source = "../cloudwatch-log-group"
   name = "/aws/lambda/${var.name_prefix}_reputation_lists_parser"
 }

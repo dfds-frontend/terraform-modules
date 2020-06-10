@@ -6,7 +6,7 @@ resource "aws_cloudwatch_event_rule" "reputation_lists_parser" {
 }
 
 resource "aws_cloudwatch_event_target" "reputation_lists_parser" {
-  
+  count = "${var.reputation_lists_protection_activated ? 1 : 0}"
   rule = aws_cloudwatch_event_rule.reputation_lists_parser[count.index].name
   arn  = "${element(concat(aws_lambda_function.reputation_lists_parser.*.arn, [""]), 0)}"  // "${aws_lambda_function.reputation_lists_parser.arn}"
 
@@ -32,6 +32,3 @@ resource "aws_cloudwatch_event_target" "reputation_lists_parser" {
 }
 INPUT
 }
-
-
-# "${aws_waf_ipset.waf_reputation_set.id}"
