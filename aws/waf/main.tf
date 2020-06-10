@@ -403,27 +403,13 @@ resource "aws_cloudwatch_log_group" "loggroup" {
   retention_in_days = 30
 }
 
-
-# prerequistes
-data "aws_caller_identity" "current" {}
-
-data "aws_iam_policy_document" "assume_role" {
-  statement {
-    sid = "STSAssumeRole"
-
-    actions = [
-      "sts:AssumeRole",
-    ]
-
-    principals {
-      type        = "Service"
-      identifiers = ["lambda.amazonaws.com"]
-    }
-
-    effect = "Allow"
-  }
+resource "aws_lambda_permission" "reputation_lists_parser" {
+  count = "${var.reputation_lists_protection_activated ? 1 : 0}"
+  action        = "lambda:InvokeFunction"
+  function_name = "${aws_lambda_function.reputation_lists_parser[count.index].function_name}"
+  principal     = "events.amazonaws.com"
+  source_arn    = "${aws_cloudwatch_event_rule.reputation_lists_parser[count.index].arn}"
 }
-
 
 
 ###################################################################
@@ -460,4 +446,25 @@ locals {
     { value = "1.2.3.4/32", type="IPV4"},
     { value = "2.3.4.5/28", type="IPV4"},
   ]
+}
+
+
+# prerequistes
+data "aws_caller_identity" "current" {}
+
+data "aws_iam_policy_document" "assume_role" {
+  statement {
+    sid = "STSAssumeRole"
+
+    actions = [
+      "sts:AssumeRole",
+    ]
+
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
+    }
+
+    effect = "Allow"
+  }
 }
