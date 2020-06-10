@@ -433,7 +433,7 @@ data "aws_iam_policy_document" "assume_role" {
 resource "aws_waf_rule" "waf_blacklist" {
   depends_on  = ["aws_waf_ipset.waf_blacklist_set"]
   name        = "${var.name_prefix} BlackList Rule"
-  metric_name = "${var.name_prefix}BlacklistRule"
+  metric_name = "${replace(var.name_prefix, "-", "")}BlacklistRule"
 
   predicates {
     data_id = "${aws_waf_ipset.waf_blacklist_set.id}"
