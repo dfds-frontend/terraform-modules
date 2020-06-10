@@ -374,11 +374,10 @@ data "aws_iam_policy_document" "reputation_list_parser" {
 
   statement {
     actions = [
-      "logs:CreateLogGroup",
       "logs:CreateLogStream",
       "logs:PutLogEvents",
     ]
-
+      # "logs:CreateLogGroup",
     effect = "Allow"
 
     resources = [
@@ -387,12 +386,12 @@ data "aws_iam_policy_document" "reputation_list_parser" {
   }
 }
 
-
-module "aws_cw_log_group_lambda_reputation_lists_parser" {  
-  source = "../cloudwatch-log-group"
-  deploy = var.reputation_lists_protection_activated
-  name = "/aws/lambda/${var.name_prefix}_reputation_lists_parser"
+resource "aws_cloudwatch_log_group" "loggroup" {
+  count = "${var.reputation_lists_protection_activated ? 1 : 0}"
+  name              = "/aws/lambda/${aws_lambda_function.lambda_role_reputation_list_parser[count.index].function_name}"
+  retention_in_days = 30
 }
+
 
 # prerequistes
 data "aws_caller_identity" "current" {}
