@@ -449,8 +449,8 @@ resource "aws_waf_ipset" "waf_blacklist_set" {
     for_each = local.ip_set_descriptors # var.waf_blacklist_ipset
 
     content {
-      type  = ip.type # "IPV4"
-      value = ip.value
+      type  = ip.value.type # "IPV4"
+      value = ip.value.value
     }
   }  
 }
