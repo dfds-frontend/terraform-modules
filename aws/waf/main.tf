@@ -41,18 +41,31 @@ resource aws_waf_web_acl waf_acl {
     type     = "RATE_BASED"
   }
 
-  # dynamic "rules" {
-  #   for_each = var.reputation_lists_protection_activated ? [1] : []
-  #   content {
-  #     action {
-  #       type = var.rule_reputation_lists_protection_action
-  #     }
+  dynamic "rules" {
+    for_each = var.reputation_lists_protection_activated ? [1] : []
+    content {
+      action {
+        type = var.rule_reputation_lists_protection_action
+      }
 
-  #     priority = 40
-  #     rule_id  = element(concat(aws_waf_ipset.waf_reputation_set.*.id, [""]), 0)      
-  #     type     = "RATE_BASED"      
-  #   }
-  # }
+      priority = 40
+      rule_id  = element(concat(aws_waf_ipset.waf_reputation_set.*.id, [""]), 0)      
+      type     = "RATE_BASED"      
+    }
+  }
+
+  dynamic "rules" {
+    for_each = var.reputation_lists_protection_activated ? [1] : []
+    content {
+      action {
+        type = var.rule_reputation_lists_protection_action
+      }
+
+      priority = 40
+      rule_id  = element(concat(aws_waf_ipset.waf_reputation_set.*.id, [""]), 0)      
+      type     = "RATE_BASED"      
+    }
+  }
 
   tags = "${var.tags}"
 }
@@ -263,9 +276,9 @@ resource "aws_waf_rate_based_rule" "mitigate_http_flood" {
 
 
 
-###################################################################
-# IP Set based matching
-###################################################################
+###############################################################################
+# IP Reputation List
+###############################################################################
 
 resource "aws_waf_rule" "waf_reputation" {
   count = "${var.reputation_lists_protection_activated ? 1 : 0}"
@@ -314,9 +327,7 @@ resource "random_uuid" "uuid" {
   # keepers = {  #   change = "${timestamp()}"  # }
 }
 
-###############################################################################
-# Reputation List Parser
-###############################################################################
+
 resource "aws_iam_role" "lambda_role_reputation_list_parser" {
   count              = "${var.reputation_lists_protection_activated ? 1 : 0}"
   name               = "${var.name_prefix}LambdaRoleReputationListParser"
@@ -411,4 +422,33 @@ data "aws_iam_policy_document" "assume_role" {
 
     effect = "Allow"
   }
+}
+
+
+
+resource "aws_waf_ipset" "waf_blacklist_set" {
+  name               = "blacklist-set"
+  ip_set_descriptors = "${var.waf_blacklist_ipset}"
+}
+
+
+###################################################################
+# Black list
+###################################################################
+
+resource "aws_waf_rule" "waf_blacklist" {
+  depends_on  = ["aws_waf_ipset.waf_blacklist_set"]
+  name        = "${var.stack_name} BlackList Rule"
+  metric_name = "${var.stack_name}BlacklistRule"
+
+  predicates {
+    data_id = "${aws_waf_ipset.waf_blacklist_set.id}"
+    negated = false
+    type    = "IPMatch"
+  }
+}
+
+resource "aws_waf_ipset" "waf_blacklist_set" {
+  name               = "blacklist-set"
+  ip_set_descriptors = "${var.waf_blacklist_ipset}"
 }

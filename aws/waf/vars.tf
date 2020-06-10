@@ -42,3 +42,21 @@ variable "rule_reputation_lists_protection_action" {
 
 
 variable "aws_region" {}
+
+
+variable "waf_blacklist_ipset" {
+  description = "Provide waf blacklist to deny accessing web resources"
+  # default     = []
+  default = [{
+    {
+      value = "1.1.1.1/32"
+
+      type = "IPV4"
+    },
+    {
+      value = "2.2.2.2/32"
+
+      type = "IPV4"
+    },
+  }]
+}
