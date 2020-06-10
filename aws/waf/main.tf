@@ -306,7 +306,7 @@ resource "aws_lambda_function" "reputation_lists_parser" {
   role          = "${aws_iam_role.lambda_role_reputation_list_parser[count.index].arn}"
   handler       = "reputation-lists-parser.handler"
   # filename      = "${path.module}/files/reputation-lists-parser/reputation-lists-parser.zip"
-  filename      = "reputation-lists-parser.zip"
+  filename      = var.reputation_lists_protection_lambda_source # "reputation-lists-parser.zip"
   runtime       = "nodejs12.x"
   memory_size   = "128"
   timeout       = "300"

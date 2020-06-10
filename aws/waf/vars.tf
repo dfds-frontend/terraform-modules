@@ -66,3 +66,7 @@ variable "waf_blacklist_ipset" {
     { value = "2.3.4.5/28", type="IPV4"},
   ]
 }
+
+variable "reputation_lists_protection_lambda_source" {
+  
+}
