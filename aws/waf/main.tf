@@ -387,6 +387,12 @@ data "aws_iam_policy_document" "reputation_list_parser" {
   }
 }
 
+
+module "aws_cw_log_group_lambda_reputation_lists_parser" {
+  source = "../cloudwatch-log-group"
+  name = "/aws/lambda/${var.name_prefix}_reputation_lists_parser"
+}
+
 # prerequistes
 data "aws_caller_identity" "current" {}
 
