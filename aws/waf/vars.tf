@@ -62,8 +62,8 @@ variable "waf_blacklist_ipset" {
   type = "list"
 
   default = [
-    { value = "1.2.3.4/32", type="IPV4"},
-    { value = "2.2.2.2/32", type="IPV4"},
+    { value = "10.10.10.10/32", type="IPV4"},
+    { value = "20.20.20.20/32", type="IPV4"},
   ]
 }
 
