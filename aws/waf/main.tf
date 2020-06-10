@@ -50,7 +50,7 @@ resource aws_waf_web_acl waf_acl {
 
       priority = 40
       rule_id  = element(concat(aws_waf_ipset.waf_reputation_set.*.id, [""]), 0)      
-      type     = "Regular"      
+      type     = "REGULAR"      
     }
   }
 
@@ -61,7 +61,7 @@ resource aws_waf_web_acl waf_acl {
 
     priority = 50
     rule_id  = aws_waf_rule.waf_blacklist.id
-    type     = "Regular"
+    type     = "REGULAR"
   }
 
   tags = "${var.tags}"
