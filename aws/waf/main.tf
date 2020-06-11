@@ -348,7 +348,7 @@ resource "aws_iam_role" "lambda_role_reputation_list_parser" {
 }
 
 resource "aws_iam_role_policy" "reputation_list_parser" {
-  count = "${var.reputation_lists_protection_activated ? 1 : 0}"
+  # count = "${var.reputation_lists_protection_activated ? 1 : 0}"
 
   name   = "${var.name_prefix}ReputationListParser"
   role   = "${aws_iam_role.lambda_role_reputation_list_parser.id}" // aws_iam_role.lambda_role_reputation_list_parser[count.index].id
@@ -356,7 +356,7 @@ resource "aws_iam_role_policy" "reputation_list_parser" {
 }
 
 data "aws_iam_policy_document" "reputation_list_parser" {
-  count = "${var.reputation_lists_protection_activated ? 1 : 0}"
+  # count = "${var.reputation_lists_protection_activated ? 1 : 0}"
 
   statement {
     actions = [
