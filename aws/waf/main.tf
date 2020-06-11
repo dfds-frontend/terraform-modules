@@ -304,6 +304,13 @@ resource "aws_waf_rule" "waf_reputation" {
 resource "aws_waf_ipset" "waf_reputation_set" {
   count = "${var.reputation_lists_protection_activated ? 1 : 0}"
   name  = "reputation-set"
+
+  lifecycle {
+    ignore_changes = [
+      # Ignore changes to tags, e.g. because they are updated by lambda function
+      ip_set_descriptors,
+    ]
+  }
 }
 
 resource "aws_lambda_function" "reputation_lists_parser" {
