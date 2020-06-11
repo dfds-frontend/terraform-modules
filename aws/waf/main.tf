@@ -57,7 +57,7 @@ resource aws_waf_web_acl waf_acl {
     }
 
     priority = 50
-    rule_id  = element(concat(aws_waf_ipset.waf_reputation_set.*.id, [""]), 0)      
+    rule_id  = element(concat(aws_waf_rule.waf_reputation.*.id, [""]), 0)
     type     = "REGULAR"      
   }
 
