@@ -410,19 +410,19 @@ data "aws_iam_policy_document" "reputation_list_parser" {
   }
 }
 
-# resource "aws_cloudwatch_log_group" "loggroup" {
-#   count = "${var.reputation_lists_protection_activated ? 1 : 0}"
-#   name = "/aws/lambda/${var.name_prefix}_reputation_lists_parser"
-#   retention_in_days = 30
-# }
+resource "aws_cloudwatch_log_group" "loggroup" {
+  # count = "${var.reputation_lists_protection_activated ? 1 : 0}"
+  name = "/aws/lambda/${var.name_prefix}_reputation_lists_parser"
+  retention_in_days = 30
+}
 
-# resource "aws_lambda_permission" "reputation_lists_parser" {
-#   count = "${var.reputation_lists_protection_activated ? 1 : 0}"
-#   action        = "lambda:InvokeFunction"
-#   function_name = "${aws_lambda_function.reputation_lists_parser[count.index].function_name}"
-#   principal     = "events.amazonaws.com"
-#   source_arn    = "${aws_cloudwatch_event_rule.reputation_lists_parser[count.index].arn}"
-# }
+resource "aws_lambda_permission" "reputation_lists_parser" {
+  # count = "${var.reputation_lists_protection_activated ? 1 : 0}"
+  action        = "lambda:InvokeFunction"
+  function_name = "${aws_lambda_function.reputation_lists_parser.function_name}" // "${aws_lambda_function.reputation_lists_parser[count.index].function_name}"
+  principal     = "events.amazonaws.com"
+  source_arn    = "${aws_cloudwatch_event_rule.reputation_lists_parser.arn}" // "${aws_cloudwatch_event_rule.reputation_lists_parser[count.index].arn}"
+}
 
 
 ###################################################################
