@@ -57,7 +57,7 @@ resource aws_waf_web_acl waf_acl {
     }
 
     priority = 50
-    rule_id  = element(concat(aws_waf_rule.waf_reputation.*.id, [""]), 0)
+    rule_id  = aws_waf_rule.waf_reputation.id //element(concat(aws_waf_rule.waf_reputation.*.id, [""]), 0)
     type     = "REGULAR"      
   }
 
@@ -288,30 +288,30 @@ resource "aws_waf_rate_based_rule" "mitigate_http_flood" {
 ###############################################################################
 
 resource "aws_waf_rule" "waf_reputation" {
-  count = "${var.reputation_lists_protection_activated ? 1 : 0}"
+  # count = "${var.reputation_lists_protection_activated ? 1 : 0}"
 
   depends_on  = ["aws_waf_ipset.waf_reputation_set"]
   name        = "${var.name_prefix}-IP-Reputation-Rule"
   metric_name = "${replace(var.name_prefix, "-", "")}IPReputationRule"
   predicates {
-    data_id = element(concat(aws_waf_ipset.waf_reputation_set.*.id, [""]), 0) // "${aws_waf_ipset.waf_reputation_set.id}"
+    data_id = "${aws_waf_ipset.waf_reputation_set.id}" // element(concat(aws_waf_ipset.waf_reputation_set.*.id, [""]), 0) 
     negated = false
     type    = "IPMatch"
   }
 }
 
 
-# resource "aws_waf_ipset" "waf_reputation_set" {
-#   count = "${var.reputation_lists_protection_activated ? 1 : 0}"
-#   name  = "reputation-set"
+resource "aws_waf_ipset" "waf_reputation_set" {
+  # count = "${var.reputation_lists_protection_activated ? 1 : 0}"
+  name  = "reputation-set"
 
-#   lifecycle {
-#     ignore_changes = [
-#       # Ignore changes to tags, e.g. because they are updated by lambda function
-#       ip_set_descriptors,
-#     ]
-#   }
-# }
+  lifecycle {
+    ignore_changes = [
+      # Ignore changes to tags, e.g. because they are updated by lambda function
+      ip_set_descriptors,
+    ]
+  }
+}
 
 # resource "aws_lambda_function" "reputation_lists_parser" {
 #   count = "${var.reputation_lists_protection_activated ? 1 : 0}"
