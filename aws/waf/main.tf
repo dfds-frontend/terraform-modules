@@ -57,24 +57,9 @@ resource aws_waf_web_acl waf_acl {
     }
 
     priority = 50
-    rule_id  = aws_waf_rule.waf_reputation.id //element(concat(aws_waf_rule.waf_reputation.*.id, [""]), 0)
+    rule_id  = aws_waf_rule.waf_reputation.id
     type     = "REGULAR"      
   }
-
-  # dynamic "rules" {
-  #   for_each = var.reputation_lists_protection_activated ? [1] : []
-  #   content {
-  #     action {
-  #       type = var.rule_reputation_lists_protection_action
-  #     }
-
-  #     priority = 50
-  #     rule_id  = var.reputation_lists_protection_activated ? element(concat(aws_waf_rule.waf_reputation.*.id, [""]), 0) : null
-  #     type     = "REGULAR"      
-  #   }
-  # }
-
- 
 
   tags = "${var.tags}"
 }
@@ -288,13 +273,11 @@ resource "aws_waf_rate_based_rule" "mitigate_http_flood" {
 ###############################################################################
 
 resource "aws_waf_rule" "waf_reputation" {
-  # count = "${var.reputation_lists_protection_activated ? 1 : 0}"
-
-  depends_on  = ["aws_waf_ipset.waf_reputation_set"]
+  depends_on  = [aws_waf_ipset.waf_reputation_set]
   name        = "${var.name_prefix}-IP-Reputation-Rule"
   metric_name = "${replace(var.name_prefix, "-", "")}IPReputationRule"
   predicates {
-    data_id = "${aws_waf_ipset.waf_reputation_set.id}" // element(concat(aws_waf_ipset.waf_reputation_set.*.id, [""]), 0) 
+    data_id = aws_waf_ipset.waf_reputation_set.id
     negated = false
     type    = "IPMatch"
   }
@@ -302,7 +285,6 @@ resource "aws_waf_rule" "waf_reputation" {
 
 
 resource "aws_waf_ipset" "waf_reputation_set" {
-  # count = "${var.reputation_lists_protection_activated ? 1 : 0}"
   name  = "reputation-set"
 
   lifecycle {
@@ -314,10 +296,9 @@ resource "aws_waf_ipset" "waf_reputation_set" {
 }
 
 resource "aws_lambda_function" "reputation_lists_parser" {
-  # count = "${var.reputation_lists_protection_activated ? 1 : 0}"
   function_name = "${var.name_prefix}_reputation_lists_parser"
   description   = "This lambda function checks third-party IP reputation lists hourly for new IP ranges to block. These lists include the Spamhaus Dont Route Or Peer (DROP) and Extended Drop (EDROP) lists, the Proofpoint Emerging Threats IP list, and the Tor exit node list."
-  role          = "${aws_iam_role.lambda_role_reputation_list_parser.arn}" // "${aws_iam_role.lambda_role_reputation_list_parser[count.index].arn}"
+  role          = aws_iam_role.lambda_role_reputation_list_parser.arn
   handler       = "reputation-lists-parser.handler"
   filename      = var.reputation_lists_protection_lambda_source
   runtime       = "nodejs12.x"
@@ -327,14 +308,12 @@ resource "aws_lambda_function" "reputation_lists_parser" {
   environment {
     variables = {
       SEND_ANONYMOUS_USAGE_DATA = "test"
-      UUID                      = "${random_uuid.uuid.result}"
+      UUID                      = random_uuid.uuid.result
       METRIC_NAME_PREFIX        = "test"
-      LOG_LEVEL                 = "${var.log_level}"
+      LOG_LEVEL                 = var.log_level
     }
   }
 }
-
-
 
 resource "random_uuid" "uuid" {
   # keepers = {  #   change = "${timestamp()}"  # }
@@ -342,22 +321,17 @@ resource "random_uuid" "uuid" {
 
 
 resource "aws_iam_role" "lambda_role_reputation_list_parser" {
-  # count              = "${var.reputation_lists_protection_activated ? 1 : 0}"
   name               = "${var.name_prefix}LambdaRoleReputationListParser"
-  assume_role_policy =  "${data.aws_iam_policy_document.assume_role.json}" // element(concat(data.aws_iam_policy_document.assume_role.*.json, [""]), 0) 
+  assume_role_policy =  data.aws_iam_policy_document.assume_role.json
 }
 
 resource "aws_iam_role_policy" "reputation_list_parser" {
-  # count = "${var.reputation_lists_protection_activated ? 1 : 0}"
-
   name   = "${var.name_prefix}ReputationListParser"
-  role   = "${aws_iam_role.lambda_role_reputation_list_parser.id}" // aws_iam_role.lambda_role_reputation_list_parser[count.index].id
-  policy = "${data.aws_iam_policy_document.reputation_list_parser.json}" // data.aws_iam_policy_document.reputation_list_parser[count.index].json 
+  role   = aws_iam_role.lambda_role_reputation_list_parser.id
+  policy = data.aws_iam_policy_document.reputation_list_parser.json
 }
 
 data "aws_iam_policy_document" "reputation_list_parser" {
-  # count = "${var.reputation_lists_protection_activated ? 1 : 0}"
-
   statement {
     actions = [
       "waf:GetChangeToken",
@@ -380,7 +354,6 @@ data "aws_iam_policy_document" "reputation_list_parser" {
 
     resources = [
       "arn:aws:waf::${data.aws_caller_identity.current.account_id}:ipset/${aws_waf_ipset.waf_reputation_set.id}",
-      # "arn:aws:waf::${data.aws_caller_identity.current.account_id}:ipset/${element(concat(aws_waf_ipset.waf_reputation_set.*.id,[""]),0)}",
     ]
   }
 
@@ -411,17 +384,15 @@ data "aws_iam_policy_document" "reputation_list_parser" {
 }
 
 resource "aws_cloudwatch_log_group" "loggroup" {
-  # count = "${var.reputation_lists_protection_activated ? 1 : 0}"
   name = "/aws/lambda/${var.name_prefix}_reputation_lists_parser"
   retention_in_days = 30
 }
 
 resource "aws_lambda_permission" "reputation_lists_parser" {
-  # count = "${var.reputation_lists_protection_activated ? 1 : 0}"
   action        = "lambda:InvokeFunction"
-  function_name = "${aws_lambda_function.reputation_lists_parser.function_name}" // "${aws_lambda_function.reputation_lists_parser[count.index].function_name}"
+  function_name = aws_lambda_function.reputation_lists_parser.function_name
   principal     = "events.amazonaws.com"
-  source_arn    = "${aws_cloudwatch_event_rule.reputation_lists_parser.arn}" // "${aws_cloudwatch_event_rule.reputation_lists_parser[count.index].arn}"
+  source_arn    = aws_cloudwatch_event_rule.reputation_lists_parser.arn
 }
 
 
@@ -430,7 +401,7 @@ resource "aws_lambda_permission" "reputation_lists_parser" {
 ###################################################################
 
 resource "aws_waf_rule" "waf_blacklist" {
-  depends_on  = ["aws_waf_ipset.waf_blacklist_set"]
+  depends_on  = [aws_waf_ipset.waf_blacklist_set]
   name        = "${var.name_prefix} BlackList Rule"
   metric_name = "${replace(var.name_prefix, "-", "")}BlacklistRule"
 
