@@ -6,7 +6,7 @@ terraform {
 # WAF ACL with each rule defined and prioritized accordingly.
 #
 resource aws_waf_web_acl waf_acl {
-  name        = "${var.name_prefix}"
+  name        = var.name_prefix
   metric_name = replace("${var.name_prefix}acl", "/[^0-9A-Za-z]/", "")
 
   default_action {
@@ -61,7 +61,7 @@ resource aws_waf_web_acl waf_acl {
     type     = "REGULAR"      
   }
 
-  tags = "${var.tags}"
+  tags = var.tags
 }
 
 
@@ -406,7 +406,7 @@ resource "aws_waf_rule" "waf_blacklist" {
   metric_name = "${replace(var.name_prefix, "-", "")}BlacklistRule"
 
   predicates {
-    data_id = "${aws_waf_ipset.waf_blacklist_set.id}"
+    data_id = aws_waf_ipset.waf_blacklist_set.id
     negated = false
     type    = "IPMatch"
   }
