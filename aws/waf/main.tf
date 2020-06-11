@@ -301,128 +301,128 @@ resource "aws_waf_rule" "waf_reputation" {
 }
 
 
-resource "aws_waf_ipset" "waf_reputation_set" {
-  count = "${var.reputation_lists_protection_activated ? 1 : 0}"
-  name  = "reputation-set"
+# resource "aws_waf_ipset" "waf_reputation_set" {
+#   count = "${var.reputation_lists_protection_activated ? 1 : 0}"
+#   name  = "reputation-set"
 
-  lifecycle {
-    ignore_changes = [
-      # Ignore changes to tags, e.g. because they are updated by lambda function
-      ip_set_descriptors,
-    ]
-  }
-}
+#   lifecycle {
+#     ignore_changes = [
+#       # Ignore changes to tags, e.g. because they are updated by lambda function
+#       ip_set_descriptors,
+#     ]
+#   }
+# }
 
-resource "aws_lambda_function" "reputation_lists_parser" {
-  count = "${var.reputation_lists_protection_activated ? 1 : 0}"
-  function_name = "${var.name_prefix}_reputation_lists_parser"
-  description   = "This lambda function checks third-party IP reputation lists hourly for new IP ranges to block. These lists include the Spamhaus Dont Route Or Peer (DROP) and Extended Drop (EDROP) lists, the Proofpoint Emerging Threats IP list, and the Tor exit node list."
-  role          = "${aws_iam_role.lambda_role_reputation_list_parser[count.index].arn}"
-  handler       = "reputation-lists-parser.handler"
-  filename      = var.reputation_lists_protection_lambda_source
-  runtime       = "nodejs12.x"
-  memory_size   = "128"
-  timeout       = "300"
+# resource "aws_lambda_function" "reputation_lists_parser" {
+#   count = "${var.reputation_lists_protection_activated ? 1 : 0}"
+#   function_name = "${var.name_prefix}_reputation_lists_parser"
+#   description   = "This lambda function checks third-party IP reputation lists hourly for new IP ranges to block. These lists include the Spamhaus Dont Route Or Peer (DROP) and Extended Drop (EDROP) lists, the Proofpoint Emerging Threats IP list, and the Tor exit node list."
+#   role          = "${aws_iam_role.lambda_role_reputation_list_parser[count.index].arn}"
+#   handler       = "reputation-lists-parser.handler"
+#   filename      = var.reputation_lists_protection_lambda_source
+#   runtime       = "nodejs12.x"
+#   memory_size   = "128"
+#   timeout       = "300"
 
-  environment {
-    variables = {
-      SEND_ANONYMOUS_USAGE_DATA = "test"
-      UUID                      = "${random_uuid.uuid.result}"
-      METRIC_NAME_PREFIX        = "test"
-      LOG_LEVEL                 = "${var.log_level}"
-    }
-  }
-}
-
-
-
-resource "random_uuid" "uuid" {
-  # keepers = {  #   change = "${timestamp()}"  # }
-}
+#   environment {
+#     variables = {
+#       SEND_ANONYMOUS_USAGE_DATA = "test"
+#       UUID                      = "${random_uuid.uuid.result}"
+#       METRIC_NAME_PREFIX        = "test"
+#       LOG_LEVEL                 = "${var.log_level}"
+#     }
+#   }
+# }
 
 
-resource "aws_iam_role" "lambda_role_reputation_list_parser" {
-  count              = "${var.reputation_lists_protection_activated ? 1 : 0}"
-  name               = "${var.name_prefix}LambdaRoleReputationListParser"
-  assume_role_policy = element(concat(data.aws_iam_policy_document.assume_role.*.json, [""]), 0) // "${data.aws_iam_policy_document.assume_role.json}"
-}
 
-resource "aws_iam_role_policy" "reputation_list_parser" {
-  count = "${var.reputation_lists_protection_activated ? 1 : 0}"
+# resource "random_uuid" "uuid" {
+#   # keepers = {  #   change = "${timestamp()}"  # }
+# }
 
-  name   = "${var.name_prefix}ReputationListParser"
-  role   = aws_iam_role.lambda_role_reputation_list_parser[count.index].id # "${aws_iam_role.lambda_role_reputation_list_parser.id}"
-  policy = data.aws_iam_policy_document.reputation_list_parser[count.index].json # element(concat(data.aws_iam_policy_document.reputation_list_parser.*.json, [""]), 0) # "${data.aws_iam_policy_document.reputation_list_parser.json}"
-}
 
-data "aws_iam_policy_document" "reputation_list_parser" {
-  count = "${var.reputation_lists_protection_activated ? 1 : 0}"
+# resource "aws_iam_role" "lambda_role_reputation_list_parser" {
+#   count              = "${var.reputation_lists_protection_activated ? 1 : 0}"
+#   name               = "${var.name_prefix}LambdaRoleReputationListParser"
+#   assume_role_policy = element(concat(data.aws_iam_policy_document.assume_role.*.json, [""]), 0) // "${data.aws_iam_policy_document.assume_role.json}"
+# }
 
-  statement {
-    actions = [
-      "waf:GetChangeToken",
-    ]
+# resource "aws_iam_role_policy" "reputation_list_parser" {
+#   count = "${var.reputation_lists_protection_activated ? 1 : 0}"
 
-    effect = "Allow"
+#   name   = "${var.name_prefix}ReputationListParser"
+#   role   = aws_iam_role.lambda_role_reputation_list_parser[count.index].id # "${aws_iam_role.lambda_role_reputation_list_parser.id}"
+#   policy = data.aws_iam_policy_document.reputation_list_parser[count.index].json # element(concat(data.aws_iam_policy_document.reputation_list_parser.*.json, [""]), 0) # "${data.aws_iam_policy_document.reputation_list_parser.json}"
+# }
 
-    resources = [
-      "*",
-    ]
-  }
+# data "aws_iam_policy_document" "reputation_list_parser" {
+#   count = "${var.reputation_lists_protection_activated ? 1 : 0}"
 
-  statement {
-    actions = [
-      "waf:GetIPSet",
-      "waf:UpdateIPSet",
-    ]
+#   statement {
+#     actions = [
+#       "waf:GetChangeToken",
+#     ]
 
-    effect = "Allow"
+#     effect = "Allow"
 
-    resources = [
-      # "arn:aws:waf::${data.aws_caller_identity.current.account_id}:ipset/${aws_waf_ipset.waf_reputation_set.id}",
-      "arn:aws:waf::${data.aws_caller_identity.current.account_id}:ipset/${element(concat(aws_waf_ipset.waf_reputation_set.*.id,[""]),0)}",
-    ]
-  }
+#     resources = [
+#       "*",
+#     ]
+#   }
 
-  statement {
-    actions = [
-      "cloudwatch:GetMetricStatistics",
-    ]
+#   statement {
+#     actions = [
+#       "waf:GetIPSet",
+#       "waf:UpdateIPSet",
+#     ]
 
-    effect = "Allow"
+#     effect = "Allow"
 
-    resources = [
-      "*",
-    ]
-  }
+#     resources = [
+#       # "arn:aws:waf::${data.aws_caller_identity.current.account_id}:ipset/${aws_waf_ipset.waf_reputation_set.id}",
+#       "arn:aws:waf::${data.aws_caller_identity.current.account_id}:ipset/${element(concat(aws_waf_ipset.waf_reputation_set.*.id,[""]),0)}",
+#     ]
+#   }
 
-  statement {
-    actions = [
-      "logs:CreateLogStream",
-      "logs:PutLogEvents",
-    ]
-      # "logs:CreateLogGroup",
-    effect = "Allow"
+#   statement {
+#     actions = [
+#       "cloudwatch:GetMetricStatistics",
+#     ]
 
-    resources = [
-      "arn:aws:logs:*:*:*",
-    ]
-  }
-}
+#     effect = "Allow"
 
-resource "aws_cloudwatch_log_group" "loggroup" {
-  count = "${var.reputation_lists_protection_activated ? 1 : 0}"
-  name = "/aws/lambda/${var.name_prefix}_reputation_lists_parser"
-  retention_in_days = 30
-}
+#     resources = [
+#       "*",
+#     ]
+#   }
 
-resource "aws_lambda_permission" "reputation_lists_parser" {
-  count = "${var.reputation_lists_protection_activated ? 1 : 0}"
-  action        = "lambda:InvokeFunction"
-  function_name = "${aws_lambda_function.reputation_lists_parser[count.index].function_name}"
-  principal     = "events.amazonaws.com"
-  source_arn    = "${aws_cloudwatch_event_rule.reputation_lists_parser[count.index].arn}"
-}
+#   statement {
+#     actions = [
+#       "logs:CreateLogStream",
+#       "logs:PutLogEvents",
+#     ]
+#       # "logs:CreateLogGroup",
+#     effect = "Allow"
+
+#     resources = [
+#       "arn:aws:logs:*:*:*",
+#     ]
+#   }
+# }
+
+# resource "aws_cloudwatch_log_group" "loggroup" {
+#   count = "${var.reputation_lists_protection_activated ? 1 : 0}"
+#   name = "/aws/lambda/${var.name_prefix}_reputation_lists_parser"
+#   retention_in_days = 30
+# }
+
+# resource "aws_lambda_permission" "reputation_lists_parser" {
+#   count = "${var.reputation_lists_protection_activated ? 1 : 0}"
+#   action        = "lambda:InvokeFunction"
+#   function_name = "${aws_lambda_function.reputation_lists_parser[count.index].function_name}"
+#   principal     = "events.amazonaws.com"
+#   source_arn    = "${aws_cloudwatch_event_rule.reputation_lists_parser[count.index].arn}"
+# }
 
 
 ###################################################################
