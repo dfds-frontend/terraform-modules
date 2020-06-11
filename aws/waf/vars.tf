@@ -25,12 +25,6 @@ variable "rule_http_flood_action" {
   description = "Rule action type. Either BLOCK, ALLOW, or COUNT (useful for testing)"
 }
 
-variable "reputation_lists_protection_activated" {
-  description = "Activate Reputation List Protection or not"
-  default     = true
-}
-
-
 variable "log_level" {
   description = "Log level settings, set one of DEBUG, INFO, WARNING, ERROR, CRITICAL"
   default     = "INFO"
