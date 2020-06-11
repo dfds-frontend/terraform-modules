@@ -25,12 +25,10 @@ resource "aws_cloudwatch_event_target" "reputation_lists_parser" {
     }
   ],
   "apiType": "waf",
-  "region": "${var.aws_region}",
+  "region": "${aws_region.current.name}",
   "ipSetIds": [
     "${aws_waf_ipset.waf_reputation_set.id}" 
   ]
 }
 INPUT
 }
-
-# "${element(concat(aws_waf_ipset.waf_reputation_set.*.id, [""]), 0)}" 

@@ -454,8 +454,12 @@ resource "aws_waf_ipset" "waf_blacklist_set" {
   }  
 }
 
+###################################################################
 # prerequistes
+###################################################################
+
 data "aws_caller_identity" "current" {}
+data "aws_region" "current" {}
 
 data "aws_iam_policy_document" "assume_role" {
   statement {
