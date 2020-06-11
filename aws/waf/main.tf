@@ -69,7 +69,7 @@ resource aws_waf_web_acl waf_acl {
       }
 
       priority = 50
-      rule_id  = element(concat(aws_waf_rule.waf_reputation.*.id, [""]), 0)      
+      rule_id  = var.reputation_lists_protection_activated ? element(concat(aws_waf_rule.waf_reputation.*.id, [""]), 0) : null
       type     = "REGULAR"      
     }
   }
