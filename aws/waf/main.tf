@@ -283,8 +283,6 @@ resource "aws_waf_rate_based_rule" "mitigate_http_flood" {
   rate_limit  = 100
 }
 
-
-
 ###############################################################################
 # IP Reputation List
 ###############################################################################
@@ -314,8 +312,7 @@ resource "aws_lambda_function" "reputation_lists_parser" {
   description   = "This lambda function checks third-party IP reputation lists hourly for new IP ranges to block. These lists include the Spamhaus Dont Route Or Peer (DROP) and Extended Drop (EDROP) lists, the Proofpoint Emerging Threats IP list, and the Tor exit node list."
   role          = "${aws_iam_role.lambda_role_reputation_list_parser[count.index].arn}"
   handler       = "reputation-lists-parser.handler"
-  # filename      = "${path.module}/files/reputation-lists-parser/reputation-lists-parser.zip"
-  filename      = var.reputation_lists_protection_lambda_source # "reputation-lists-parser.zip"
+  filename      = var.reputation_lists_protection_lambda_source
   runtime       = "nodejs12.x"
   memory_size   = "128"
   timeout       = "300"
@@ -441,7 +438,7 @@ resource "aws_waf_ipset" "waf_blacklist_set" {
   name               = "blacklist-set"
   dynamic "ip_set_descriptors" {
     iterator = ip
-    for_each = var.waf_blacklist_ipset # local.ip_set_descriptors 
+    for_each = var.waf_blacklist_ipset
 
     content {
       type  = ip.value.type
@@ -449,14 +446,6 @@ resource "aws_waf_ipset" "waf_blacklist_set" {
     }
   }  
 }
-
-# locals {
-#   ip_set_descriptors = [
-#     { value = "10.10.10.10/32", type="IPV4"},
-#     { value = "20.20.20.20/32", type="IPV4"},
-#   ]
-# }
-
 
 # prerequistes
 data "aws_caller_identity" "current" {}
