@@ -14,3 +14,7 @@ variable "tags" {
 variable "retention_days" {
   default = 90
 }
+
+variable "deploy" {
+  default = true
+}

@@ -6,7 +6,7 @@ terraform {
 # WAF ACL with each rule defined and prioritized accordingly.
 #
 resource aws_waf_web_acl waf_acl {
-  name        = "${var.name_prefix}"
+  name        = var.name_prefix
   metric_name = replace("${var.name_prefix}acl", "/[^0-9A-Za-z]/", "")
 
   default_action {
@@ -41,7 +41,27 @@ resource aws_waf_web_acl waf_acl {
     type     = "RATE_BASED"
   }
 
-  tags = "${var.tags}"
+  rules {
+    action {
+      type = var.rule_blacklist_action
+    }
+
+    priority = 40
+    rule_id  = aws_waf_rule.waf_blacklist.id
+    type     = "REGULAR"
+  }  
+
+  rules {
+    action {
+      type = var.rule_reputation_lists_protection_action
+    }
+
+    priority = 50
+    rule_id  = aws_waf_rule.waf_reputation.id
+    type     = "REGULAR"      
+  }
+
+  tags = var.tags
 }
 
 
@@ -246,4 +266,185 @@ resource "aws_waf_rate_based_rule" "mitigate_http_flood" {
 
   rate_key    = "IP"
   rate_limit  = 100
+}
+
+###############################################################################
+# IP Reputation List
+###############################################################################
+
+resource "aws_waf_rule" "waf_reputation" {
+  depends_on  = [aws_waf_ipset.waf_reputation_set]
+  name        = "${var.name_prefix}-IP-Reputation-Rule"
+  metric_name = "${replace(var.name_prefix, "-", "")}IPReputationRule"
+  predicates {
+    data_id = aws_waf_ipset.waf_reputation_set.id
+    negated = false
+    type    = "IPMatch"
+  }
+}
+
+
+resource "aws_waf_ipset" "waf_reputation_set" {
+  name  = "reputation-set"
+
+  lifecycle {
+    ignore_changes = [
+      # Ignore changes to tags, e.g. because they are updated by lambda function
+      ip_set_descriptors,
+    ]
+  }
+}
+
+resource "aws_lambda_function" "reputation_lists_parser" {
+  function_name = "${var.name_prefix}_reputation_lists_parser"
+  description   = "This lambda function checks third-party IP reputation lists hourly for new IP ranges to block. These lists include the Spamhaus Dont Route Or Peer (DROP) and Extended Drop (EDROP) lists, the Proofpoint Emerging Threats IP list, and the Tor exit node list."
+  role          = aws_iam_role.lambda_role_reputation_list_parser.arn
+  handler       = "reputation-lists-parser.handler"
+  filename      = var.reputation_lists_protection_lambda_source
+  runtime       = "nodejs12.x"
+  memory_size   = "128"
+  timeout       = "300"
+
+  environment {
+    variables = {
+      SEND_ANONYMOUS_USAGE_DATA = "test"
+      UUID                      = random_uuid.uuid.result
+      METRIC_NAME_PREFIX        = "test"
+      LOG_LEVEL                 = var.log_level
+    }
+  }
+}
+
+resource "random_uuid" "uuid" {
+  # keepers = {  #   change = "${timestamp()}"  # }
+}
+
+
+resource "aws_iam_role" "lambda_role_reputation_list_parser" {
+  name               = "${var.name_prefix}LambdaRoleReputationListParser"
+  assume_role_policy =  data.aws_iam_policy_document.assume_role.json
+}
+
+resource "aws_iam_role_policy" "reputation_list_parser" {
+  name   = "${var.name_prefix}ReputationListParser"
+  role   = aws_iam_role.lambda_role_reputation_list_parser.id
+  policy = data.aws_iam_policy_document.reputation_list_parser.json
+}
+
+data "aws_iam_policy_document" "reputation_list_parser" {
+  statement {
+    actions = [
+      "waf:GetChangeToken",
+    ]
+
+    effect = "Allow"
+
+    resources = [
+      "*",
+    ]
+  }
+
+  statement {
+    actions = [
+      "waf:GetIPSet",
+      "waf:UpdateIPSet",
+    ]
+
+    effect = "Allow"
+
+    resources = [
+      "arn:aws:waf::${data.aws_caller_identity.current.account_id}:ipset/${aws_waf_ipset.waf_reputation_set.id}",
+    ]
+  }
+
+  statement {
+    actions = [
+      "cloudwatch:GetMetricStatistics",
+    ]
+
+    effect = "Allow"
+
+    resources = [
+      "*",
+    ]
+  }
+
+  statement {
+    actions = [
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+    ]
+      # "logs:CreateLogGroup",
+    effect = "Allow"
+
+    resources = [
+      "arn:aws:logs:*:*:*",
+    ]
+  }
+}
+
+resource "aws_cloudwatch_log_group" "loggroup" {
+  name = "/aws/lambda/${var.name_prefix}_reputation_lists_parser"
+  retention_in_days = 30
+}
+
+resource "aws_lambda_permission" "reputation_lists_parser" {
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.reputation_lists_parser.function_name
+  principal     = "events.amazonaws.com"
+  source_arn    = aws_cloudwatch_event_rule.reputation_lists_parser.arn
+}
+
+
+###################################################################
+# Black list
+###################################################################
+
+resource "aws_waf_rule" "waf_blacklist" {
+  depends_on  = [aws_waf_ipset.waf_blacklist_set]
+  name        = "${var.name_prefix} BlackList Rule"
+  metric_name = "${replace(var.name_prefix, "-", "")}BlacklistRule"
+
+  predicates {
+    data_id = aws_waf_ipset.waf_blacklist_set.id
+    negated = false
+    type    = "IPMatch"
+  }
+}
+
+resource "aws_waf_ipset" "waf_blacklist_set" {
+  name               = "blacklist-set"
+  dynamic "ip_set_descriptors" {
+    iterator = ip
+    for_each = var.waf_blacklist_ipset
+
+    content {
+      type  = ip.value.type
+      value = ip.value.value
+    }
+  }  
+}
+
+###################################################################
+# prerequistes
+###################################################################
+
+data "aws_caller_identity" "current" {}
+data "aws_region" "current" {}
+
+data "aws_iam_policy_document" "assume_role" {
+  statement {
+    sid = "STSAssumeRole"
+
+    actions = [
+      "sts:AssumeRole",
+    ]
+
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
+    }
+
+    effect = "Allow"
+  }
 }
