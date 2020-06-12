@@ -11,17 +11,17 @@ variable "tags" {
 }
 
 variable rule_sqli_action {
-  default     = "COUNT"
+  default     = "BLOCK"
   description = "Rule action type. Either BLOCK, ALLOW, or COUNT (useful for testing)"
 }
 
 variable "rule_xss_action" {
-  default     = "COUNT"
+  default     = "BLOCK"
   description = "Rule action type. Either BLOCK, ALLOW, or COUNT (useful for testing)"
 }
 
 variable "rule_http_flood_action" {
-  default     = "COUNT"
+  default     = "BLOCK"
   description = "Rule action type. Either BLOCK, ALLOW, or COUNT (useful for testing)"
 }
 
@@ -31,7 +31,8 @@ variable "log_level" {
 }
 
 variable "rule_reputation_lists_protection_action" {
-  default     = "COUNT"
+  description = "Rule action type. Either BLOCK, ALLOW, or COUNT (useful for testing)"
+  default     = "BLOCK"
 }
 
 
