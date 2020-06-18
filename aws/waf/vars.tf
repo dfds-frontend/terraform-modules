@@ -25,6 +25,11 @@ variable "rule_http_flood_action" {
   description = "Rule action type. Either BLOCK, ALLOW, or COUNT (useful for testing)"
 }
 
+variable "rule_blacklist_action" {
+  default = "BLOCK"
+  description = "Rule action type. Either BLOCK, ALLOW, or COUNT (useful for testing)"
+}
+
 variable "log_level" {
   description = "Log level settings, set one of DEBUG, INFO, WARNING, ERROR, CRITICAL"
   default     = "INFO"
@@ -48,9 +53,4 @@ variable "waf_blacklist_ipset" {
 
 variable "reputation_lists_protection_lambda_source" {
   
-}
-
-
-variable "rule_blacklist_action" {
-  default = "COUNT"
 }
