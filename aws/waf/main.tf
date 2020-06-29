@@ -265,7 +265,7 @@ resource "aws_waf_rate_based_rule" "mitigate_http_flood" {
   metric_name = replace("${var.name_prefix}httpfloodrulerate", "/[^0-9A-Za-z]/", "")
 
   rate_key    = "IP"
-  rate_limit  = 100
+  rate_limit  = 1000
 }
 
 ###############################################################################
