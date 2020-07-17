@@ -30,6 +30,11 @@ variable "rule_blacklist_action" {
   description = "Rule action type. Either BLOCK, ALLOW, or COUNT (useful for testing)"
 }
 
+variable "rule_whitelist_action" {
+  default = "BLOCK"
+  description = "Rule action type. Either BLOCK, ALLOW, or COUNT (useful for testing)"
+}
+
 variable "log_level" {
   description = "Log level settings, set one of DEBUG, INFO, WARNING, ERROR, CRITICAL"
   default     = "INFO"
@@ -45,6 +50,13 @@ variable "aws_region" {}
 
 
 variable "waf_blacklist_ipset" {
+  description = "Provide waf blacklist to deny accessing web resources"
+  type = list(string)
+
+  default = [ ]
+}
+
+variable "waf_whitelist_ipset" {
   description = "Provide waf blacklist to deny accessing web resources"
   type = list(string)
 

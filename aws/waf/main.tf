@@ -53,10 +53,20 @@ resource aws_waf_web_acl waf_acl {
 
   rules {
     action {
-      type = var.rule_reputation_lists_protection_action
+      type = var.rule_whitelist_action
     }
 
     priority = 50
+    rule_id  = aws_waf_rule.waf_whitelist.id
+    type     = "REGULAR"
+  }
+
+  rules {
+    action {
+      type = var.rule_reputation_lists_protection_action
+    }
+
+    priority = 60
     rule_id  = aws_waf_rule.waf_reputation.id
     type     = "REGULAR"      
   }
@@ -265,7 +275,7 @@ resource "aws_waf_rate_based_rule" "mitigate_http_flood" {
   metric_name = replace("${var.name_prefix}httpfloodrulerate", "/[^0-9A-Za-z]/", "")
 
   rate_key    = "IP"
-  rate_limit  = 1000
+  rate_limit  = 1000 # AWS TF Provider BUG: will not change at updates: https://github.com/terraform-providers/terraform-provider-aws/issues/9659 
 }
 
 ###############################################################################
@@ -424,6 +434,39 @@ resource "aws_waf_ipset" "waf_blacklist_set" {
     }
   }  
 }
+
+###################################################################
+# White list
+###################################################################
+
+resource "aws_waf_rule" "waf_whitelist" {
+  depends_on  = [aws_waf_ipset.waf_whitelist_set]
+  name        = "${var.name_prefix} WhiteList Rule"
+  metric_name = "${replace(var.name_prefix, "-", "")}WhiteListRule"
+
+  predicates {
+    data_id = aws_waf_ipset.waf_whitelist_set.id
+    negated = false
+    type    = "IPMatch"
+  }
+}
+
+resource "aws_waf_ipset" "waf_whitelist_set" {
+  name               = "whitelist-set"
+  dynamic "ip_set_descriptors" {
+    iterator = ip
+    for_each = var.waf_whitelist_ipset
+
+    content {
+      type  = ip.value.type
+      value = ip.value.value
+    }
+  }  
+}
+
+
+
+
 
 ###################################################################
 # prerequistes
