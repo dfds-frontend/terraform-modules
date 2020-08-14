@@ -50,13 +50,13 @@ variable "aws_region" {}
 
 
 variable "waf_blacklist_ipset" {
-  description = "Provide waf blacklist to deny accessing web resources"
+  description = "Provide waf blacklist to deny access to web resources"
 
   default = []
 }
 
 variable "waf_whitelist_ipset" {
-  description = "Provide waf blacklist to deny accessing web resources"
+  description = "Provide waf whitelist to accept access to web resources"
 
   default = []
 }
