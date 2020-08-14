@@ -51,14 +51,14 @@ variable "aws_region" {}
 
 variable "waf_blacklist_ipset" {
   description = "Provide waf blacklist to deny accessing web resources"
-  type = list(string)
+  type = list()
 
   default = [ ]
 }
 
 variable "waf_whitelist_ipset" {
   description = "Provide waf blacklist to deny accessing web resources"
-  type = list(string)
+  type = list()
 
   default = [ ]
 }
