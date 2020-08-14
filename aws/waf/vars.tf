@@ -31,7 +31,7 @@ variable "rule_blacklist_action" {
 }
 
 variable "rule_whitelist_action" {
-  default = "BLOCK"
+  default = "ALLOW"
   description = "Rule action type. Either BLOCK, ALLOW, or COUNT (useful for testing)"
 }
 
