@@ -275,7 +275,7 @@ resource "aws_waf_rate_based_rule" "mitigate_http_flood" {
   metric_name = replace("${var.name_prefix}httpfloodrulerate", "/[^0-9A-Za-z]/", "")
 
   rate_key    = "IP"
-  rate_limit  = 1000 # AWS TF Provider BUG: will not change at updates: https://github.com/terraform-providers/terraform-provider-aws/issues/9659 
+  rate_limit  = "${var.waf_http_flood_rate_limit}" # AWS TF Provider BUG: will not change at updates: https://github.com/terraform-providers/terraform-provider-aws/issues/9659 
 }
 
 ###############################################################################

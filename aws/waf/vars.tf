@@ -64,3 +64,7 @@ variable "waf_whitelist_ipset" {
 variable "reputation_lists_protection_lambda_source" {
   
 }
+
+variable "waf_http_flood_rate_limit" {
+  default = 1000
+}
