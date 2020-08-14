@@ -31,7 +31,7 @@ variable "rule_blacklist_action" {
 }
 
 variable "rule_whitelist_action" {
-  default = "BLOCK"
+  default = "ALLOW"
   description = "Rule action type. Either BLOCK, ALLOW, or COUNT (useful for testing)"
 }
 
@@ -50,19 +50,21 @@ variable "aws_region" {}
 
 
 variable "waf_blacklist_ipset" {
-  description = "Provide waf blacklist to deny accessing web resources"
-  type = list(string)
+  description = "Provide waf blacklist to deny access to web resources"
 
-  default = [ ]
+  default = []
 }
 
 variable "waf_whitelist_ipset" {
-  description = "Provide waf blacklist to deny accessing web resources"
-  type = list(string)
+  description = "Provide waf whitelist to accept access to web resources"
 
-  default = [ ]
+  default = []
 }
 
 variable "reputation_lists_protection_lambda_source" {
   
+}
+
+variable "waf_http_flood_rate_limit" {
+  default = 1000
 }
