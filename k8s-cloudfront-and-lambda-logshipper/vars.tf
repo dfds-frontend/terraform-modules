@@ -34,11 +34,11 @@ variable "enable_debug" {
 }
 
 variable "lambda_log_prefix" {
-   default = ""
+   default = "/"
 }
 
 variable "cloudfront_log_prefix" {
-   default = ""
+   default = "/"
 }
 
 variable "delete_lambda_log_source_files" {
