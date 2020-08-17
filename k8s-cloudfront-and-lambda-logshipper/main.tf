@@ -32,6 +32,7 @@ resource "kubernetes_deployment" "logshipper" {
           image = "grafana/logstash-output-loki:1.0.1"
           name  = "logstash"
           
+          # TODO: resources as parameters
           resources {
             # requests {
             #   cpu    = "100m"
