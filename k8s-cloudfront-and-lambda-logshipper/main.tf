@@ -79,11 +79,11 @@ resource "kubernetes_deployment" "logshipper" {
           }
           env {
             name = "DELETE_LAMBDA_LOG_SOURCE_FILES"
-            value = "${var.delete_lambda_log_source_files}"
+            value = false
           }
           env {
             name = "DELETE_CLOUDFRONT_LOG_SOURCE_FILES"
-            value = "${var.delete_cloudfront_log_source_files}"
+            value = false
           }
         }
 
