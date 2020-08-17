@@ -40,3 +40,11 @@ variable "lambda_log_prefix" {
 variable "cloudfront_log_prefix" {
    default = ""
 }
+
+variable "delete_lambda_log_source_files" {
+   default = false
+}
+
+variable "delete_cloudfront_log_source_files" {
+   default = false
+}
