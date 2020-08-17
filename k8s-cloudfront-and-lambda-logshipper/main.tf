@@ -25,13 +25,24 @@ resource "kubernetes_deployment" "logshipper" {
         annotations = {
           "iam.amazonaws.com/role" = "${var.s3_access_iam_role_arn}"
         }        
-      }      
+      }
 
       spec {
         container {
           image = "grafana/logstash-output-loki:1.0.1"
           name  = "logstash"
           
+          resources {
+            # requests {
+            #   cpu    = "100m"
+            #   memory = "50Mi"
+            # }
+            limits {
+              cpu    = "500m"
+              memory = "512Mi"
+            }
+          }
+
           volume_mount {
             mount_path = "/usr/share/logstash/data"
             name = "logstash-data"
