@@ -32,15 +32,14 @@ resource "kubernetes_deployment" "logshipper" {
           image = "grafana/logstash-output-loki:1.0.1"
           name  = "logstash"
           
-          # TODO: resources as parameters
           resources {
-            # requests {
-            #   cpu    = "100m"
-            #   memory = "50Mi"
-            # }
+            requests {
+              cpu    = "100m"
+              memory = "500Mi"
+            }
             limits {
-              cpu    = "500m"
-              memory = "512Mi"
+              cpu    = "1000m"
+              memory = "1000Mi"
             }
           }
 
