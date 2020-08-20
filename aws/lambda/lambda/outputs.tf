@@ -19,5 +19,5 @@ output "lambda_function_latest_published_version" {
 }
 
 output "lambda_iam_role_name" {
-  value "${aws_iam_role.role.name}"
+  value = "${aws_iam_role.role.name}"
 }
