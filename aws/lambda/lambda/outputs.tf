@@ -17,3 +17,7 @@ output "lambda_function_qualified_arn" {
 output "lambda_function_latest_published_version" {
   value = "${aws_lambda_function.lambda.version}"
 }
+
+output "lambda_aws_iam_role_name" {
+  value "${aws_iam_role.role.name}"
+}
