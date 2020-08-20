@@ -15,7 +15,7 @@ resource "aws_s3_bucket" "bucket" {
 
   force_destroy = var.enable_destroy
 
-  dynamic "lifecycle_rule" {    
+  dynamic "lifecycle_rule" { // TODO: Add possibility to apply different rules on different paths
     for_each = "${var.enable_retention_policy ? [1] : [] }"
     content {
       enabled = true
