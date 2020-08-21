@@ -53,7 +53,7 @@ data "aws_iam_policy_document" "cloudwatch_logs" {
   statement {
     effect = "Allow"
 
-    actions = ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents"]
+    actions = ["logs:CreateLogStream", "logs:PutLogEvents"]
 
     resources = [
       "arn:aws:logs:*:*:*"
@@ -73,4 +73,10 @@ data "archive_file" "lambda_zip" {
     source_file  = "${var.filename}"
     source_dir  = "${var.directory_name}"
     output_path = var.filename != null ? "${var.filename}.zip" : "${var.directory_name}.zip"
+}
+
+resource "aws_cloudwatch_log_group" "log_group" {
+  name = "/aws/lambda/${var.name}"
+  retention_in_days = 30
+  tags = var.tags
 }
