@@ -4,7 +4,6 @@ terraform {
 
 locals {
   use_zipfile_as_source = var.zipfilename != null ? true : false
-  cloudwatch_logs_policy_actions = var.allow_create_loggroup ? ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents"] : ["logs:CreateLogStream", "logs:PutLogEvents"]
 }
 
 resource "aws_lambda_function" "lambda" {
@@ -54,7 +53,7 @@ data "aws_iam_policy_document" "cloudwatch_logs" {
   statement {
     effect = "Allow"
 
-    actions = "${local.cloudwatch_logs_policy_actions}"
+    actions = ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents"]
 
     resources = [
       "arn:aws:logs:*:*:*"
