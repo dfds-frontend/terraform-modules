@@ -15,7 +15,7 @@ variable "enable_versioning" {
 }
 
 variable "enable_destroy" {
-  default = false
+  default = true
 }
 
 variable "bucket_canned_acl" {
