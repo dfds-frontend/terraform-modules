@@ -2,6 +2,10 @@ variable "name" {
   
 }
 
+variable "force_detach_policies" {
+  default = true
+}
+
 variable "lambda_function_handler" {
   description = "The source file without file extension."
 }

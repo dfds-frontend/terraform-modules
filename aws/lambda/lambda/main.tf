@@ -29,6 +29,7 @@ resource "aws_lambda_function" "lambda" {
 
 resource "aws_iam_role" "role" {
   name = "${var.name}"
+  force_detach_policies = var.force_detach_policies
  
   assume_role_policy = <<POLICY
 {

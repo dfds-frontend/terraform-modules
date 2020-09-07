@@ -4,6 +4,8 @@ terraform {
 
 resource "aws_iam_role" "s3_role" {
   name               = "${var.name}"
+  force_detach_policies = var.force_detach_policies
+  
   assume_role_policy = data.aws_iam_policy_document.assume_role_policy.json
   tags = "${var.tags}"
 }

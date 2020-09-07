@@ -31,6 +31,7 @@ resource "aws_kinesis_firehose_delivery_stream" "delivery_stream" {
 
 resource "aws_iam_role" "firehose_role" {
   name               = "${var.name}-firehose-role"
+  force_detach_policies = var.force_detach_policies
   assume_role_policy = data.aws_iam_policy_document.kinesis_firehose_stream_assume_role.json
 }
 
