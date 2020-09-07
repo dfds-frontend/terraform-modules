@@ -21,3 +21,7 @@ output "lambda_function_latest_published_version" {
 output "lambda_iam_role_name" {
   value = "${aws_iam_role.role.name}"
 }
+
+output "lambda_iam_role_arn" {
+  value = "${aws_iam_role.role.arn}"
+}
