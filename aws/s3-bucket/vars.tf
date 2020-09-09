@@ -28,6 +28,8 @@ variable "retention_settings" {
       files_prefix = string
       retention_days = number
     }))
+
+  default = null  
 }
 
 
