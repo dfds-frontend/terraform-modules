@@ -15,25 +15,47 @@ resource "aws_s3_bucket" "bucket" {
 
   force_destroy = var.enable_destroy
 
-  dynamic "lifecycle_rule" { // TODO: Add possibility to apply different rules on different paths
-    for_each = "${var.enable_retention_policy ? [1] : [] }"
+  # dynamic "lifecycle_rule" { 
+  #   for_each = "${var.enable_retention_policy ? [1] : [] }"
+  #   content {
+  #     enabled = true
+  #     prefix = "${var.lifecycle_rule_files_prefix}"
+
+  #     id = "content_retention_policy"    
+  #     abort_incomplete_multipart_upload_days = "${var.retention_days}"
+
+  #     expiration {
+  #       days = "${var.retention_days}"
+  #     }
+
+  #     noncurrent_version_expiration {
+  #       days = "${var.retention_days}"
+  #     }     
+  #   }
+  # }
+  dynamic "lifecycle_rule" { 
+    for_each = var.lifecycle_rules
+    iterator = it
     content {
       enabled = true
-      prefix = "${var.lifecycle_rule_files_prefix}"
+      prefix = it.files_prefix
 
       id = "content_retention_policy"    
-      abort_incomplete_multipart_upload_days = "${var.retention_days}"
+      abort_incomplete_multipart_upload_days = it.retention_days
 
       expiration {
-        days = "${var.retention_days}"
+        days = it.retention_days
       }
 
       noncurrent_version_expiration {
-        days = "${var.retention_days}"
+        days = it.retention_days
       }     
     }
-  }
+  }  
 }
+
+
+
 
 resource "aws_s3_bucket_policy" "b" {
   count = "${var.deploy && length(var.allowed_iam_arns) > 0 ? 1:0 }"
