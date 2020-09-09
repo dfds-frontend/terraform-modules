@@ -29,7 +29,7 @@ variable "retention_settings" {
       retention_days = number
     }))
 
-  default = null  
+  default = []  
 }
 
 
