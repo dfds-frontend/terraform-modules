@@ -23,7 +23,7 @@ variable "bucket_canned_acl" {
   description = "Use one of the predefined grants. For more information: https://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html#canned-acl"
 }
 
-variable "lifecycle_rules" {
+variable "retention_settings" {
   type = list(object({
       files_prefix = string
       retention_days = number

@@ -34,7 +34,7 @@ resource "aws_s3_bucket" "bucket" {
   #   }
   # }
   dynamic "lifecycle_rule" { 
-    for_each = var.lifecycle_rules
+    for_each = var.retention_settings
     iterator = it
     content {
       enabled = true
