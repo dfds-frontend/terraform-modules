@@ -40,7 +40,7 @@ resource "aws_s3_bucket" "bucket" {
       enabled = true
       prefix = it.value.files_prefix
 
-      id = "content_retention_policy"    
+      # id = "content_retention_policy"    
       abort_incomplete_multipart_upload_days = it.value.retention_days
 
       expiration {
