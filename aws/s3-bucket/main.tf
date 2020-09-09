@@ -38,17 +38,17 @@ resource "aws_s3_bucket" "bucket" {
     iterator = it
     content {
       enabled = true
-      prefix = it.files_prefix
+      prefix = it.value.files_prefix
 
       id = "content_retention_policy"    
-      abort_incomplete_multipart_upload_days = it.retention_days
+      abort_incomplete_multipart_upload_days = it.value.retention_days
 
       expiration {
-        days = it.retention_days
+        days = it.value.retention_days
       }
 
       noncurrent_version_expiration {
-        days = it.retention_days
+        days = it.value.retention_days
       }     
     }
   }  
