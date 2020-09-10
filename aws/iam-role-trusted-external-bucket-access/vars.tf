@@ -2,6 +2,9 @@ variable "name" {
   
 }
 
+variable force_detach_policies {
+  default = true
+}
 variable "trusted_role_arn" {
   
 }

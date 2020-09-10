@@ -2,6 +2,9 @@ variable "name" {
   
 }
 
+variable force_detach_policies {
+  default = true
+}
 # variable "lambda_role_name" {
 #   description = "Name of iam role to create for the lambda function."
 # }

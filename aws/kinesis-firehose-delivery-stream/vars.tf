@@ -1,6 +1,11 @@
 variable "name" {
   
 }
+
+variable force_detach_policies {
+  
+}
+
 variable "enable_processing_configuration" {
   
 }

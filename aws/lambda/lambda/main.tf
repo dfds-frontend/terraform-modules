@@ -4,7 +4,6 @@ terraform {
 
 locals {
   use_zipfile_as_source = var.zipfilename != null ? true : false
-  cloudwatch_logs_policy_actions = var.allow_create_loggroup ? ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents"] : ["logs:CreateLogStream", "logs:PutLogEvents"]
 }
 
 resource "aws_lambda_function" "lambda" {
@@ -30,6 +29,7 @@ resource "aws_lambda_function" "lambda" {
 
 resource "aws_iam_role" "role" {
   name = "${var.name}"
+  force_detach_policies = var.force_detach_policies
  
   assume_role_policy = <<POLICY
 {
@@ -54,7 +54,7 @@ data "aws_iam_policy_document" "cloudwatch_logs" {
   statement {
     effect = "Allow"
 
-    actions = "${local.cloudwatch_logs_policy_actions}"
+    actions = ["logs:CreateLogStream", "logs:PutLogEvents"]
 
     resources = [
       "arn:aws:logs:*:*:*"
@@ -74,4 +74,10 @@ data "archive_file" "lambda_zip" {
     source_file  = "${var.filename}"
     source_dir  = "${var.directory_name}"
     output_path = var.filename != null ? "${var.filename}.zip" : "${var.directory_name}.zip"
+}
+
+resource "aws_cloudwatch_log_group" "log_group" {
+  name = "/aws/lambda/${var.name}"
+  retention_in_days = 30
+  tags = var.tags
 }
