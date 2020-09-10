@@ -15,32 +15,12 @@ resource "aws_s3_bucket" "bucket" {
 
   force_destroy = var.enable_destroy
 
-  # dynamic "lifecycle_rule" { 
-  #   for_each = "${var.enable_retention_policy ? [1] : [] }"
-  #   content {
-  #     enabled = true
-  #     prefix = "${var.lifecycle_rule_files_prefix}"
-
-  #     id = "content_retention_policy"    
-  #     abort_incomplete_multipart_upload_days = "${var.retention_days}"
-
-  #     expiration {
-  #       days = "${var.retention_days}"
-  #     }
-
-  #     noncurrent_version_expiration {
-  #       days = "${var.retention_days}"
-  #     }     
-  #   }
-  # }
   dynamic "lifecycle_rule" { 
     for_each = var.retention_settings
     iterator = it
     content {
       enabled = true
       prefix = it.value.files_prefix
-
-      # id = "content_retention_policy"    
       abort_incomplete_multipart_upload_days = it.value.retention_days
 
       expiration {
@@ -53,9 +33,6 @@ resource "aws_s3_bucket" "bucket" {
     }
   }  
 }
-
-
-
 
 resource "aws_s3_bucket_policy" "b" {
   count = "${var.deploy && length(var.allowed_iam_arns) > 0 ? 1:0 }"
