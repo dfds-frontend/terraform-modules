@@ -32,22 +32,6 @@ variable "retention_settings" {
   default = []  
 }
 
-
-# variable "enable_retention_policy" {
-#   default = false
-#   description = "Enable/Disable retention policy for content in S3 bucket. Useful when using S3 bucket to store logs."
-# }
-
-# variable "retention_days" {
-#   description = "The number of days to keep content in s3 bucket."
-#   default = 90
-# }
-
-# variable "lifecycle_rule_files_prefix" {
-#   default = ""
-#   description = "Specify which files, the retention settings will apply for, based on prefix/file path."
-# }
-
 variable "tags" {
   description = "A mapping of tags to assign to the resource"
   type        = map(string)
