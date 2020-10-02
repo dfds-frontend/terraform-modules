@@ -9,6 +9,6 @@ variable "input_file" {
 
 
 variable "dashboard_values" {
-  description = "It depends on the variables defined in the dashboard input json. Recommended value map {\"dasboard_title\" = \"some_title\", \"env" = \"some_environment" }
+  description = "It depends on the variables defined in the dashboard input json. Recommended value map {\"dasboard_title\" = \"some_title\", \"env" = \"some_environment\" }"
   type        = map(string)
 } 
