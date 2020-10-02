@@ -1,5 +1,5 @@
 output "dashboard_title" {
-  value = local.dashboard_title
+  value = var.dashboard_title
 }
 
 output "grafana_dashboard_id" {
