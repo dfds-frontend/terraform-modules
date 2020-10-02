@@ -3,7 +3,8 @@ terraform {
 }
 
 locals {
-  dashboard_json = templatefile(var.input_file, var.dashboard_values )
+  override_values_map = merge(var.additional_override_values, dashboard_title = var.title)
+  dashboard_json = templatefile(var.input_file, local.override_values_map )
   dashboard_info_file = "dashboard_${timestamp()}.txt"
 }
 
@@ -19,12 +20,12 @@ resource "null_resource" "get-dashobard-id" {
   provisioner "local-exec" {
     command = "echo $(curl --location --request GET \"$GRAFANA_URL/api/search?folderIds=$FOLDER_ID&query=$DASHBOARD_TITLE\" --header \"Authorization: Bearer $GRAFANA_AUTH\" | jq .[].id -r) > $DASHBOARD_INFO_FILE"
     environment = {
-      FOLDER_ID = grafana_folder.cloudfront.id
-      DASHBOARD_TITLE = local.dashboard_title
+      FOLDER_ID = var.folder_id
+      DASHBOARD_TITLE = var.title
       DASHBOARD_INFO_FILE = local.dashboard_info_file
     }
   }
-  depends_on = ["grafana_dashboard.cloudfront"]
+  depends_on = ["grafana_dashboard.dashboard"]
 }
 
 data "local_file" "input" {

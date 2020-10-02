@@ -7,10 +7,18 @@ variable "input_file" {
   type = string
 }
 
+variable "title" {
+    description = "Dashboard title. Should unique within a folder"
+    type = string
+}
 
-variable "dashboard_values" {
-  # description = <<TEXT  
-  #  It depends on the variables defined in the dashboard input json. Recommended value map {"dasboard_title" = "some_title", "env" = "some_environment"}
-  # TEXT
-  type        = map(string)
-} 
+variable "additional_override_values" {
+    type = map(string)
+}
+
+# variable "dashboard_values" {
+#   # description = <<TEXT  
+#   #  It depends on the variables defined in the dashboard input json. Recommended value map {"dasboard_title" = "some_title", "env" = "some_environment"}
+#   # TEXT
+#   type        = map(string)
+# } 
