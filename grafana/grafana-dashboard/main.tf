@@ -3,7 +3,7 @@ terraform {
 }
 
 locals {
-  override_values_map = merge(var.additional_override_values, dashboard_title = var.title)
+  override_values_map = merge(var.additional_override_values, {dashboard_title=var.title})
   dashboard_json = templatefile(var.input_file, local.override_values_map )
   dashboard_info_file = "dashboard_${timestamp()}.txt"
 }
