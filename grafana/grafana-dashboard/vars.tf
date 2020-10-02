@@ -1,3 +1,9 @@
+variable "title" {
+    description = "Dashboard title. Should unique within a folder"
+    type = string
+}
+
+
 variable "folder_id" {
   
 }
@@ -5,11 +11,6 @@ variable "folder_id" {
 variable "input_file" {
   description = "File containing dashboard in json format"
   type = string
-}
-
-variable "title" {
-    description = "Dashboard title. Should unique within a folder"
-    type = string
 }
 
 variable "additional_override_values" {
