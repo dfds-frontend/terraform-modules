@@ -1,15 +1,15 @@
 terraform {
   required_version = "~> 0.12.2"
 }
-  
-resource "grafana_dashboard" "dashboard" {
-  folder = var.folder_id
-  config_json = local.dashboard_json
-}
 
 locals {
   dashboard_json = templatefile(var.input_file, var.dashboard_values )
   dashboard_info_file = "dashboard_${timestamp()}.txt"
+}
+
+resource "grafana_dashboard" "dashboard" {
+  folder = var.folder_id
+  config_json = local.dashboard_json
 }
 
 resource "null_resource" "get-dashobard-id" {

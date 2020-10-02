@@ -9,6 +9,6 @@ variable "input_file" {
 
 
 variable "dashboard_values" {
+  description = "It depends on the variables defined in the dashboard input json. Recommended value map {dasboard_title = "", env = "" }"
   type        = map(string)
-  default     = { }
 } 
