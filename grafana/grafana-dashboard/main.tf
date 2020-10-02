@@ -5,7 +5,7 @@ terraform {
 locals {
   override_values_map = merge(var.additional_override_values, {dashboard_title=var.title})
   dashboard_json = templatefile(var.input_file, local.override_values_map )
-  dashboard_info_file = "dashboard_${replace("${timestamp()}", "/[- TZ:]/", "")}.txt"
+  dashboard_info_file = "./dashboard_${replace("${timestamp()}", "/[- TZ:]/", "")}.txt"
 }
 
 resource "grafana_dashboard" "dashboard" {
@@ -29,6 +29,6 @@ resource "null_resource" "get-dashobard-id" {
 }
 
 data "local_file" "input" {
-  filename = "${path.module}/${local.dashboard_info_file}"
+  filename = local.dashboard_info_file
   depends_on = ["null_resource.get-dashobard-id"]
 }
