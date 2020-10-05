@@ -148,19 +148,6 @@ resource "null_resource" "restart-logshipper-pods" {
     }
   provisioner "local-exec" {
         command = "kubectl -n ${var.namespace} delete po -l name=logshipper-${var.env}"
-        #environment {
-         #   KUBECONFIG =  "${pathexpand("~/.kube/config_${var.cluster_name}")}"
-        #}
   }
   depends_on = ["kubernetes_config_map.logshipper", "kubernetes_deployment.logshipper"]
-}
-
-data "external" "example" {
-  program = ["python", "${path.module}/example-data-source.py"]
-
-  query = {
-    # arbitrary map from strings to strings, passed
-    # to the external program as the data query.
-    id = "abc123"
-  }
 }
