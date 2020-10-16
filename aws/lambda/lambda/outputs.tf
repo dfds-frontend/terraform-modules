@@ -11,6 +11,7 @@ output "lambda_function_invoke_arn" {
 }
 
 output "lambda_function_qualified_arn" {
+  description = "Use this instead lambda_function_arn when intending to use specific published version of lambda"
   value = "${aws_lambda_function.lambda.qualified_arn}"
 }
 
@@ -24,4 +25,12 @@ output "lambda_iam_role_name" {
 
 output "lambda_iam_role_arn" {
   value = "${aws_iam_role.role.arn}"
+}
+
+output "log_group_arn" {
+  value = "${aws_cloudwatch_log_group.log_group}"
+}
+
+output "log_group_name" {
+  value = local.log_group_name
 }
