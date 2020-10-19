@@ -4,6 +4,7 @@ terraform {
 
 locals {
   use_zipfile_as_source = var.zipfilename != null ? true : false
+  log_group_name = "/aws/lambda/${var.name}"
 }
 
 resource "aws_lambda_function" "lambda" {
@@ -77,7 +78,7 @@ data "archive_file" "lambda_zip" {
 }
 
 resource "aws_cloudwatch_log_group" "log_group" {
-  name = "/aws/lambda/${var.name}"
+  name = local.log_group_name
   retention_in_days = 30
   tags = var.tags
 }
