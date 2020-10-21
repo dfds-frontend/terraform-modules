@@ -3,5 +3,12 @@ resource "aws_lambda_permission" "this" {
   function_name = var.function_name
   principal     = var.principal
   source_arn    = var.source_arn
-  qualifier     = var.qualifier
+  qualifier     = aws_lambda_alias.lambda.name
+}
+
+resource "aws_lambda_alias" "lambda" {
+  name             = "version"
+  description      = "Version ${var.lambda_version}"
+  function_name    = var.lambda_name
+  function_version = var.lambda_version
 }
