@@ -43,3 +43,7 @@ output "lambda_alias_arn" {
 output "lambda_alias_invoke_arn" {
     value = aws_lambda_alias.lambda.invoke_arn
 }
+
+output "lambda_alias_name" {
+  value = "${var.name}"
+}
