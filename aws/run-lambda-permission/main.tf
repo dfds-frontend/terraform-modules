@@ -9,6 +9,6 @@ resource "aws_lambda_permission" "this" {
 resource "aws_lambda_alias" "lambda" {
   name             = "version"
   description      = "Version ${var.lambda_version}"
-  function_name    = var.lambda_name
+  function_name    = var.function_name
   function_version = var.lambda_version
 }
