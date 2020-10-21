@@ -85,7 +85,7 @@ resource "aws_cloudwatch_log_group" "log_group" {
 
 resource "aws_lambda_alias" "lambda" {
   name             = var.function_name
-  description      = "Version ${var.lambda_version}"
+  description      = "Version ${aws_lambda_function.lambda.version}"
   function_name    = var.function_name
-  function_version = var.lambda_version
+  function_version = aws_lambda_function.lambda.version
 }

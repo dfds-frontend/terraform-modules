@@ -10,12 +10,6 @@ variable source_arn {
     type = string
 }
 
-
-variable "lambda_version" {
-    type = string
-    description = "(optional) describe your variable"
-}
-
 variable "lambda_alias_name" {
 
 }
