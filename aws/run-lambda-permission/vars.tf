@@ -9,3 +9,8 @@ variable principal {
 variable source_arn {
     type = string
 }
+
+variable "qualifier" {
+    type = string
+    description = "(optional) describe your variable"
+}
