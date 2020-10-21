@@ -34,3 +34,12 @@ output "log_group_arn" {
 output "log_group_name" {
   value = local.log_group_name
 }
+
+
+output "lambda_alias_arn" {
+    value = aws_lambda_alias.lambda.arn
+}
+
+output "lambda_alias_invoke_arn" {
+    value = aws_lambda_alias.lambda.invoke_arn
+}
