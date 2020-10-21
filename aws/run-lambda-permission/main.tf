@@ -3,7 +3,7 @@ resource "aws_lambda_permission" "this" {
   function_name = var.function_name
   principal     = var.principal
   source_arn    = var.source_arn
-  qualifier     = var.aws_lambda_alias_name # aws_lambda_alias.lambda.name 
+  qualifier     = var.lambda_alias_name # aws_lambda_alias.lambda.name 
 }
 
 # resource "aws_lambda_alias" "lambda" {
