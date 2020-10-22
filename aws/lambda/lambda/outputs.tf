@@ -16,7 +16,7 @@ output "lambda_function_qualified_arn" {
 }
 
 output "lambda_function_latest_published_version" {
-  value = "${aws_lambda_function.lambda.version}"
+  value = "${var.publish == false ? "$LATEST" : aws_lambda_function.lambda.version}"
 }
 
 output "lambda_iam_role_name" {
