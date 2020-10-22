@@ -40,3 +40,7 @@ variable "cloudwatch_source_regions" {
 
   default = ["eu-central-1"]
 }
+
+variable "lambda_version" {
+  type = string
+}

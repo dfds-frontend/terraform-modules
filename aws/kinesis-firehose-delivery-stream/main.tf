@@ -22,7 +22,7 @@ resource "aws_kinesis_firehose_delivery_stream" "delivery_stream" {
 
         parameters {
           parameter_name  = "LambdaArn"
-          parameter_value = "${var.processor_lambda_arn}:$LATEST" #"${aws_lambda_function.lambda_processor.arn}:$LATEST"
+          parameter_value = "${var.processor_lambda_arn}:${var.lambda_version}" #"${aws_lambda_function.lambda_processor.arn}:$LATEST"
         }
       }
     }
@@ -83,7 +83,7 @@ data "aws_iam_policy_document" "lambda_assume_policy" {
     ]
 
     resources = [
-      "${var.processor_lambda_arn}:$LATEST",
+      "${var.processor_lambda_arn}:${var.lambda_version}",
     ]
   }
 }
