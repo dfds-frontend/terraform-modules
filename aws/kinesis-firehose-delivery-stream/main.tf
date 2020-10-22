@@ -83,7 +83,7 @@ data "aws_iam_policy_document" "lambda_assume_policy" {
     ]
 
     resources = [
-      "${var.processor_lambda_arn}:${var.lambda_version}",
+      "${var.processor_lambda_arn}:something",
     ]
   }
 }
