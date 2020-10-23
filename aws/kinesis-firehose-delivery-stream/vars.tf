@@ -3,7 +3,7 @@ variable "name" {
 }
 
 variable force_detach_policies {
-  
+  default = true
 }
 
 variable "enable_processing_configuration" {
@@ -39,4 +39,8 @@ variable "tags" {
 variable "cloudwatch_source_regions" {
 
   default = ["eu-central-1"]
+}
+
+variable "lambda_version" {
+  type = string
 }

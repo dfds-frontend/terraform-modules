@@ -38,8 +38,8 @@ resource "kubernetes_deployment" "logshipper" {
               memory = "500Mi"
             }
             limits {
-              cpu    = "1000m"
-              memory = "1536Mi"
+              cpu    = var.logshipper_container_cpu_limit
+              memory = var.logshipper_container_memory_limit
             }
           }
 

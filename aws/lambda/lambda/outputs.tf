@@ -15,8 +15,8 @@ output "lambda_function_qualified_arn" {
   value = "${aws_lambda_function.lambda.qualified_arn}"
 }
 
-output "lambda_function_latest_published_version" {
-  value = "${aws_lambda_function.lambda.version}"
+output "lambda_function_latest_version" {
+  value = "${var.publish == false ? "$LATEST" : aws_lambda_function.lambda.version}"
 }
 
 output "lambda_iam_role_name" {
@@ -33,4 +33,17 @@ output "log_group_arn" {
 
 output "log_group_name" {
   value = local.log_group_name
+}
+
+
+output "lambda_alias_arn" {
+    value = aws_lambda_alias.lambda.arn
+}
+
+output "lambda_alias_invoke_arn" {
+    value = aws_lambda_alias.lambda.invoke_arn
+}
+
+output "lambda_alias_name" {
+  value = "${var.name}"
 }

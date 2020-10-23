@@ -48,3 +48,11 @@ variable "delete_lambda_log_source_files" {
 variable "delete_cloudfront_log_source_files" {
    default = false
 }
+
+variable "logshipper_container_cpu_limit" {
+   default = "250m"
+}
+
+variable "logshipper_container_memory_limit" {
+   default = "1536Mi"
+}

@@ -9,3 +9,7 @@ variable principal {
 variable source_arn {
     type = string
 }
+
+variable "lambda_alias_name" {
+
+}
