@@ -2,7 +2,7 @@ terraform {
   required_version = "~> 0.12.2"
 }
 resource "aws_kinesis_firehose_delivery_stream" "delivery_stream" {
-  name        = "${var.name}-kinesis-firehose" #"terraform-kinesis-firehose-extended-s3-test-stream"
+  name        = "${var.name}-kinesis-firehose"
   destination = "extended_s3"
   tags = "${var.tags}"
 
@@ -15,14 +15,14 @@ resource "aws_kinesis_firehose_delivery_stream" "delivery_stream" {
     error_output_prefix = "${var.error_output_prefix}"
 
     processing_configuration {
-      enabled = "${var.enable_processing_configuration}" #"true"
+      enabled = "${var.enable_processing_configuration}"
 
       processors {
         type = "Lambda"
 
         parameters {
           parameter_name  = "LambdaArn"
-          parameter_value = "${var.processor_lambda_arn}:${var.lambda_version}" #"${aws_lambda_function.lambda_processor.arn}:$LATEST"
+          parameter_value = "${var.processor_lambda_arn}:${var.lambda_version}"
         }
       }
     }
