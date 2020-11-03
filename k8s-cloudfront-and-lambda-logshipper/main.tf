@@ -28,9 +28,10 @@ resource "kubernetes_deployment" "logshipper" {
       }
 
       spec {
-        node_selector {
-          logstasher = "true"        
+        node_selector = {
+          "logstasher" = "true"
         }
+        
         toleration {
           effect = "NoSchedule"
           key    = "logstasher"
