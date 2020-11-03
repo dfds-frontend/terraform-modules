@@ -28,6 +28,15 @@ resource "kubernetes_deployment" "logshipper" {
       }
 
       spec {
+        node_selector {
+          logstasher = "true"        
+        }
+        toleration {
+          effect = "NoSchedule"
+          key    = "logstasher"
+          operator = "Exists"
+        }
+
         container {
           image = "grafana/logstash-output-loki:1.0.1"
           name  = "logstash"
