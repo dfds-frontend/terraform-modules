@@ -31,7 +31,7 @@ resource "kubernetes_deployment" "logshipper" {
         node_selector = {
           "logstasher" = "true"
         }
-        
+
         toleration {
           effect = "NoSchedule"
           key    = "logstasher"
@@ -44,8 +44,8 @@ resource "kubernetes_deployment" "logshipper" {
           
           resources {
             requests {
-              cpu    = "100m"
-              memory = "500Mi"
+              cpu    = var.logshipper_container_cpu_request
+              memory = var.logshipper_container_memory_request
             }
             limits {
               cpu    = var.logshipper_container_cpu_limit

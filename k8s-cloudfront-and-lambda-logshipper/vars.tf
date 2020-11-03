@@ -56,3 +56,11 @@ variable "logshipper_container_cpu_limit" {
 variable "logshipper_container_memory_limit" {
    default = "1536Mi"
 }
+
+variable "logshipper_container_cpu_request" {
+   default = "250m"
+}
+
+variable "logshipper_container_memory_request" {
+   default = "1536Mi"
+}
