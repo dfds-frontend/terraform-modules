@@ -28,14 +28,24 @@ resource "kubernetes_deployment" "logshipper" {
       }
 
       spec {
+        node_selector = {
+          "logstasher" = "true"
+        }
+
+        toleration {
+          effect = "NoSchedule"
+          key    = "logstasher"
+          operator = "Exists"
+        }
+
         container {
           image = "grafana/logstash-output-loki:1.0.1"
           name  = "logstash"
           
           resources {
             requests {
-              cpu    = "100m"
-              memory = "500Mi"
+              cpu    = var.logshipper_container_cpu_request
+              memory = var.logshipper_container_memory_request
             }
             limits {
               cpu    = var.logshipper_container_cpu_limit
