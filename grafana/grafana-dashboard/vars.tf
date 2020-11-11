@@ -1,11 +1,10 @@
-variable "title" {
-    description = "Dashboard title. Should unique within a folder"
-    type = string
-}
-
+# variable "title" {
+#     description = "Dashboard title. Should unique within a folder"
+#     type = string
+# }
 
 variable "folder_id" {
-  
+  default = null
 }
 
 variable "input_file" {
@@ -13,6 +12,6 @@ variable "input_file" {
   type = string
 }
 
-variable "additional_override_values" {
-    type = map(string)
-}
+# variable "additional_override_values" {
+#     type = map(string)
+# }
