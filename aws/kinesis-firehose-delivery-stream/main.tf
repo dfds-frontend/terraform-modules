@@ -15,14 +15,14 @@ resource "aws_kinesis_firehose_delivery_stream" "delivery_stream" {
     error_output_prefix = "${var.error_output_prefix}"
 
     processing_configuration {
-      enabled = "${var.enable_processing_configuration}"
+      enabled = var.enable_processing_configuration
 
       processors {
         type = "Lambda"
 
         parameters {
           parameter_name  = "LambdaArn"
-          parameter_value = "${var.processor_lambda_arn}:${var.lambda_version}"
+          parameter_value = var.enable_processing_configuration ? "${var.processor_lambda_arn}:${var.lambda_version}" : null
         }
       }
     }
