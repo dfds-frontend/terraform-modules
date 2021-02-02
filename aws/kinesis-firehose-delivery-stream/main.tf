@@ -90,6 +90,7 @@ data "aws_iam_policy_document" "lambda_assume_policy" {
 }
 
 resource "aws_iam_role_policy" "lambda_policy" {
+  count = var.enable_processing_configuration ? 1 : 0
   name   = "${var.name}-lambda_function_policy"
   role   = aws_iam_role.firehose_role.name
   policy = data.aws_iam_policy_document.lambda_assume_policy[0].json
