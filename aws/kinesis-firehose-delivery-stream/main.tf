@@ -14,15 +14,18 @@ resource "aws_kinesis_firehose_delivery_stream" "delivery_stream" {
     buffer_interval = "${var.buffer_interval}"
     error_output_prefix = "${var.error_output_prefix}"
 
-    processing_configuration {
-      enabled = "${var.enable_processing_configuration}"
+    dynamic "processing_configuration" {
+      for_each = "${var.enable_processing_configuration ? [1] : [] }"
+      content {
+        enabled = true
 
-      processors {
-        type = "Lambda"
+        processors {
+          type = "Lambda"
 
-        parameters {
-          parameter_name  = "LambdaArn"
-          parameter_value = "${var.processor_lambda_arn}:${var.lambda_version}"
+          parameters {
+            parameter_name  = "LambdaArn"
+            parameter_value = "${var.processor_lambda_arn}:${var.lambda_version}" 
+          }
         }
       }
     }
@@ -74,6 +77,7 @@ data "aws_iam_policy_document" "kinesis_firehose_access_bucket_assume_policy" {
 }
 
 data "aws_iam_policy_document" "lambda_assume_policy" {
+  count = var.enable_processing_configuration ? 1 : 0
   statement {
     effect = "Allow"
 
@@ -89,9 +93,10 @@ data "aws_iam_policy_document" "lambda_assume_policy" {
 }
 
 resource "aws_iam_role_policy" "lambda_policy" {
+  count = var.enable_processing_configuration ? 1 : 0
   name   = "${var.name}-lambda_function_policy"
   role   = aws_iam_role.firehose_role.name
-  policy = data.aws_iam_policy_document.lambda_assume_policy.json
+  policy = data.aws_iam_policy_document.lambda_assume_policy[0].json
 }
 
 # ############################################################

@@ -22,4 +22,5 @@ variable "distribution" {
 
 variable "log_group_arn" {
   description = "Create dependency on log group"
+  default = null
 }

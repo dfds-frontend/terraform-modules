@@ -7,10 +7,11 @@ variable force_detach_policies {
 }
 
 variable "enable_processing_configuration" {
-  
+  default = false
 }
 variable "processor_lambda_arn" {
-  
+  description = "Used when processing configuration is enabled"
+  default = null
 }
 variable "bucket_arn" {
   
@@ -42,5 +43,7 @@ variable "cloudwatch_source_regions" {
 }
 
 variable "lambda_version" {
+  description = "Used when processing configuration is enabled"
   type = string
+  default = null
 }
