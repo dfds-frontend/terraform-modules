@@ -64,7 +64,7 @@ data "aws_iam_policy_document" "cloudwatch_logs" {
 }
 
 data "aws_iam_policy_document" "firehose_reingesting" {
-  count = var.target_firehose_arn =! null ? 1 : 0
+  count = var.target_firehose_arn == null ? 0 : 1
   statement {
     effect = "Allow"
 
@@ -83,7 +83,7 @@ resource "aws_iam_role_policy" "cloudwatch_logs" {
 }
 
 resource "aws_iam_role_policy" "firehose_reingesting" {
-  count = var.target_firehose_arn =! null ? 1 : 0
+  count = var.target_firehose_arn == null ? 0 : 1
   name = "firehose-firehose-reingesting"
   role = "${aws_iam_role.role.name}"
   policy = data.aws_iam_policy_document.firehose_reingesting[0].json
