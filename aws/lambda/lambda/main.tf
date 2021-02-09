@@ -64,14 +64,14 @@ data "aws_iam_policy_document" "cloudwatch_logs" {
 }
 
 data "aws_iam_policy_document" "firehose_reingesting" {
-  count = var.target_firehose_arn == null ? 0 : 1
+  count = var.isFirehoseProcessor ? 1 : 0
   statement {
     effect = "Allow"
 
     actions = ["firehose:PutRecordBatch"]
 
     resources = [
-      var.target_firehose_arn
+      "*" // wildcard to avoid need for passing specific arn and this avoiding circular dependencies
     ]
   }
 }
@@ -83,7 +83,7 @@ resource "aws_iam_role_policy" "cloudwatch_logs" {
 }
 
 resource "aws_iam_role_policy" "firehose_reingesting" {
-  count = var.target_firehose_arn == null ? 0 : 1
+  count = var.isFirehoseProcessor ? 1 : 0
   name = "firehose-firehose-reingesting"
   role = "${aws_iam_role.role.name}"
   policy = data.aws_iam_policy_document.firehose_reingesting[0].json
