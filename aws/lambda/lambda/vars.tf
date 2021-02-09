@@ -84,11 +84,11 @@ variable "loggroup_retention" {
   default = 30
 }
 
-variable "isFirehoseProcessor" {
-  description = "enables additional configurations for the target Kinesis Firehose setup"
-  type = bool
-  default = false  
-}
+# variable "isFirehoseProcessor" {
+#   description = "enables additional configurations for the target Kinesis Firehose setup"
+#   type = bool
+#   default = false  
+# }
 
 variable "target_firehose_arn" {
   description = "isFirehoseProcessor must be true"
