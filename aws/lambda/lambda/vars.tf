@@ -17,7 +17,7 @@ variable "lambda_env_variables" {
 }
 
 variable "runtime" {
-  default = "nodejs10.x"
+  default = "nodejs12.x"
 }
 
 variable "publish" {
