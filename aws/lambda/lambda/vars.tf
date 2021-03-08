@@ -89,9 +89,3 @@ variable "isFirehoseProcessor" {
   type = bool
   default = false  
 }
-
-# variable "target_firehose_arn" {
-#   description = "isFirehoseProcessor must be true"
-#   type = string
-#   default = null
-# }
