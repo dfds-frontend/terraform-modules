@@ -17,7 +17,7 @@ variable "lambda_env_variables" {
 }
 
 variable "runtime" {
-  default = "nodejs10.x"
+  default = "nodejs12.x"
 }
 
 variable "publish" {
@@ -82,4 +82,10 @@ variable "memory_size" {
 variable "loggroup_retention" {
   description = "retention_in_days"
   default = 30
+}
+
+variable "isFirehoseProcessor" {
+  description = "enables additional configurations for the target Kinesis Firehose setup"
+  type = bool
+  default = false  
 }
