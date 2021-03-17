@@ -20,6 +20,9 @@ resource "aws_cloudwatch_event_target" "reputation_lists_parser" {
     },
     {
       "url": "https://rules.emergingthreats.net/fwrules/emerging-Block-IPs.txt"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/firehol/blocklist-ipsets/master/cybercrime.ipset"
     }
   ],
   "apiType": "waf",
