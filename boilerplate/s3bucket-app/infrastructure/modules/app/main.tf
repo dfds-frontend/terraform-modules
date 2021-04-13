@@ -46,9 +46,9 @@ module "aws_s3bucket_app" {
   source            = "git::https://github.com/dfds-frontend/terraform-modules.git//aws/s3-bucket?ref=v0.9.0"
   s3_bucket         = "${local.safe_infrastructure_identifier}"
   allowed_iam_arns  = ["${module.aws_cf_oai.oai_arn}"]
-  enable_versioning = false
+  enable_versioning = true
   enable_destroy    = true
-  bucket_canned_acl = "private"
+  bucket_canned_acl = "private"  
 }
 
 module "aws_cf_oai" {
