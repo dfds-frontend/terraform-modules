@@ -1,14 +1,3 @@
-provider "aws" { # default
-  region  = "eu-central-1"
-  version = "~> 2.28.1"
-}
-
-provider "aws" {
-  region  = "us-east-1"
-  version = "~> 2.28.1"
-  alias   = "us-east-1"
-}
-
 module "aws_cloudfront_app" {
   source                  = "git::https://github.com/dfds-frontend/terraform-modules.git//aws/cloudfront/cloudfront_single_origin_http?ref=v0.9.0"
   comment                 = local.infrastructure_identifier
