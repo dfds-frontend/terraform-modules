@@ -20,7 +20,7 @@ data "aws_iam_policy_document" "s3permissions" {
     ]
 
     resources = [
-      "${var.bucket_arn}",
+      var.bucket_arn,
       "${var.bucket_arn}/*",
     ]
   }
@@ -33,7 +33,7 @@ data "aws_iam_policy_document" "assume_role_policy" {
 
     principals {
       type        = "AWS"
-      identifiers = ["${var.trusted_role_arn}"]
+      identifiers = [var.trusted_role_arn]
     }
   }
 }

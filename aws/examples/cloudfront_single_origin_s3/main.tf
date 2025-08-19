@@ -18,7 +18,7 @@ module "aws_cloudfront" {
 module "aws_s3-app" {
   source            = "./../../s3-bucket"
   s3_bucket         = local.safe_infrastructure_identifier
-  allowed_iam_arns  = ["${module.aws_cf_oai.oai_arn}"]
+  allowed_iam_arns  = [module.aws_cf_oai.oai_arn]
   enable_versioning = false
   enable_destroy    = true
   bucket_canned_acl = "private"

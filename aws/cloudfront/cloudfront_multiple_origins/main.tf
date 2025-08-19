@@ -215,7 +215,7 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
   }
 
   dynamic "custom_error_response" {
-    for_each = [for i in "${var.custom_error_responses}" : {
+    for_each = [for i in var.custom_error_responses : {
       error_caching_min_ttl = i.error_caching_min_ttl
       error_code            = i.error_code
       response_code         = i.response_code

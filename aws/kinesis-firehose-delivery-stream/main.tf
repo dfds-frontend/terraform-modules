@@ -68,7 +68,7 @@ data "aws_iam_policy_document" "kinesis_firehose_access_bucket_assume_policy" {
     ]
 
     resources = [
-      "${var.bucket_arn}",
+      var.bucket_arn,
       "${var.bucket_arn}/*",
     ]
   }
