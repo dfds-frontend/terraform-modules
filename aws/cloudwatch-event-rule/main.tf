@@ -1,6 +1,5 @@
 resource "aws_cloudwatch_event_rule" "this" {
   name                = "${var.name_prefix}_event_rule"
-  is_enabled          = true
   description         = "Run lambda to monitor hosts"
   schedule_expression = var.event_schedule
 }
