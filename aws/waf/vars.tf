@@ -77,10 +77,6 @@ variable "rule_reputation_lists_protection_action" {
   default     = "BLOCK"
 }
 
-
-variable "aws_region" {}
-
-
 variable "waf_blacklist_ipset" {
   type        = list(string)
   description = "Provide waf blacklist to deny access to web resources"
@@ -94,7 +90,7 @@ variable "waf_whitelist_ipset" {
 }
 
 variable "reputation_lists_protection_lambda_source" {
-
+  type = string
 }
 
 variable "waf_http_flood_rate_limit" {

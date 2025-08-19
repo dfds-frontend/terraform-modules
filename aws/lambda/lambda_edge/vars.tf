@@ -1,8 +1,10 @@
 variable "name" {
-
+  type        = string
+  description = "The name of the Lambda function"
 }
 
 variable "force_detach_policies" {
+  type    = bool
   default = true
 }
 # variable "lambda_role_name" {
@@ -10,20 +12,17 @@ variable "force_detach_policies" {
 # }
 
 variable "lambda_function_handler" {
+  type        = string
   description = "The source file without file extension."
 }
 
-variable "lambda_env_variables" {
-  type = map(any)
-
-  default = {}
-}
-
 variable "runtime" {
+  type    = string
   default = "nodejs12.x"
 }
 
 variable "publish" {
+  type        = bool
   default     = true
   description = "Enable publishing under a new version. This is required when enabling in order to enable lambda function to be used by cloudfront."
 }
@@ -74,6 +73,7 @@ variable "tags" {
 }
 
 variable "allow_create_loggroup" {
+  type        = bool
   description = "Allow lambda@edge to create Cloudwatch log group for the lambda edge on-demand in every region where it runs."
   default     = false
 }

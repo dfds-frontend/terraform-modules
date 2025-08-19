@@ -1,4 +1,6 @@
-variable "zone_id" {}
+variable "zone_id" {
+  type = string
+}
 
 variable "record_name" {
   type = string
@@ -18,6 +20,7 @@ variable "alias_target_zone_id" {
 }
 
 variable "record_ttl" {
+  type    = number
   default = 300
 }
 
