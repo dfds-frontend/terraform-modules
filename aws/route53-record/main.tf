@@ -17,6 +17,6 @@ resource "aws_route53_record" "cname_record" {
   name            = var.record_name
   type            = var.record_type
   ttl             = var.record_ttl
-  records         = ["${var.record_value}"]
+  records         = [var.record_value]
   allow_overwrite = var.allow_overwrite
 }
