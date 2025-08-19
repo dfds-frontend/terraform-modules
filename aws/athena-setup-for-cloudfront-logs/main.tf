@@ -1,5 +1,5 @@
 resource "aws_athena_workgroup" "cflogs" {
-  name = var.athena_workgroup_name
+  name          = var.athena_workgroup_name
   force_destroy = true
 
   configuration {
@@ -14,23 +14,23 @@ resource "aws_athena_workgroup" "cflogs" {
 }
 
 resource "aws_athena_database" "cflogs" {
-  name   = var.athena_db_name
-  bucket = var.bucket_query_results
+  name          = var.athena_db_name
+  bucket        = var.bucket_query_results
   force_destroy = true
 }
 
 resource "aws_glue_catalog_table" "aws_glue_catalog_table" {
   name          = var.athena_table_name
-  database_name = "${aws_athena_database.cflogs.name}"
+  database_name = aws_athena_database.cflogs.name
   table_type    = "EXTERNAL_TABLE"
 
   parameters = {
-    EXTERNAL = "TRUE"
+    EXTERNAL                 = "TRUE"
     "skip.header.line.count" = "2"
   }
 
   storage_descriptor {
-    location      =  "s3://${var.source_bucket_path}"
+    location      = "s3://${var.source_bucket_path}"
     input_format  = "org.apache.hadoop.mapred.TextInputFormat"
     output_format = "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat"
 
@@ -49,11 +49,11 @@ resource "aws_glue_catalog_table" "aws_glue_catalog_table" {
     }
     columns {
       name = "time"
-      type = "string"
+      type = string
     }
     columns {
       name = "location"
-      type = "string"
+      type = string
     }
     columns {
       name = "bytes"
@@ -61,19 +61,19 @@ resource "aws_glue_catalog_table" "aws_glue_catalog_table" {
     }
     columns {
       name = "request_ip"
-      type = "string"
+      type = string
     }
     columns {
-        name = "method"
-        type = "string"
+      name = "method"
+      type = string
     }
     columns {
       name = "host"
-      type = "string"
+      type = string
     }
     columns {
       name = "uri"
-      type = "string"
+      type = string
     }
     columns {
       name = "status"
@@ -81,35 +81,35 @@ resource "aws_glue_catalog_table" "aws_glue_catalog_table" {
     }
     columns {
       name = "referrer"
-      type = "string"
+      type = string
     }
     columns {
       name = "user_agent"
-      type = "string"
+      type = string
     }
     columns {
       name = "query_string"
-      type = "string"
+      type = string
     }
     columns {
       name = "cookie"
-      type = "string"
+      type = string
     }
     columns {
       name = "result_type"
-      type = "string"
+      type = string
     }
     columns {
       name = "request_id"
-      type = "string"
+      type = string
     }
     columns {
       name = "host_header"
-      type = "string"
+      type = string
     }
     columns {
       name = "request_protocol"
-      type = "string"
+      type = string
     }
     columns {
       name = "request_bytes"
@@ -121,27 +121,27 @@ resource "aws_glue_catalog_table" "aws_glue_catalog_table" {
     }
     columns {
       name = "xforwarded_for"
-      type = "string"
+      type = string
     }
     columns {
       name = "ssl_protocol"
-      type = "string"
+      type = string
     }
     columns {
       name = "ssl_cipher"
-      type = "string"
+      type = string
     }
     columns {
       name = "response_result_type"
-      type = "string"
+      type = string
     }
     columns {
       name = "http_version"
-      type = "string"
+      type = string
     }
     columns {
       name = "fle_status"
-      type = "string"
+      type = string
     }
     columns {
       name = "fle_encrypted_fields"
@@ -157,11 +157,11 @@ resource "aws_glue_catalog_table" "aws_glue_catalog_table" {
     }
     columns {
       name = "x_edge_detailed_result_type"
-      type = "string"
+      type = string
     }
     columns {
       name = "sc_content_type"
-      type = "string"
+      type = string
     }
     columns {
       name = "sc_content_len"

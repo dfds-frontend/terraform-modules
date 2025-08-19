@@ -8,18 +8,18 @@ variable "domain_name" {}
 
 
 variable "subject_alternative_names" {
-  type = "list"
-  default = []  
+  type    = list(string)
+  default = []
 }
 
 variable "dns_zone_id" {
   description = "The ID of the hosted zone to contain this record."
   type        = string
-  default     = null 
+  default     = null
 }
 
 variable "validation_method" {
-  type = "string"
+  type        = string
   description = "Allowed values DNS and EMAIL"
 }
 
@@ -42,7 +42,7 @@ variable "validate_certificate" {
 variable "tags" {
   description = "A mapping of tags to assign to the resource"
   type        = map(string)
-  default     = {
+  default = {
     "Managed by" : "Terraform"
-    }
+  }
 }
