@@ -73,7 +73,7 @@ data "aws_iam_policy_document" "firehose_reingesting" {
 }
 
 resource "aws_iam_role_policy" "cloudwatch_logs" {
-  name   = "cw-log-access"
+  name   = var.name
   role   = aws_iam_role.role.name
   policy = data.aws_iam_policy_document.cloudwatch_logs.json
 }
