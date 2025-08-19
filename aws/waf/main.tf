@@ -1,11 +1,7 @@
-terraform {
-  required_version = "~> 0.12.2"
-}
-
 #
 # WAF ACL with each rule defined and prioritized accordingly.
 #
-resource aws_waf_web_acl waf_acl {
+resource "aws_waf_web_acl" "waf_acl" {
   name        = var.name_prefix
   metric_name = replace("${var.name_prefix}acl", "/[^0-9A-Za-z]/", "")
 
@@ -49,7 +45,7 @@ resource aws_waf_web_acl waf_acl {
     priority = 40
     rule_id  = aws_waf_rule.waf_blacklist.id
     type     = "REGULAR"
-  }  
+  }
 
   rules {
     action {
@@ -68,7 +64,7 @@ resource aws_waf_web_acl waf_acl {
 
     priority = 60
     rule_id  = aws_waf_rule.waf_reputation.id
-    type     = "REGULAR"      
+    type     = "REGULAR"
   }
 
   tags = var.tags
@@ -80,7 +76,7 @@ resource aws_waf_web_acl waf_acl {
 ## Mitigate SQL Injection Attacks
 ## Matches attempted SQL Injection patterns in the URI, QUERY_STRING, BODY, COOKIES
 
-resource aws_waf_rule mitigate_sqli {
+resource "aws_waf_rule" "mitigate_sqli" {
   name        = "${var.name_prefix}-SQL-Injection-Rule"
   metric_name = replace("${var.name_prefix}sqlinjectionrule", "/[^0-9A-Za-z]/", "")
 
@@ -91,7 +87,7 @@ resource aws_waf_rule mitigate_sqli {
   }
 }
 
-resource aws_waf_sql_injection_match_set sql_injection_match_set {
+resource "aws_waf_sql_injection_match_set" "sql_injection_match_set" {
   name = "${var.name_prefix}-SQL-injection-Detection"
 
   sql_injection_match_tuples {
@@ -274,8 +270,8 @@ resource "aws_waf_rate_based_rule" "mitigate_http_flood" {
   name        = "${var.name_prefix}-HTTP-Flood-Rule"
   metric_name = replace("${var.name_prefix}httpfloodrulerate", "/[^0-9A-Za-z]/", "")
 
-  rate_key    = "IP"
-  rate_limit  = "${var.waf_http_flood_rate_limit}" # AWS TF Provider BUG: will not change at updates: https://github.com/terraform-providers/terraform-provider-aws/issues/9659
+  rate_key   = "IP"
+  rate_limit = var.waf_http_flood_rate_limit # AWS TF Provider BUG: will not change at updates: https://github.com/terraform-providers/terraform-provider-aws/issues/9659
   predicates {
     data_id = aws_waf_ipset.waf_whitelist_set.id
     negated = true
@@ -300,7 +296,7 @@ resource "aws_waf_rule" "waf_reputation" {
 
 
 resource "aws_waf_ipset" "waf_reputation_set" {
-  name  = "reputation-set"
+  name = "reputation-set"
 
   lifecycle {
     ignore_changes = [
@@ -337,7 +333,7 @@ resource "random_uuid" "uuid" {
 
 resource "aws_iam_role" "lambda_role_reputation_list_parser" {
   name               = "${var.name_prefix}LambdaRoleReputationListParser"
-  assume_role_policy =  data.aws_iam_policy_document.assume_role.json
+  assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
 
 resource "aws_iam_role_policy" "reputation_list_parser" {
@@ -389,7 +385,7 @@ data "aws_iam_policy_document" "reputation_list_parser" {
       "logs:CreateLogStream",
       "logs:PutLogEvents",
     ]
-      # "logs:CreateLogGroup",
+    # "logs:CreateLogGroup",
     effect = "Allow"
 
     resources = [
@@ -399,7 +395,7 @@ data "aws_iam_policy_document" "reputation_list_parser" {
 }
 
 resource "aws_cloudwatch_log_group" "loggroup" {
-  name = "/aws/lambda/${var.name_prefix}_reputation_lists_parser"
+  name              = "/aws/lambda/${var.name_prefix}_reputation_lists_parser"
   retention_in_days = 30
 }
 
@@ -428,7 +424,7 @@ resource "aws_waf_rule" "waf_blacklist" {
 }
 
 resource "aws_waf_ipset" "waf_blacklist_set" {
-  name               = "blacklist-set"
+  name = "blacklist-set"
   dynamic "ip_set_descriptors" {
     iterator = ip
     for_each = var.waf_blacklist_ipset
@@ -437,7 +433,7 @@ resource "aws_waf_ipset" "waf_blacklist_set" {
       type  = ip.value.type
       value = ip.value.value
     }
-  }  
+  }
 }
 
 ###################################################################
@@ -457,7 +453,7 @@ resource "aws_waf_rule" "waf_whitelist" {
 }
 
 resource "aws_waf_ipset" "waf_whitelist_set" {
-  name               = "whitelist-set"
+  name = "whitelist-set"
   dynamic "ip_set_descriptors" {
     iterator = ip
     for_each = var.waf_whitelist_ipset
@@ -466,7 +462,7 @@ resource "aws_waf_ipset" "waf_whitelist_set" {
       type  = ip.value.type
       value = ip.value.value
     }
-  }  
+  }
 }
 
 

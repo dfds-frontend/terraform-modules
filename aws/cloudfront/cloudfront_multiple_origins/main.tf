@@ -1,85 +1,81 @@
-terraform {
-  required_version = "~> 0.12.2"
-}
-
 locals {
   # Determine the certificate type
   is_acm_cert = var.acm_certificate_arn != null
 }
 
 resource "aws_cloudfront_distribution" "cloudfront_distribution" {
-  wait_for_deployment = "${var.wait_for_deployment}"
-  price_class = "${var.price_class}"  
-  aliases = "${var.aliases}"
+  wait_for_deployment = var.wait_for_deployment
+  price_class         = var.price_class
+  aliases             = var.aliases
   viewer_certificate {
     cloudfront_default_certificate = local.is_acm_cert ? false : true
-    acm_certificate_arn = local.is_acm_cert ? var.acm_certificate_arn : null
-    ssl_support_method = local.is_acm_cert ? "sni-only" : null
-    minimum_protocol_version = local.is_acm_cert ? var.custom_ssl_security_policy: null
+    acm_certificate_arn            = local.is_acm_cert ? var.acm_certificate_arn : null
+    ssl_support_method             = local.is_acm_cert ? "sni-only" : null
+    minimum_protocol_version       = local.is_acm_cert ? var.custom_ssl_security_policy : null
   }
 
   http_version        = "http2"      # Supported HTTP Versions
   default_root_object = "index.html" # Default Root Object
 
   dynamic "logging_config" {
-    for_each = "${var.logging_enable ? [1] : [] }"
+    for_each = var.logging_enable ? [1] : []
     content {
-      include_cookies = "${var.logging_include_cookies}"
-      bucket          = "${var.logging_bucket}"
-      prefix          = "${var.logging_prefix}"      
+      include_cookies = var.logging_include_cookies
+      bucket          = var.logging_bucket
+      prefix          = var.logging_prefix
     }
   }
 
   is_ipv6_enabled = false
-  comment         = "${var.comment}"
+  comment         = var.comment
   enabled         = true
 
-  web_acl_id       = "${var.web_acl_id}"
+  web_acl_id = var.web_acl_id
 
   dynamic "origin" {
     for_each = var.origins
     iterator = it
-      content {
-        domain_name = it.value.domain_name
-        origin_id = it.value.origin_id
-        origin_path = lookup(it.value, "origin_path", null)
-        
-        dynamic "custom_header" {
-          for_each = lookup(it.value, "custom_header", null) == null ? [] : [1]
-          content {
-            name = "${it.value.custom_header.name}"
-            value = "${it.value.custom_header.value}"
-          }
-        }       
-        
-        dynamic "s3_origin_config" {
-          for_each = lookup(it.value, "is_s3_origin", false) ? [1] : [] # apply s3 origin settings
-          iterator = s3_origin_config
-          content {
-            origin_access_identity = "${var.origin_access_identity}"
-          }          
-        }
+    content {
+      domain_name = it.value.domain_name
+      origin_id   = it.value.origin_id
+      origin_path = lookup(it.value, "origin_path", null)
 
-        dynamic "custom_origin_config" {
-          for_each = lookup(it.value, "is_s3_origin", false) ? [] : [1] # apply custom origin settings
-          iterator = custom_origin_config
-          content {
-            http_port              = lookup(it.value, "http_port", 80)
-            https_port             = lookup(it.value, "https_port", 443)
-            origin_protocol_policy = lookup(it.value, "protocol_policy", "match-viewer")
-            origin_ssl_protocols   = lookup(it.value, "ssl_protocols", ["TLSv1.2"]) 
-          }
-      } 
+      dynamic "custom_header" {
+        for_each = lookup(it.value, "custom_header", null) == null ? [] : [1]
+        content {
+          name  = it.value.custom_header.name
+          value = it.value.custom_header.value
+        }
+      }
+
+      dynamic "s3_origin_config" {
+        for_each = lookup(it.value, "is_s3_origin", false) ? [1] : [] # apply s3 origin settings
+        iterator = s3_origin_config
+        content {
+          origin_access_identity = var.origin_access_identity
+        }
+      }
+
+      dynamic "custom_origin_config" {
+        for_each = lookup(it.value, "is_s3_origin", false) ? [] : [1] # apply custom origin settings
+        iterator = custom_origin_config
+        content {
+          http_port              = lookup(it.value, "http_port", 80)
+          https_port             = lookup(it.value, "https_port", 443)
+          origin_protocol_policy = lookup(it.value, "protocol_policy", "match-viewer")
+          origin_ssl_protocols   = lookup(it.value, "ssl_protocols", ["TLSv1.2"])
+        }
+      }
     }
   }
 
-  default_cache_behavior { 
-    allowed_methods  = lookup(var.default_cache_behavior, "allowed_methods", ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]) # This to allow redirect 
+  default_cache_behavior {
+    allowed_methods  = lookup(var.default_cache_behavior, "allowed_methods", ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]) # This to allow redirect
     cached_methods   = lookup(var.default_cache_behavior, "cached_methods", ["GET", "HEAD"])
     target_origin_id = var.default_cache_behavior.origin_id
-    # Whether you want CloudFront to automatically compress content for web requests that include Accept-Encoding: gzip in the request header (default: false). 
+    # Whether you want CloudFront to automatically compress content for web requests that include Accept-Encoding: gzip in the request header (default: false).
     # Enabling this feature will speed up download time but it can increase TTFB which can impact user experience
-    compress         = lookup(var.default_cache_behavior, "compress", false)
+    compress = lookup(var.default_cache_behavior, "compress", false)
     forwarded_values {
       query_string = lookup(var.default_cache_behavior, "forwarded_values_query_string", true)
 
@@ -93,25 +89,25 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
     viewer_protocol_policy = lookup(var.default_cache_behavior, "viewer_protocol_policy", "redirect-to-https")
 
     # Minimum TTL: The default minimum amount of time (seconds) to cache objects in Cloudfront. Default is 0 seconds
-    min_ttl                = lookup(var.default_cache_behavior, "min_ttl", 0)
+    min_ttl = lookup(var.default_cache_behavior, "min_ttl", 0)
 
     # Default TTL: "If the origin does not add a Cache-Control max-age directive to objects, then CloudFront caches objects for the value of the CloudFront default TTL (no cache)"
-    default_ttl            = lookup(var.default_cache_behavior, "default_ttl", 0)
+    default_ttl = lookup(var.default_cache_behavior, "default_ttl", 0)
 
     # Maximum TTL: The maximum amount of time (seconds) to cache objects in Cloudfront. If header value is default as follows; Expires > maximum TTL then CloudFront caches objects for the value of the CloudFront maximum TTL
-    max_ttl                = lookup(var.default_cache_behavior, "max_ttl", 31536000)
+    max_ttl = lookup(var.default_cache_behavior, "max_ttl", 31536000)
 
     # origin-request lambda@edge
-    dynamic "lambda_function_association" { 
+    dynamic "lambda_function_association" {
       for_each = lookup(var.default_cache_behavior, "lambda_function_association_origin_req_lambda_arn", null) == null ? [] : [1]
       iterator = it
 
       content {
         event_type   = lookup(var.default_cache_behavior, "lambda_function_association_origin_req_lambda_arn", null) != null ? "origin-request" : null
         lambda_arn   = lookup(var.default_cache_behavior, "lambda_function_association_origin_req_lambda_arn", null)
-        include_body = lookup(var.default_cache_behavior, "lambda_function_association_origin_req_lambda_arn", null) != null ? lookup(var.default_cache_behavior, "lambda_function_association_origin_req_include_body", false) : null        
+        include_body = lookup(var.default_cache_behavior, "lambda_function_association_origin_req_lambda_arn", null) != null ? lookup(var.default_cache_behavior, "lambda_function_association_origin_req_include_body", false) : null
       }
-    }  
+    }
 
     # viewer-request lambda@edge
     dynamic "lambda_function_association" {
@@ -121,96 +117,96 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
       content {
         event_type   = lookup(var.default_cache_behavior, "lambda_function_association_viewer_req_lambda_arn", null) != null ? "viewer-request" : null
         lambda_arn   = lookup(var.default_cache_behavior, "lambda_function_association_viewer_req_lambda_arn", null)
-        include_body = lookup(var.default_cache_behavior, "lambda_function_association_viewer_req_lambda_arn", null) != null ? lookup(var.default_cache_behavior, "lambda_function_association_viewer_req_include_body", false) : null        
+        include_body = lookup(var.default_cache_behavior, "lambda_function_association_viewer_req_lambda_arn", null) != null ? lookup(var.default_cache_behavior, "lambda_function_association_viewer_req_include_body", false) : null
       }
     }
-    
+
     # origin-response lambda@edge
-    dynamic "lambda_function_association" { 
+    dynamic "lambda_function_association" {
       for_each = lookup(var.default_cache_behavior, "lambda_function_association_origin_res_lambda_arn", null) == null ? [] : [1]
       iterator = it
 
       content {
         event_type   = lookup(var.default_cache_behavior, "lambda_function_association_origin_res_lambda_arn", null) != null ? "origin-response" : null
         lambda_arn   = lookup(var.default_cache_behavior, "lambda_function_association_origin_res_lambda_arn", null)
-        include_body = lookup(var.default_cache_behavior, "lambda_function_association_origin_res_lambda_arn", null) != null ? lookup(var.default_cache_behavior, "lambda_function_association_origin_res_include_body", false) : null        
+        include_body = lookup(var.default_cache_behavior, "lambda_function_association_origin_res_lambda_arn", null) != null ? lookup(var.default_cache_behavior, "lambda_function_association_origin_res_include_body", false) : null
       }
     }
   }
 
   dynamic "ordered_cache_behavior" {
-      for_each = var.cache_behaviors
-      iterator = it
+    for_each = var.cache_behaviors
+    iterator = it
 
-      content {
-        target_origin_id = it.value.origin_id # origin
-        path_pattern = it.value.path_pattern # path
-        allowed_methods  = lookup(it.value, "allowed_methods", ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"])
-        cached_methods   = lookup(it.value, "cached_methods", ["GET", "HEAD"])
+    content {
+      target_origin_id = it.value.origin_id    # origin
+      path_pattern     = it.value.path_pattern # path
+      allowed_methods  = lookup(it.value, "allowed_methods", ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"])
+      cached_methods   = lookup(it.value, "cached_methods", ["GET", "HEAD"])
 
-        # Whether you want CloudFront to automatically compress content for web requests that include Accept-Encoding: gzip in the request header (default: false). 
-        # Enabling this feature will speed up download time but it can increase TTFB which can impact user experience
-        compress         = lookup(it.value, "compress", false)  
+      # Whether you want CloudFront to automatically compress content for web requests that include Accept-Encoding: gzip in the request header (default: false).
+      # Enabling this feature will speed up download time but it can increase TTFB which can impact user experience
+      compress = lookup(it.value, "compress", false)
 
-        forwarded_values {
-          query_string = lookup(it.value, "forwarded_values_query_string", true) 
+      forwarded_values {
+        query_string = lookup(it.value, "forwarded_values_query_string", true)
 
-          cookies {
-            forward = lookup(it.value, "forwarded_values_cookies_forward", "all")
-          }
-          
-          headers = lookup(it.value, "forwarded_values_headers", null)
+        cookies {
+          forward = lookup(it.value, "forwarded_values_cookies_forward", "all")
         }
 
-        viewer_protocol_policy = lookup(it.value, "viewer_protocol_policy", "redirect-to-https")
+        headers = lookup(it.value, "forwarded_values_headers", null)
+      }
 
-        # Minimum TTL: The default minimum amount of time (seconds) to cache objects in Cloudfront. Default is 0 seconds
-        min_ttl                = lookup(it.value, "min_ttl", 0) 
+      viewer_protocol_policy = lookup(it.value, "viewer_protocol_policy", "redirect-to-https")
 
-        # Default TTL: "If the origin does not add a Cache-Control max-age directive to objects, then CloudFront caches objects for the value of the CloudFront default TTL (no cache)"
-        default_ttl            = lookup(it.value, "default_ttl", 0)
+      # Minimum TTL: The default minimum amount of time (seconds) to cache objects in Cloudfront. Default is 0 seconds
+      min_ttl = lookup(it.value, "min_ttl", 0)
 
-        # Maximum TTL: The maximum amount of time (seconds) to cache objects in Cloudfront. If header value is default as follows; Expires > maximum TTL then CloudFront caches objects for the value of the CloudFront maximum TTL
-        max_ttl                = lookup(it.value, "max_ttl", 31536000)
+      # Default TTL: "If the origin does not add a Cache-Control max-age directive to objects, then CloudFront caches objects for the value of the CloudFront default TTL (no cache)"
+      default_ttl = lookup(it.value, "default_ttl", 0)
 
-        # origin-request lambda@edge
-        dynamic "lambda_function_association" {
-          for_each = lookup(it.value, "lambda_function_association_origin_req_lambda_arn", null) != null ? [1] : []
-          iterator = it_sub
+      # Maximum TTL: The maximum amount of time (seconds) to cache objects in Cloudfront. If header value is default as follows; Expires > maximum TTL then CloudFront caches objects for the value of the CloudFront maximum TTL
+      max_ttl = lookup(it.value, "max_ttl", 31536000)
 
-          content {
-            event_type   = lookup(it.value, "lambda_function_association_origin_req_lambda_arn", null) != null ? "origin-request" : null
-            lambda_arn   = lookup(it.value, "lambda_function_association_origin_req_lambda_arn", null)
-            include_body = lookup(it.value, "lambda_function_association_origin_req_lambda_arn", null) != null ? lookup(it.value, "lambda_function_association_origin_req_include_body", false) : null
-          }         
+      # origin-request lambda@edge
+      dynamic "lambda_function_association" {
+        for_each = lookup(it.value, "lambda_function_association_origin_req_lambda_arn", null) != null ? [1] : []
+        iterator = it_sub
+
+        content {
+          event_type   = lookup(it.value, "lambda_function_association_origin_req_lambda_arn", null) != null ? "origin-request" : null
+          lambda_arn   = lookup(it.value, "lambda_function_association_origin_req_lambda_arn", null)
+          include_body = lookup(it.value, "lambda_function_association_origin_req_lambda_arn", null) != null ? lookup(it.value, "lambda_function_association_origin_req_include_body", false) : null
         }
+      }
 
-        # viewer-request lambda@edge
-        dynamic "lambda_function_association" {
-          for_each = lookup(it.value, "lambda_function_association_viewer_req_lambda_arn", null) != null ? [1] : []
-          iterator = it_sub
+      # viewer-request lambda@edge
+      dynamic "lambda_function_association" {
+        for_each = lookup(it.value, "lambda_function_association_viewer_req_lambda_arn", null) != null ? [1] : []
+        iterator = it_sub
 
-          content {
-            event_type   = lookup(it.value, "lambda_function_association_viewer_req_lambda_arn", null) != null ? "viewer-request" : null
-            lambda_arn   = lookup(it.value, "lambda_function_association_viewer_req_lambda_arn", null)
-            include_body = lookup(it.value, "lambda_function_association_viewer_req_lambda_arn", null) != null ? lookup(it.value, "lambda_function_association_viewer_req_include_body", false) : null
-          }
+        content {
+          event_type   = lookup(it.value, "lambda_function_association_viewer_req_lambda_arn", null) != null ? "viewer-request" : null
+          lambda_arn   = lookup(it.value, "lambda_function_association_viewer_req_lambda_arn", null)
+          include_body = lookup(it.value, "lambda_function_association_viewer_req_lambda_arn", null) != null ? lookup(it.value, "lambda_function_association_viewer_req_include_body", false) : null
         }
+      }
 
-        # origin-response lambda@edge
-        dynamic "lambda_function_association" {
-          for_each = lookup(it.value, "lambda_function_association_viewer_res_lambda_arn", null) != null ? [1] : []
-          iterator = it_sub
+      # origin-response lambda@edge
+      dynamic "lambda_function_association" {
+        for_each = lookup(it.value, "lambda_function_association_viewer_res_lambda_arn", null) != null ? [1] : []
+        iterator = it_sub
 
-          content {
-            event_type   = lookup(it.value, "lambda_function_association_viewer_res_lambda_arn", null) != null ? "origin-response" : null
-            lambda_arn   = lookup(it.value, "lambda_function_association_viewer_res_lambda_arn", null)
-            include_body = lookup(it.value, "lambda_function_association_viewer_res_lambda_arn", null) != null ? lookup(it.value, "lambda_function_association_viewer_res_include_body", false) : null
-          }         
+        content {
+          event_type   = lookup(it.value, "lambda_function_association_viewer_res_lambda_arn", null) != null ? "origin-response" : null
+          lambda_arn   = lookup(it.value, "lambda_function_association_viewer_res_lambda_arn", null)
+          include_body = lookup(it.value, "lambda_function_association_viewer_res_lambda_arn", null) != null ? lookup(it.value, "lambda_function_association_viewer_res_include_body", false) : null
         }
-        
-      } 
+      }
+
     }
+  }
 
   restrictions {
     geo_restriction {
@@ -233,7 +229,7 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
       response_page_path    = custom_error_response.value.response_page_path
     }
   }
-  
+
   tags = var.tags
-  
+
 }

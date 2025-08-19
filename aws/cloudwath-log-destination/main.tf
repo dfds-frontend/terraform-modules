@@ -1,14 +1,10 @@
-terraform {
-  required_version = "~> 0.12.2"
-}
-
 resource "aws_cloudwatch_log_destination" "destination_firehose" {
   name       = var.name
   role_arn   = var.cloudwatch_logs_role_arn
   target_arn = var.target_arn
 }
 
-data "aws_iam_policy_document" "destination_firehose_policy" {  
+data "aws_iam_policy_document" "destination_firehose_policy" {
   statement {
     effect = "Allow"
 
@@ -30,7 +26,7 @@ data "aws_iam_policy_document" "destination_firehose_policy" {
   }
 }
 
-resource "aws_cloudwatch_log_destination_policy" "destination_firehose_policy" {  
+resource "aws_cloudwatch_log_destination_policy" "destination_firehose_policy" {
   destination_name = aws_cloudwatch_log_destination.destination_firehose.name
   access_policy    = data.aws_iam_policy_document.destination_firehose_policy.json
 }
