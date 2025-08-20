@@ -5,7 +5,7 @@ output "certificate_arn" {
 
 output "acm_certificate_domain_validation_options" {
   description = "A list of attributes to feed into other resources to complete certificate validation. Can have more than one element, e.g. if SANs are defined. Only set if DNS-validation was used."
-  value       = try(aws_acm_certificate.cert[0].domain_validation_options, [])
+  value       = try(aws_acm_certificate.cert[0].domain_validation_options, toset([]))
 }
 
 output "acm_certificate_validation_emails" {
