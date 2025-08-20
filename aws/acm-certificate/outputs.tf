@@ -5,12 +5,12 @@ output "certificate_arn" {
 
 output "acm_certificate_domain_validation_options" {
   description = "A list of attributes to feed into other resources to complete certificate validation. Can have more than one element, e.g. if SANs are defined. Only set if DNS-validation was used."
-  value       = aws_acm_certificate.cert[0].domain_validation_options
+  value       = flatten([for c in aws_acm_certificate.cert : c.domain_validation_options])
 }
 
 output "acm_certificate_validation_emails" {
   description = "A list of addresses that received a validation E-Mail. Only set if EMAIL-validation was used."
-  value       = aws_acm_certificate.cert[0].validation_emails
+  value       = flatten([for c in aws_acm_certificate.cert : c.validation_emails])
 }
 
 output "validation_route53_record_fqdns" {
