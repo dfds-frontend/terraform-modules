@@ -15,7 +15,7 @@ output "acm_certificate_validation_emails" {
 
 output "validation_route53_record_fqdns" {
   description = "List of FQDNs built using the zone domain and name."
-  value       = aws_route53_record.validation[0].fqdn
+  value       = coalescelist(aws_route53_record.validation[0].fqdn, "No FQDN available because no DNS record was created.")
 }
 
 output "distinct_domain_names" {
