@@ -18,7 +18,7 @@ variable "lambda_function_handler" {
 
 variable "runtime" {
   type    = string
-  default = "nodejs12.x"
+  default = "nodejs22.x"
 }
 
 variable "publish" {
