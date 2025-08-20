@@ -1,13 +1,8 @@
 resource "aws_s3_bucket" "bucket" {
   count  = var.deploy ? 1 : 0
   bucket = var.s3_bucket
-  acl    = var.bucket_canned_acl
 
   tags = var.tags
-
-  versioning {
-    enabled = var.enable_versioning
-  }
 
   force_destroy = var.enable_destroy
 
@@ -27,6 +22,20 @@ resource "aws_s3_bucket" "bucket" {
         days = it.value.retention_days
       }
     }
+  }
+}
+
+resource "aws_s3_bucket_acl" "example" {
+  count  = var.deploy ? 1 : 0
+  bucket = aws_s3_bucket.bucket[count.index].id
+  acl    = var.bucket_canned_acl
+}
+
+resource "aws_s3_bucket_versioning" "versioning" {
+  count  = var.deploy ? 1 : 0
+  bucket = aws_s3_bucket.bucket[count.index].id
+  versioning_configuration {
+    status = "Enabled"
   }
 }
 
