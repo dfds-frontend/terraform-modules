@@ -1,21 +1,19 @@
-terraform {
-  required_version = "~> 0.12.2"
-}
+
 resource "aws_kinesis_firehose_delivery_stream" "delivery_stream" {
   name        = "${var.name}-kinesis-firehose"
   destination = "extended_s3"
-  tags = "${var.tags}"
+  tags        = var.tags
 
   extended_s3_configuration {
-    role_arn   = "${aws_iam_role.firehose_role.arn}"
-    bucket_arn = "${var.bucket_arn}"
-    prefix = "${var.extra_prefix}"
-    buffer_size = "${var.buffer_size}"
-    buffer_interval = "${var.buffer_interval}"
-    error_output_prefix = "${var.error_output_prefix}"
+    role_arn            = aws_iam_role.firehose_role.arn
+    bucket_arn          = var.bucket_arn
+    prefix              = var.extra_prefix
+    buffer_size         = var.buffer_size
+    buffer_interval     = var.buffer_interval
+    error_output_prefix = var.error_output_prefix
 
     dynamic "processing_configuration" {
-      for_each = "${var.enable_processing_configuration ? [1] : [] }"
+      for_each = var.enable_processing_configuration ? [1] : []
       content {
         enabled = true
 
@@ -24,7 +22,7 @@ resource "aws_kinesis_firehose_delivery_stream" "delivery_stream" {
 
           parameters {
             parameter_name  = "LambdaArn"
-            parameter_value = "${var.processor_lambda_arn}:${var.lambda_version}" 
+            parameter_value = "${var.processor_lambda_arn}:${var.lambda_version}"
           }
         }
       }
@@ -33,9 +31,9 @@ resource "aws_kinesis_firehose_delivery_stream" "delivery_stream" {
 }
 
 resource "aws_iam_role" "firehose_role" {
-  name               = "${var.name}-firehose-role"
+  name                  = "${var.name}-firehose-role"
   force_detach_policies = var.force_detach_policies
-  assume_role_policy = data.aws_iam_policy_document.kinesis_firehose_stream_assume_role.json
+  assume_role_policy    = data.aws_iam_policy_document.kinesis_firehose_stream_assume_role.json
 }
 
 resource "aws_iam_role_policy" "kinesis_firehose_access_bucket_policy" {
@@ -70,7 +68,7 @@ data "aws_iam_policy_document" "kinesis_firehose_access_bucket_assume_policy" {
     ]
 
     resources = [
-      "${var.bucket_arn}",
+      var.bucket_arn,
       "${var.bucket_arn}/*",
     ]
   }
@@ -93,14 +91,14 @@ data "aws_iam_policy_document" "lambda_assume_policy" {
 }
 
 resource "aws_iam_role_policy" "lambda_policy" {
-  count = var.enable_processing_configuration ? 1 : 0
+  count  = var.enable_processing_configuration ? 1 : 0
   name   = "${var.name}-lambda_function_policy"
   role   = aws_iam_role.firehose_role.name
   policy = data.aws_iam_policy_document.lambda_assume_policy[0].json
 }
 
 # ############################################################
-# Allow Cloudwatch resources from different regions 
+# Allow Cloudwatch resources from different regions
 # such as subscriptionFilter to assume roles on Firehose
 # ############################################################
 data "aws_iam_policy_document" "cloudwatch_logs_assume_role" {
@@ -109,12 +107,12 @@ data "aws_iam_policy_document" "cloudwatch_logs_assume_role" {
     actions = ["sts:AssumeRole"]
 
     principals {
-      type        = "Service"
-      identifiers = [for region in var.cloudwatch_source_regions:
+      type = "Service"
+      identifiers = [for region in var.cloudwatch_source_regions :
         "logs.${region}.amazonaws.com"
-        ]
+      ]
 
-        # ["logs.${length(var.region) > 0 ? var.region : data.aws_region.default.name}.amazonaws.com"]
+      # ["logs.${length(var.region) > 0 ? var.region : data.aws_region.default.name}.amazonaws.com"]
     }
   }
 }

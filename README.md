@@ -15,25 +15,23 @@ main.tf
 
 outputs.tf
 ```
-- A module should require minimum version in the following format: 
+- A module should require minimum version in the following format:
 ```
-terraform {
-  required_version = "~> 0.12.2"
-}
+
 ```
 
 This should be declared in the top of main.tf file.
 
 ### Testing new module
 Since development work will be in a separate branch, whether it is about adding new modules or just introducing changes to existing modules, you might need to test in a exiting project.
-To do so you change module source reference in your code to point to your branch: 
+To do so you change module source reference in your code to point to your branch:
 
 ```
 module "mymodule" {
   source = "git::https://github.com/dfds-frontend/terraform-modules.git//path-to-module?ref=your-branch"
   ...
 }
-``` 
+```
 
 ### Release new code
 Here are steps to merge code into master:
@@ -46,7 +44,7 @@ module "mymodule" {
   source = "git::https://github.com/dfds-frontend/terraform-modules.git//path-to-module?ref=v0.0.1"
   ...
 }
-``` 
+```
 - When ready, create a pull request into master.
 - When checks are green, Merge pull request into master.
 - Create new tag/release:
@@ -61,7 +59,7 @@ module "mymodule" {
     BUGFIXES:
     - Describes what bugfixes, the new release features has added, if any.
     ```
-## Examples in this project 
+## Examples in this project
 The examples in this repo are used as part of the documentation and for running the tests.
 
 ## Using modules and examples in this repo

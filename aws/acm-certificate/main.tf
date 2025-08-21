@@ -1,13 +1,9 @@
-terraform {
-  required_version = "~> 0.12.2"
-}
-  
-locals { 
+locals {
   // Get distinct list of domains and SANs
   distinct_domain_names = distinct(concat([var.domain_name], [for s in var.subject_alternative_names : replace(s, "*.", "")]))
 
   // Copy domain_validation_options for the distinct domain names
-  validation_domains = var.create_certificate ? [for k, v in aws_acm_certificate.cert[0].domain_validation_options : tomap(v) if contains(local.distinct_domain_names, v.domain_name)] : []  
+  validation_domains = var.create_certificate ? [for k, v in aws_acm_certificate.cert[0].domain_validation_options : tomap(v) if contains(local.distinct_domain_names, v.domain_name)] : []
 }
 
 resource "aws_acm_certificate" "cert" {
@@ -21,7 +17,7 @@ resource "aws_acm_certificate" "cert" {
 
   lifecycle {
     create_before_destroy = true
-    ignore_changes = ["subject_alternative_names"] # workaround to https://github.com/terraform-providers/terraform-provider-aws/issues/8531
+    ignore_changes        = [subject_alternative_names] # workaround to https://github.com/terraform-providers/terraform-provider-aws/issues/8531
   }
 }
 
@@ -50,5 +46,5 @@ resource "aws_acm_certificate_validation" "cert" {
 
   certificate_arn = aws_acm_certificate.cert[0].arn
 
-  validation_record_fqdns = aws_route53_record.validation.*.fqdn
+  validation_record_fqdns = aws_route53_record.validation[0].fqdn
 }

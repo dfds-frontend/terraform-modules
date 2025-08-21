@@ -1,3 +1,3 @@
-output event_arn {
-    value = aws_cloudwatch_event_rule.this.arn
+output "event_arn" {
+  value = aws_cloudwatch_event_rule.this.arn
 }

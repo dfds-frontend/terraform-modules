@@ -1,13 +1,9 @@
-terraform {
-  required_version = "~> 0.12.2"
-}
-
 resource "aws_iam_role" "s3_role" {
-  name               = "${var.name}"
+  name                  = var.name
   force_detach_policies = var.force_detach_policies
-  
+
   assume_role_policy = data.aws_iam_policy_document.assume_role_policy.json
-  tags = "${var.tags}"
+  tags               = var.tags
 }
 
 data "aws_iam_policy_document" "s3permissions" {
@@ -24,7 +20,7 @@ data "aws_iam_policy_document" "s3permissions" {
     ]
 
     resources = [
-      "${var.bucket_arn}",
+      var.bucket_arn,
       "${var.bucket_arn}/*",
     ]
   }
@@ -37,7 +33,7 @@ data "aws_iam_policy_document" "assume_role_policy" {
 
     principals {
       type        = "AWS"
-      identifiers = ["${var.trusted_role_arn}"]
+      identifiers = [var.trusted_role_arn]
     }
   }
 }

@@ -1,36 +1,39 @@
-variable "zone_id" {}
+variable "zone_id" {
+  type = string
+}
 
 variable "record_name" {
-  type    = "string"
+  type = string
 }
 variable "record_type" {
-  type = "string"
+  type = string
 }
 
 variable "alias_target_dns_name" {
-  type = "string"
+  type    = string
   default = ""
 }
 
 variable "alias_target_zone_id" {
-  type = "string"
+  type    = string
   default = ""
 }
 
-variable "record_ttl" {  
+variable "record_ttl" {
+  type    = number
   default = 300
 }
 
 variable "record_value" {
-  type = "string"
+  type = string
 }
 
 variable "create_record" {
-  type = bool
+  type    = bool
   default = true
 }
 
 variable "allow_overwrite" {
-  type = bool
-  default = true  
+  type    = bool
+  default = true
 }

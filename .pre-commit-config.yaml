@@ -1,0 +1,39 @@
+repos:
+  - repo: https://github.com/antonbabenko/pre-commit-terraform
+    rev: v1.97.0
+    hooks:
+      - id: terraform_fmt
+        exclude: boilerplate/.*
+      - id: terraform_tflint
+        args:
+          - "--args=--call-module-type=all"
+          - "--args=--config=__GIT_WORKING_DIR__/.tflint.hcl"
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.5.0
+    hooks:
+      - id: detect-secrets
+        exclude: boilerplate/.*
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+        exclude: boilerplate/.*
+      - id: check-added-large-files
+        exclude: boilerplate/.*
+      - id: check-merge-conflict
+      - id: detect-aws-credentials
+        exclude: boilerplate/.*
+        args:
+          - "--allow-missing-credentials"
+      - id: detect-private-key
+      - id: check-executables-have-shebangs
+        exclude: boilerplate/.*
+      - id: check-shebang-scripts-are-executable
+        exclude: boilerplate/.*
+      - id: check-json
+      - id: end-of-file-fixer
+        exclude: boilerplate/.*
+      - id: mixed-line-ending
+        exclude: boilerplate/.*
+        args:
+          - "--fix=lf"
