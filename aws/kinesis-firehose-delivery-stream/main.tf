@@ -8,8 +8,8 @@ resource "aws_kinesis_firehose_delivery_stream" "delivery_stream" {
     role_arn            = aws_iam_role.firehose_role.arn
     bucket_arn          = var.bucket_arn
     prefix              = var.extra_prefix
-    buffer_size         = var.buffer_size
-    buffer_interval     = var.buffer_interval
+    buffering_size      = var.buffer_size
+    buffering_interval  = var.buffer_interval
     error_output_prefix = var.error_output_prefix
 
     dynamic "processing_configuration" {
