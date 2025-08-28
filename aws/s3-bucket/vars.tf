@@ -12,11 +12,6 @@ variable "allowed_iam_arns" {
   default = []
 }
 
-variable "enable_versioning" {
-  type    = bool
-  default = false
-}
-
 variable "enable_destroy" {
   type    = bool
   default = true
